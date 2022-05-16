@@ -1,0 +1,75 @@
+.wrap{
+	padding-bottom: 40rpx;
+}
+.pic92{
+	width: 64rpx;
+}
+.content{
+	position: relative;
+	z-index: 1;
+}
+.flexcenter{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.wrapcommon{
+	background: #fff;
+	border-radius: 32rpx;
+	padding: 32rpx 32rpx;
+}
+
+.scrollchild{
+	padding: 32rpx!important;
+}
+.btnsumit{
+	background-color: #29CC96;
+	color: #fff;
+	border-radius: 100rpx;
+	padding: 15rpx;
+	font-size: 32rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+}
+.bigfont{
+	font-size: 32rpx;
+	margin-right: 4rpx;
+}
+.btntwo{
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	font-size: 32rpx;
+	margin-top: 60rpx;
+	.two1{
+		padding: 16rpx 64rpx;	
+		border-radius: 100rpx;
+	}
+}
+.oftenpic{
+	width: 64rpx;
+	height: 64rpx;
+	margin-right: 20rpx;
+}
+.oftenbold{
+	font-weight: bold;
+	color: #000;
+}
+.oftenright{
+	font-size: 24rpx;
+	color:#939599;
+}
+.oftenpanlechild{
+	width: 50%;
+	justify-content: flex-start;
+	margin-top: 30rpx;
+}
+.oftenpanle{
+	display: flex;
+	flex-wrap: wrap;
+}
+.cirbox{
+	margin-top: 20rpx;
+}

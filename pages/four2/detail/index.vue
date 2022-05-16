@@ -1,0 +1,517 @@
+<template>
+  <div class="wrap">
+    <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
+    <div class="top">
+      <div class="t1">
+        <image mode="widthFix" class="datepic" src="@/static/image/xh.png" />
+        <div class="text text3">信号强度</div>
+      </div>
+      <div class="t1">
+        <div class="t5">80%</div>
+
+        <div class="text">设备电量</div>
+      </div>
+      <div class="t1">
+        <div class="t2">50<span>小时</span></div>
+        <div class="text">工作强度</div>
+      </div>
+    </div>
+    <div class="content clearcontent">
+      <div class="test1">
+        <div class="test3 flexcenter">
+          <div @click="dateShow = true" class="inputdiy">{{ dateInput }}</div>
+          <div class="search">
+            <image
+              mode="widthFix"
+              class="datepic"
+              src="@/static/image/search2.png"
+            />
+          </div>
+        </div>
+        <div @click="showType = !showType" class="change flexcenter">
+          <image
+            mode="widthFix"
+            class="change2"
+            src="@/static/image/change2.png"
+          />
+          切换{{ !showType ? "图表" : "文字" }}
+        </div>
+      </div>
+      <div v-if="!showType" class="tabheader flexcenter">
+        <div class="c1" v-for="(item, index) in tabAll[urlType-1]" :key="index">
+          {{ item }}
+        </div>
+      </div>
+      <div v-else class="tabheader flexcenter">
+        <div
+          @click="activeChild = index"
+          :class="[activeChild == index ? 'c1addactive' : '', 'c1 c1add']"
+          v-for="(item, index) in tabAll[urlType]"
+          :key="index"
+        >
+          {{ item }}
+        </div>
+      </div>
+      <div v-if="!showType" class="tabnew">
+        <div class="tabcontent tabheader flexcenter">
+          <div class="c1">2121.11.02 13:12</div>
+          <div class="c1">27.5</div>
+          <div class="c1">55</div>
+          <div class="c1">4126.0</div>
+          <div class="c1">99.0</div>
+          <div class="c1">东北</div>
+        </div>
+        <div class="tabcontent tabheader flexcenter">
+          <div class="c1">2121.11.02 13:12</div>
+          <div class="c1">27.5</div>
+          <div class="c1">55</div>
+          <div class="c1">4126.0</div>
+          <div class="c1">99.0</div>
+          <div class="c1">东北</div>
+        </div>
+        <div class="tabcontent tabheader flexcenter">
+          <div class="c1">2121.11.02 13:12</div>
+          <div class="c1">27.5</div>
+          <div class="c1">55</div>
+          <div class="c1">4126.0</div>
+          <div class="c1">99.0</div>
+          <div class="c1">东北</div>
+        </div>
+        <div class="tabcontent tabheader flexcenter">
+          <div class="c1">2121.11.02 13:12</div>
+          <div class="c1">27.5</div>
+          <div class="c1">55</div>
+          <div class="c1">4126.0</div>
+          <div class="c1">99.0</div>
+          <div class="c1">东北</div>
+        </div>
+        <div class="tabcontent tabheader flexcenter">
+          <div class="c1">2121.11.02 13:12</div>
+          <div class="c1">27.5</div>
+          <div class="c1">55</div>
+          <div class="c1">4126.0</div>
+          <div class="c1">99.0</div>
+          <div class="c1">东北</div>
+        </div>
+      </div>
+      <div v-else class="tabnew">
+        <div class="cirbox">
+          <qiun-data-charts
+            type="mix"
+            canvasId="three_b"
+            :resshow="false"
+            :opts="{
+              legend: { show:false },
+              yAxis: {
+                disableGrid: true,
+
+                data: [
+                  {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    fontColor: '#939599',
+                    position: 'left',
+                    title: unitSet,
+                    titleOffsetX: -20,
+                    titleOffsetY: -5,
+                    titleFontColor: '#939599',
+                    max: chartDataTemperature
+                      ? chartDataTemperature.yAxis[0].max
+                      : 0,
+                    min: chartDataTemperature
+                      ? chartDataTemperature.yAxis[0].min
+                      : 0,
+                  },
+                ],
+              },
+              xAxis: {
+                axisLineColor: 'rgba(147,149,153,0.1)',
+                disableGrid: false,
+                gridColor: 'rgba(147,149,153,0.1)',
+                gridType: 'solid',
+                fontColor: '#939599',
+              },
+            }"
+            :chartData="chartDataTemperature"
+          />
+        </div>
+      </div>
+      <!-- <image mode="widthFix" v-else class="fullpic" src="@/static/image/false30.png" /> -->
+    </div>
+    <div class="fixedbtn">
+      <div class="btn2 flexcenter">
+        <image mode="widthFix" class="close" src="@/static/image/close1.png" />
+        关闭设备
+      </div>
+    </div>
+    <u-calendar
+      :closeOnClickOverlay="true"
+      @close="dateShow = false"
+      :show="dateShow"
+      :mode="mode"
+      @confirm="confirm"
+    ></u-calendar>
+  </div>
+</template>
+<script>
+import headerDiy from "../../component/header/header.vue";
+export default {
+  components: {
+    headerDiy,
+  },
+  onLoad(option) {
+    this.urlType=option.type
+  },
+  data() {
+    return {
+      urlType:null,
+      unitSet:'单位(℃)',
+      chartDataTemperature: {
+        categories: ["1.15", "2.15", "3.15", "4.15", "5.15", "6.15", "7.15"],
+        series: [
+          {
+            name: "今年",
+            data: [1111, 1210, 2222, 3333, 4444, 5899, 6554],
+            type: "line",
+            addPoint: true,
+            color: "#3199F5",
+          },
+        ],
+        yAxis: [
+          {
+            // "max": 60,
+            // "min": 0
+          },
+        ],
+      },
+      dateInput: "请输入查询日期",
+      dateShow: false,
+      mode: "single",
+      activeChild: 0,
+      showType: true,
+      value: "",
+      tabAll:[
+        [
+          '当日灌溉量',
+          '当日灌溉次数',
+          '单位流量',
+          '可溶性盐浓度',
+          '土壤酸碱度',
+          '液位传感器'
+        ],
+        [
+          "时间",
+          "温度(℃)",
+          "湿度(%)",
+          "光照(Lux)",
+          "降雨(mm)",
+          "风向",
+        ],
+        [
+          "土壤温度(-10cm)",
+          "土壤湿度(-10cm)",
+          "土壤温度(-20cm)",
+          "土壤湿度(-20cm)",
+          "土壤温度(-30cm)",
+          "土壤湿度(-30cm)",
+        ],
+        [
+          "红蜘蛛",
+          "草地贪夜蛾",
+          "蝗虫",
+          "玉米蓟马",
+          "黏虫",
+        ]
+      ],
+      showType: false,
+      showType2: false,
+      pageName: "一号气象站",
+      numValue: "",
+      typeList: [
+        {
+          name: "种类1",
+        },
+        {
+          name: "种类2",
+        },
+        {
+          name: "保密",
+        },
+      ],
+      typeList2: [
+        {
+          name: "品种1",
+        },
+        {
+          name: "品种2",
+        },
+        {
+          name: "保密",
+        },
+      ],
+      nameValue: "",
+      typeValue: "",
+    };
+  },
+  methods: {
+    confirm(e) {
+      this.dateShow = false;
+      this.dateInput = e[0];
+      console.log(e);
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
+.wrap{
+  padding-bottom: 200rpx;
+}
+.c1add {
+  border-radius: 100px;
+  border: 1px solid #fff;
+  box-sizing: border-box;
+  padding: 8rpx 0;
+}
+.c1addactive {
+  border: 1px solid #3199f5 !important;
+  color: #3199f5 !important;
+}
+.top {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: #939599;
+  padding: 20rpx;
+  font-size: 28rpx;
+  .text3 {
+    position: relative;
+    top: 10rpx;
+  }
+  .datepic {
+    width: 64rpx;
+    margin-bottom: 20rpx;
+  }
+  .t5 {
+    font-size: 64rpx;
+    color: #29cc96;
+    font-weight: bold;
+  }
+  .t1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .t2 {
+    font-size: 64rpx;
+    font-weight: bold;
+    color: #f5a631;
+    span {
+      font-size: 28rpx !important;
+      font-weight: normal;
+      color: #c4c7cc !important;
+    }
+  }
+}
+.fullpic {
+  width: 100%;
+}
+.fixedbtn {
+  position: fixed;
+  bottom: 0;
+  padding: 30rpx;
+  width: 100%;
+  z-index: 11;
+  background: #fff;
+  box-sizing: border-box;
+  .btn2 {
+    background: #f56262;
+    color: #fff;
+    border-radius: 100rpx;
+    width: 100%;
+    padding: 20rpx 0;
+    font-size: 28rpx;
+  }
+  .close {
+    width: 40rpx;
+    margin-right: 40rpx;
+  }
+}
+.tabcontent {
+  background: transparent !important;
+  font-weight: bold;
+}
+
+.tabheader {
+  background: #fff;
+  font-size: 24rpx;
+  color: #626466;
+  padding: 20rpx;
+  .c1 {
+    width: 26%;
+    text-align: center;
+  }
+}
+.clearcontent {
+  margin: 0 !important;
+}
+.content {
+  .change {
+    font-size: 28rpx;
+    color: #3199f5;
+  }
+  .change2 {
+    width: 48rpx;
+    margin-right: 10rpx;
+  }
+  .test5 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .inputdiy {
+    background: #fafafa;
+    font-size: 24rpx;
+    color: #c4c7cc;
+    height: 64rpx;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 40rpx;
+  }
+  .datepic {
+    width: 48rpx;
+  }
+  .test6 {
+    border-radius: 32rpx;
+    overflow: hidden;
+    width: 330rpx;
+    margin-top: 30rpx;
+    background: #fff;
+    .videopic {
+      width: 100%;
+    }
+    .text {
+      padding: 15rpx;
+      font-size: 28rpx;
+      color: #626466;
+    }
+  }
+  .test1 {
+    margin-top: 20rpx;
+    background: #fff;
+    padding: 20rpx;
+    color: #626466;
+    font-size: 28rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .test3 {
+    position: relative;
+    margin-right: 30rpx;
+    background: #fafafa;
+    border-radius: 200rpx;
+    flex: 1;
+    overflow: hidden;
+    .u-border {
+      border: none !important;
+    }
+    .search {
+      position: absolute;
+      right: 20rpx;
+      top: 10rpx;
+    }
+  }
+}
+.wrapcommonfarm {
+  margin: 45rpx 0;
+}
+.farmtab {
+  background: #fff;
+  display: flex;
+  .c1 {
+    color: #939599;
+    font-size: 32rpx;
+    border-bottom: 2px solid #fff;
+    width: 33.333%;
+    display: flex;
+    justify-content: center;
+    padding: 20rpx 0;
+    margin: 0 30rpx;
+  }
+  .c1active {
+    font-size: 36rpx !important;
+    color: #313233 !important;
+    border-bottom: 2px solid #12a669 !important;
+  }
+}
+.content {
+  margin: 32rpx;
+  .farmtitle {
+    font-weight: bold;
+    margin-bottom: 10rpx;
+  }
+  .farmcontent {
+    font-size: 24rpx;
+    font-weight: bold;
+  }
+  .tip {
+    font-size: 28rpx;
+    color: #939599;
+  }
+  .content3 {
+    margin: 40rpx 0 30rpx 0;
+  }
+  .input2 {
+    display: flex;
+  }
+  .disablewrap {
+    display: flex;
+    padding: 12rpx 18rpx;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .title {
+    padding-left: 20rpx;
+    border-left: 4rpx solid #29cc96;
+    font-weight: bold;
+    font-size: 32rpx;
+
+    margin-bottom: 16rpx;
+  }
+  .form {
+    color: #626466;
+    font-size: 28rpx;
+    .name {
+      margin: 25rpx 0;
+    }
+    .input {
+      background: #fafafa !important;
+      border: none;
+      border-radius: 16rpx;
+    }
+    .u-border {
+      border: none;
+    }
+    .uni-input-input {
+      color: #c4c7cc;
+      font-weight: bold;
+      border: none;
+    }
+  }
+  .titlewrap {
+    border-bottom: 1px solid #f5f5f5;
+    margin-bottom: 20rpx;
+    display: flex;
+    justify-content: space-between;
+    .date {
+      color: #626466;
+      font-size: 24rpx;
+    }
+    span {
+      color: #626466;
+    }
+  }
+}
+</style>

@@ -1,0 +1,82 @@
+<template>
+   <div class="handlewrap">
+        <div class="handle">
+            <div class="c1">
+                <div class="c2">
+                    <image mode="widthFix" class="pic" src="@/static/image/kk1.png" />
+                    <text class=" c2 c21">20</text>
+                </div>
+                <text class=" c9">长势监测</text>
+            </div>
+            <div class="c1">
+                <div class="c2">
+                    <image mode="widthFix" class="pic" src="@/static/image/kk2.png" />
+                    <text class="c2 c22">20</text>
+                </div>
+                <text class=" c9">气象监测</text>
+            </div>
+            <div class="c1">
+                <div class="c2">
+                <image mode="widthFix" class="pic" src="@/static/image/kk3.png" />
+                 <text class=" c2 c23">20</text>
+                </div>
+               <text class=" c9">虫情监测</text>
+            </div>
+            <div class="c1">
+                <div class="c2">
+                <image mode="widthFix" class="pic" src="@/static/image/kk4.png" />
+                 <text class=" c2 c24">20</text>
+                </div>
+                <text class=" c9">墒情监测</text>
+            </div>
+        </div>
+    </div> 
+</template>
+<style scoped lang="scss">
+.handlewrap{
+   
+    justify-content: flex-end;
+    padding-bottom:40rpx;
+}
+.c9{
+    font-size:24rpx;
+    color:#313233;
+    padding-left:16rpx;
+}
+    .handle{
+         width:640rpx;
+         height:108rpx;
+         left:56rpx;
+         background: rgba(255, 255, 255, 0.75);
+         box-shadow: 0px 4px 8px 1px rgba(0, 0, 0, 0.25);
+         border-radius: 16px 16px 16px 16px;
+          flex-direction: row;
+         .c1{
+             flex:1;
+             width:300rpx;
+              justify-content: center;
+            align-items: center;
+         }
+         .c2{
+             flex-direction: row;
+             font-size:40rpx;
+             font-weight:bold;
+             margin-left:10rpx
+         }
+         .c21{
+             color:#08CCA5;
+         }
+          .c22{
+             color:#3199F5;
+         }
+          .c23{
+             color:#F56262;
+         }
+          .c24{
+             color:#FFB900;
+         }
+        .pic{
+            width:48rpx;
+        }
+    }
+</style>
