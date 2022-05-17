@@ -4,182 +4,189 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "溯源首页",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/my/index",
 			"style": {
 				"navigationBarTitleText": "我的",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/farming/index",
 			"style": {
 				"navigationBarTitleText": "农事管理",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/news/index",
 			"style": {
 				"navigationBarTitleText": "消息通知",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/four2/site/index",
 			"style": {
 				"navigationBarTitleText": "监测站详情",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/four2/detail/index",
 			"style": {
 				"navigationBarTitleText": "环境监测详情",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/expert/knowledge/index",
 			"style": {
 				"navigationBarTitleText": "农业知识库",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/expert/knowledgeDetail/index",
 			"style": {
 				"navigationBarTitleText": "农业知识库",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/wisdom/index",
 			"style": {
 				"navigationBarTitleText": "智能控制",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/wisdom/addWisdom/index",
 			"style": {
 				"navigationBarTitleText": "新建水肥任务",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/manger/index",
 			"style": {
 				"navigationBarTitleText": "茶园管理",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/wisdom/history/index",
 			"style": {
 				"navigationBarTitleText": "历史记录",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/wisdom/param/index",
 			"style": {
 				"navigationBarTitleText": "告警参数设置",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/four2/camera/index",
 			"style": {
 				"navigationBarTitleText": "监控查看",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/four2/index",
 			"style": {
 				"navigationBarTitleText": "农情检测",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/farming/edit",
 			"style": {
 				"navigationBarTitleText": "记录/编辑农事",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/manger/detail/index",
 			"style": {
 				"navigationBarTitleText": "茶园详情",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/compare/index",
 			"style": {
 				"navigationBarTitleText": "投入产出",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/price/index",
 			"style": {
 				"navigationBarTitleText": "价格动态",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/my/manger/index",
 			"style": {
 				"navigationBarTitleText": "人员管理",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/expert/index",
 			"style": {
 				"navigationBarTitleText": "专家问诊",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/expert/answer/index",
 			"style": {
 				"navigationBarTitleText": "专家回复",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/expert/ask/index",
 			"style": {
 				"navigationBarTitleText": "拍照问诊",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/my/feedback/index",
 			"style": {
 				"navigationBarTitleText": "问题反馈",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/trace/trace",
 			"style": {
 				"navigationBarTitleText": "溯源产品",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/setMap/index",
 			"style": {
 				"navigationBarTitleText": "设备地图",
-				"navigationStyle": "custom", //代表自定义头部
+				"navigationStyle": "custom", 
 				"app-plus":{
 					"subNVues": [{
 						"id": "comment",
@@ -204,21 +211,21 @@
 			"path": "pages/addTrace/addTrace",
 			"style": {
 				"navigationBarTitleText": "添加溯源商品档案",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/set/index",
 			"style": {
 				"navigationBarTitleText": "设备管理",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		},
 		{
 			"path": "pages/goods/goodsList/goodsList",
 			"style": {
 				"navigationBarTitleText": "商品批次列表",
-				"navigationStyle": "custom" //代表自定义头部
+				"navigationStyle": "custom" 
 			}
 		}
 	],
