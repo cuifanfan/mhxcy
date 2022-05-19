@@ -63,8 +63,9 @@
           <!-- <image
             mode="widthFix"
             class="fullw"
-            src="@/static/image/false11.png" -->
+            src="@/static/image/false11.png" 
           />
+          -->
         </div>
       
     </div>

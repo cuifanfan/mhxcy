@@ -32,47 +32,15 @@
             <div class="input2">
               <div class="disablewrap disablewrap3">
                 <u--input
-                  v-model="typeValue"
+                  v-model="date"
                   disabled
                   disabledColor="#fafafa"
-                  placeholder="2022"
+                  :placeholder="date"
                   border="none"
                 ></u--input>
                 <u-icon
                   slot="right"
-                  @click="showType = true"
-                  color="#C4C7CC"
-                  size="20"
-                  name="arrow-down"
-                ></u-icon>
-              </div>
-              <div class="disablewrap disablewrap2 disablewrap3">
-                <u--input
-                  v-model="typeValue"
-                  disabled
-                  disabledColor="#fafafa"
-                  placeholder="02"
-                  border="none"
-                ></u--input>
-                <u-icon
-                  slot="right"
-                  @click="showType = true"
-                  color="#C4C7CC"
-                  size="20"
-                  name="arrow-down"
-                ></u-icon>
-              </div>
-              <div class="disablewrap disablewrap3">
-                <u--input
-                  v-model="typeValue"
-                  disabled
-                  disabledColor="#fafafa"
-                  placeholder="22"
-                  border="none"
-                ></u--input>
-                <u-icon
-                  slot="right"
-                  @click="showType = true"
+                  @click="show = true"
                   color="#C4C7CC"
                   size="20"
                   name="arrow-down"
@@ -115,25 +83,45 @@
             <div class="name">添加照片:(最多三张)</div>
             <div class="editpic">
               <div class="picpic">
-                <image mode="widthFix"  class="handlepic" src="@/static/image/i1.png" alt="" />
+                <image
+                  mode="widthFix"
+                  class="handlepic"
+                  src="@/static/image/i1.png"
+                  alt=""
+                />
                 <div class="icon">
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
               <div class="picpic">
-                <image mode="widthFix" class="handlepic" src="@/static/image/i2.png" alt="" />
+                <image
+                  mode="widthFix"
+                  class="handlepic"
+                  src="@/static/image/i2.png"
+                  alt=""
+                />
                 <div class="icon">
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
               <div class="picpic">
-                <image mode="widthFix" class="handlepic" src="@/static/image/i3.png" alt="" />
+                <image
+                  mode="widthFix"
+                  class="handlepic"
+                  src="@/static/image/i3.png"
+                  alt=""
+                />
                 <div class="icon">
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
               <div class="handle">
-                <image mode="widthFix" class="iconpic" src="@/static/image/edit.png" alt="" />
+                <image
+                  mode="widthFix"
+                  class="iconpic"
+                  src="@/static/image/edit.png"
+                  @click="onGetImgClick"
+                />
               </div>
             </div>
           </div>
@@ -145,21 +133,23 @@
               <div class="disablewrap">
                 <u--input
                   v-model="typeValue"
-                 
-                
                   placeholder="请输入备注内容"
                   border="none"
                 ></u--input>
-               
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="btnsumit butsumbit">
-        确认提交
-      </div>
+      <div class="btnsumit butsumbit">确认提交</div>
     </div>
+    <u-calendar
+      :closeOnClickOverlay="true"
+      @close="show = false"
+      :show="show"
+      :mode="mode"
+      @confirm="confirm"
+    ></u-calendar>
     <u-action-sheet
       :show="showType"
       :actions="typeList"
@@ -173,12 +163,16 @@
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
+import {getNowDate} from '../../common/utils/utils'
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      mode: "single",
+      show:false,
+      date:'',
       showType: false,
       active: true,
       showType: false,
@@ -211,15 +205,56 @@ export default {
       typeValue: "",
     };
   },
+  onLoad(){
+    let now=getNowDate()
+    this.date=(now.split(' '))[0]
+  },
   methods: {
-    typeSelect() {},
+    confirm(e){
+      this.show=false
+      this.date=e[0]
+    },
+    onGetImgClick: function () {
+      uni.chooseImage({
+        sizeType: ["compressed"], //original 原图，compressed 压缩图，默认二者都有
+        sourceType: ["album", "camera"], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
+        success: (res) => {
+          this.imageList = res.tempFilePaths[0];
+          console.log("res", res);
+          console.log(this);
+          uni.uploadFile({
+            url: ``, //接口
+
+            filePath: res.tempFilePaths[0],
+            // formData: {
+            //   name: 'token',
+            //   token: window.uni.getStorageSync("accessToken")
+            // },
+            name: "multipartFile",
+            header: {
+              token: this.accessToken,
+            },
+            file: res.tempFiles[0],
+            success: (res) => {
+              this.objList = JSON.parse(res.data);
+              if (this.objList.code == 200) {
+                this.newtime = this.objList.time;
+                this.resData = this.objList.data;
+                console.log(this.objList, this.newtime, this.resData, "6666");
+                console.log(this);
+              }
+            },
+          });
+        },
+      });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 .content {
   margin: 32rpx;
-  .butsumbit{
+  .butsumbit {
     margin-top: 80rpx;
   }
   .editpic {

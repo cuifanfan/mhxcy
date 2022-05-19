@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
+    <header-diy  class="topbar" :type="2" :titleName="pageName+pageType[(urlType-1)]"></header-diy>
     <div class="top">
       <div class="t1">
         <image mode="widthFix" class="datepic" src="@/static/image/xh.png" />
@@ -37,71 +37,76 @@
           切换{{ !showType ? "图表" : "文字" }}
         </div>
       </div>
-      <div v-if="!showType" class="tabheader flexcenter">
-        <div class="c1" v-for="(item, index) in tabAll[urlType-1]" :key="index">
-          {{ item }}
+      <div v-if="!showType" class="tabflexnowrap">
+        <div class="tabheader flexcenter tabheader2">
+          <div
+            class="c1"
+            v-for="(item, index) in tabAll[urlType - 1]"
+            :key="index"
+          >
+            {{ item }}
+          </div>
+        </div>
+        <div class="tabnew">
+          <div class="tabcontent tabheader flexcenter">
+            <div class="c1">2121.11.02 13:12</div>
+            <div class="c1">27.5</div>
+            <div class="c1">55</div>
+            <div class="c1">4126.0</div>
+            <div class="c1">99.0</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+          </div>
+          <div class="tabcontent tabheader flexcenter">
+            <div class="c1">ccc2121.11.02 13:12</div>
+            <div class="c1">27.5</div>
+            <div class="c1">55</div>
+            <div class="c1">4126.0</div>
+            <div class="c1">99.0</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+          </div>
+          <div class="tabcontent tabheader flexcenter">
+            <div class="c1">2121.11.02 13:12</div>
+            <div class="c1">27.5</div>
+            <div class="c1">55</div>
+            <div class="c1">4126.0</div>
+            <div class="c1">99.0</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+            <div class="c1">东北</div>
+          </div>
+         
+          
         </div>
       </div>
-      <div v-else class="tabheader flexcenter">
-        <div
-          @click="activeChild = index"
-          :class="[activeChild == index ? 'c1addactive' : '', 'c1 c1add']"
-          v-for="(item, index) in tabAll[urlType]"
-          :key="index"
-        >
-          {{ item }}
+      <div v-if="showType" class="tabflexnowrap">
+        <div class="tabheader flexcenter tabheader2">
+          <div class="c1newwrap"  v-for="(item, index) in tabAll[urlType]"
+            :key="index">
+            <div
+            @click="activeChild = index"
+            :class="[activeChild == index ? 'c1addactive' : '', 'c1add']"
+           
+          >
+            {{ item }}
+            </div>
+          </div>
         </div>
       </div>
-      <div v-if="!showType" class="tabnew">
-        <div class="tabcontent tabheader flexcenter">
-          <div class="c1">2121.11.02 13:12</div>
-          <div class="c1">27.5</div>
-          <div class="c1">55</div>
-          <div class="c1">4126.0</div>
-          <div class="c1">99.0</div>
-          <div class="c1">东北</div>
-        </div>
-        <div class="tabcontent tabheader flexcenter">
-          <div class="c1">2121.11.02 13:12</div>
-          <div class="c1">27.5</div>
-          <div class="c1">55</div>
-          <div class="c1">4126.0</div>
-          <div class="c1">99.0</div>
-          <div class="c1">东北</div>
-        </div>
-        <div class="tabcontent tabheader flexcenter">
-          <div class="c1">2121.11.02 13:12</div>
-          <div class="c1">27.5</div>
-          <div class="c1">55</div>
-          <div class="c1">4126.0</div>
-          <div class="c1">99.0</div>
-          <div class="c1">东北</div>
-        </div>
-        <div class="tabcontent tabheader flexcenter">
-          <div class="c1">2121.11.02 13:12</div>
-          <div class="c1">27.5</div>
-          <div class="c1">55</div>
-          <div class="c1">4126.0</div>
-          <div class="c1">99.0</div>
-          <div class="c1">东北</div>
-        </div>
-        <div class="tabcontent tabheader flexcenter">
-          <div class="c1">2121.11.02 13:12</div>
-          <div class="c1">27.5</div>
-          <div class="c1">55</div>
-          <div class="c1">4126.0</div>
-          <div class="c1">99.0</div>
-          <div class="c1">东北</div>
-        </div>
-      </div>
-      <div v-else class="tabnew">
+      <div v-if="showType" class="tabnew">
         <div class="cirbox">
           <qiun-data-charts
             type="mix"
             canvasId="three_b"
             :resshow="false"
             :opts="{
-              legend: { show:false },
+              legend: { show: false },
               yAxis: {
                 disableGrid: true,
 
@@ -159,12 +164,12 @@ export default {
     headerDiy,
   },
   onLoad(option) {
-    this.urlType=option.type
+    this.urlType = option.type;
   },
   data() {
     return {
-      urlType:null,
-      unitSet:'单位(℃)',
+      urlType: null,
+      unitSet: "单位(℃)",
       chartDataTemperature: {
         categories: ["1.15", "2.15", "3.15", "4.15", "5.15", "6.15", "7.15"],
         series: [
@@ -189,14 +194,14 @@ export default {
       activeChild: 0,
       showType: true,
       value: "",
-      tabAll:[
+      tabAll: [
         [
-          '当日灌溉量',
-          '当日灌溉次数',
-          '单位流量',
-          '可溶性盐浓度',
-          '土壤酸碱度',
-          '液位传感器'
+          "当日灌溉量",
+          "当日灌溉次数",
+          "单位流量",
+          "可溶性盐浓度",
+          "土壤酸碱度",
+          "液位传感器",
         ],
         [
           "时间",
@@ -205,6 +210,9 @@ export default {
           "光照(Lux)",
           "降雨(mm)",
           "风向",
+          "其他一",
+          "其他二",
+          "其他三",
         ],
         [
           "土壤温度(-10cm)",
@@ -214,17 +222,12 @@ export default {
           "土壤温度(-30cm)",
           "土壤湿度(-30cm)",
         ],
-        [
-          "红蜘蛛",
-          "草地贪夜蛾",
-          "蝗虫",
-          "玉米蓟马",
-          "黏虫",
-        ]
+        ["红蜘蛛", "草地贪夜蛾", "蝗虫", "玉米蓟马", "黏虫"],
       ],
       showType: false,
       showType2: false,
-      pageName: "一号气象站",
+      pageName: "一号",
+      pageType:['水肥机','气象站','墒情仪','虫情仪'],
       numValue: "",
       typeList: [
         {
@@ -262,7 +265,34 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.wrap{
+.tabflexnowrap {
+  overflow: scroll;
+  .tabheader2{
+    .c1{
+      background: #fff;
+    }
+    .c1newwrap:nth-child(1){
+        padding-left: 32rpx;
+    }
+    .c1newwrap{
+      background: #fff;
+      display: flex;
+      flex-shrink: 0;
+      padding: 16rpx 0rpx;
+      .c1add{
+        padding: 8rpx 32rpx;
+      }
+    
+    }
+  }
+  .tabheader{
+    justify-content: left!important;
+  }
+  .c1{
+    flex-shrink: 0;
+  }
+}
+.wrap {
   padding-bottom: 200rpx;
 }
 .c1add {
@@ -343,12 +373,13 @@ export default {
 }
 
 .tabheader {
-  background: #fff;
   font-size: 24rpx;
   color: #626466;
-  padding: 20rpx;
   .c1 {
-    width: 26%;
+    width: 24%;
+    padding: 20rpx 0;
+    display: flex;
+    justify-content: center;
     text-align: center;
   }
 }

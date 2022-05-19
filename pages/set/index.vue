@@ -1150,9 +1150,9 @@ export default {
     };
   },
   methods: {
-    goDetail2() {
+    goDetail2(val) {
       uni.navigateTo({
-        url: "/pages/four2/detail/index",
+        url: "/pages/four2/detail/index?type="+val,
       });
     },
 

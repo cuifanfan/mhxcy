@@ -2,7 +2,16 @@
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
     <div class="picdiv flexcenter">
-      <image mode="widthFix" class="pic picab" src="@/static/image/xq.png" />
+      <map
+        name=""
+        class="map"
+        :latitude="latitude"
+        :longitude="longitude"
+        scale="16"
+        :markers="markers"
+        :polygons="polygons"
+      ></map>
+      <!-- <image mode="widthFix" class="pic picab" src="@/static/image/xq.png" /> -->
     </div>
     <div class="content">
       <div class="index1 index1clearbottom">
@@ -865,7 +874,7 @@
                         title: '',
                         max: fertilizer ? fertilizer.yAxis[0].max : 0,
                         min: fertilizer ? fertilizer.yAxis[0].min : 0,
-                       disabled:true
+                        disabled: true,
                       },
                     ],
                   },
@@ -925,7 +934,7 @@
                 :resshow="false"
                 :opts="{
                   legend: { position: 'top' },
-                  yAxis: {  
+                  yAxis: {
                     disableGrid: true,
                     data: [
                       {
@@ -1160,12 +1169,21 @@
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import {getCenter} from '../../../common/utils/utils'
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      longitude: '',
+			latitude: '',
+      markers: [],
+      polyline: [
+        
+      ],
+
+      polygons: [],
       fertilizer: {
         categories: ["1月11", "1月12", "1月11", "1月14", "1月15"],
         series: [
@@ -1195,7 +1213,7 @@ export default {
             ],
             type: "column",
             color: "#24ABFD",
-           
+
             textNoShow: true,
           },
           {
@@ -1224,7 +1242,7 @@ export default {
             ],
             type: "column",
             color: "#24ABFD",
-           
+
             textNoShow: true,
           },
           {
@@ -1233,7 +1251,7 @@ export default {
             type: "line",
             addPoint: true,
             color: "#17E6A1",
-            
+
             index: 1,
           },
           {
@@ -1241,7 +1259,7 @@ export default {
             data: [2, 1, 2, 3, 2],
             type: "line",
             color: "#3199F5",
-           
+
             index: 1,
           },
         ],
@@ -1499,7 +1517,7 @@ export default {
             type: "line",
             addPoint: true,
             color: "#29CC96",
-            textColor:'#17E6A1'
+            textColor: "#17E6A1",
           },
           {
             name: "去年",
@@ -1507,7 +1525,7 @@ export default {
             type: "line",
             addPoint: true,
             color: "#3199F5",
-            textColor:"#3199F5"
+            textColor: "#3199F5",
           },
         ],
         yAxis: [
@@ -1643,6 +1661,43 @@ export default {
       typeValue: "",
     };
   },
+  onLoad(){
+    this.polygons= [{
+			//多边形的坐标数组
+			points: [{
+						"longitude": 100.789761,
+						"latitude": 22.022137
+					}, {
+						"longitude": 100.789833,
+						"latitude": 22.022136
+					}, {
+						"longitude": 100.790838,
+						"latitude": 22.019582
+					}, {
+						"longitude": 100.794509,
+						"latitude": 22.020163
+					}, {
+						"longitude": 100.792928,
+						"latitude": 22.022182
+					}, {
+						"longitude": 100.789761,
+						"latitude": 22.022137
+					}],
+			fillColor: "#CEFFCE8F",//填充颜色
+			strokeColor: "#29CC96",//描边颜色
+			strokeWidth: 2,//描边宽度
+			zIndex: 0,//层级
+		}]
+    let center=getCenter(this.polygons[0]['points'])
+    this.mapCenter=center
+    this.longitude=center[0]
+    this.latitude=center[1]
+    this.markers[0]={
+          "longitude": center[0],
+					"latitude": center[1],
+          iconPath: "../../../static/image/ad1.png",
+    }
+  },
   methods: {
     typeSelect() {},
     goSet() {
@@ -1654,6 +1709,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.map {
+  height: 360rpx;
+  position: relative;
+  top: -32rpx;
+  width: 100vw;
+}
 .flextextadd {
   display: flex;
   justify-content: space-between;
