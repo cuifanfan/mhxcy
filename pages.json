@@ -1,5 +1,29 @@
 {
 	"pages": [ 
+		// {
+		// 	"path": "pages/component/header/header"
+		// },
+		// {
+		// 	"path": "pages/login/mask",
+		// 	"style": {
+		// 		"navigationBarTitleText": "封面",
+		// 		"navigationStyle": "custom"
+		// 	}
+		// },
+		// {
+		// 	"path": "pages/login/test",
+		// 	"style": {
+		// 		"navigationBarTitleText": "测试",
+		// 		"navigationStyle": "custom"
+		// 	}
+		// },
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
+			}
+		},
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -21,13 +45,13 @@
 				"navigationStyle": "custom" 
 			}
 		},
-		{
-			"path": "pages/login/login",
-			"style": {
-				"navigationBarTitleText": "登录",
-				"navigationStyle": "custom" 
-			}
-		},
+		// {
+		// 	"path": "pages/login/login",
+		// 	"style": {
+		// 		"navigationBarTitleText": "登录",
+		// 		"navigationStyle": "custom" 
+		// 	}
+		// },
 		{
 			"path": "pages/news/index",
 			"style": {
@@ -228,7 +252,7 @@
 				"navigationStyle": "custom" 
 			}
 		}
-	],
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
@@ -238,7 +262,7 @@
 	"tabBar": {
 		"color": "#626466",
 		"selectedColor": "#11A668",
-		"borderStyle": "#EBEBEB",
+		// "borderStyle": "#EBEBEB",
 		"backgroundColor": "#F8F8F8",
 		"list": [{
 				"pagePath": "pages/index/index",
@@ -263,6 +287,15 @@
 				"iconPath": "static/image/my.png",
 				"selectedIconPath": "static/image/mya.png",
 				"text": "我的"
+			}
+		]
+	},
+	"condition": {
+		"current": 0,
+		"list": [
+			{
+				"name": "登录",
+				"path": "pages/login/login"
 			}
 		]
 	}
