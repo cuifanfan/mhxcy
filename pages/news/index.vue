@@ -6,7 +6,7 @@
         推送消息
       </div>
       <div @click="active = !active" :class="[!active ? 'c1active' : '', 'c1']">
-        预警消息
+        告警消息
       </div>
     </div>
     <div class="content" v-if="active">
@@ -42,16 +42,16 @@
       <div class="panel flexcenter index1">
           <div class="p1">
               <span>12</span>
-              <div class="text">异常预警</div> 
+              <div class="text">异常告警</div> 
           </div>
            <div class="p1">
               <span>2</span>
-              <div class="text">离线预警</div>
+              <div class="text">离线告警</div>
               
           </div>
            <div class="p1">
               <span>1</span>
-               <div class="text">气象预警</div>
+               <div class="text">气象告警</div>
               
           </div>
       </div>
@@ -63,10 +63,10 @@
         >
           <div :class="['type'+item.type,'titlewrap']">
             <div class="title">
-              <span v-if="item.type==4" >异常预警</span> 
-              <span v-if="item.type==3">气象预警</span> 
-              <span v-if="item.type==2" >离线预警</span> 
-              <span v-if="item.type==1" >异常预警</span> 
+              <span v-if="item.type==4" >异常告警</span> 
+              <span v-if="item.type==3">气象告警</span> 
+              <span v-if="item.type==2" >离线告警</span> 
+              <span v-if="item.type==1" >异常告警</span> 
             </div>
             <div class="date">2022.02.10 10:00</div>
           </div>
@@ -193,10 +193,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-// <span v-if="index==0" style="color:#F56262">异常预警</span> 
-//               <span v-if="index==1" style="color:#3199F5">气象预警</span> 
-//               <span v-if="index==2" style="color:#626466">离线预警</span> 
-//               <span v-if="index>2" style="color:#939599">异常预警</span> 
+// <span v-if="index==0" style="color:#F56262">异常告警</span> 
+//               <span v-if="index==1" style="color:#3199F5">气象告警</span> 
+//               <span v-if="index==2" style="color:#626466">离线告警</span> 
+//               <span v-if="index>2" style="color:#939599">异常告警</span> 
 .newscontent{
     .type4{
         .title{

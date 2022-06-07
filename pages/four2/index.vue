@@ -2,14 +2,14 @@
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
     <div class="farmtab">
-      <div @click="active = 1" :class="[active == 1 ? 'c1active' : '', 'c1']">
+      <div @click="changeTab(1)" :class="[active == 1 ? 'c1active' : '', 'c1']">
         环境监测
       </div>
-      <div @click="active = 2" :class="[active == 2 ? 'c1active' : '', 'c1']">
-        长势检测
+      <div @click="changeTab(2)" :class="[active == 2 ? 'c1active' : '', 'c1']">
+        长势监测
       </div>
-      <div @click="active = 3" :class="[active == 3 ? 'c1active' : '', 'c1']">
-        视频检测
+      <div @click="changeTab(3)" :class="[active == 3 ? 'c1active' : '', 'c1']">
+        视频监测
       </div>
     </div>
     <div v-if="active == 1" class="content">
@@ -21,12 +21,16 @@
         <!-- <div @click="goFarm" class="title2">全部设备</div> -->
       </div>
       <div class="scrolldiv">
-        <div class="scrollchild">
+        <div
+          class="scrollchild"
+          v-for="(item, index) in weatherList"
+          :key="index"
+        >
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
                 <div class="d2 flexcenter">在线</div>
-                1号气象站
+                {{ item.name }}
               </div>
               <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
             </div>
@@ -38,7 +42,7 @@
                   class="set"
                   src="@/static/image/adress2.png"
                 />
-                (鄂托克前旗三段村)
+                {{ item.address ? item.address : "-" }}
               </div>
               <div class="d4 flexcenter">
                 <image
@@ -46,185 +50,24 @@
                   class="set"
                   src="@/static/image/time.png"
                 />
-                2022.02.10 16:25
+                {{ item.create_time }}
               </div>
             </div>
           </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3℃</div>
-                温度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3%</div>
-                湿度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon3.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">32444Lux</div>
-                光照
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon4.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">454645mm</div>
-                降雨
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon5.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">东偏南</div>
-                风向
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon6.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">12.2m/s</div>
-                风速
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号气象站
-              </div>
-              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
-          </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3℃</div>
-                温度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3%</div>
-                湿度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon3.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">32444Lux</div>
-                光照
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon4.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">454645mm</div>
-                降雨
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon5.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">东偏南</div>
-                风向
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon6.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">12.2m/s</div>
-                风速
+          <div class="index1 index90">
+            <div
+              class="index91"
+              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
+              v-for="(item, index) in item.arr"
+              :key="index"
+            >
+              <image mode="widthFix" class="pic92" :src="item.pic" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{ item.num }}</span
+                  >{{ item.unit }}
+                </div>
+                {{ item.name }}
               </div>
             </div>
           </div>
@@ -238,14 +81,14 @@
         <!-- <div @click="goFarm" class="title2">全部设备</div> -->
       </div>
       <div class="scrolldiv">
-        <div class="scrollchild">
+        <div class="scrollchild" v-for="(item, index) in soilList" :key="index">
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
                 <div class="d2 flexcenter">在线</div>
-                1号墒情仪
+                {{ item.id }}
               </div>
-              <div class="btnd flexcenter" @click="goDetail2(3)">查看详情</div>
+              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
             </div>
 
             <div class="d3">
@@ -263,185 +106,24 @@
                   class="set"
                   src="@/static/image/time.png"
                 />
-                2022.02.10 16:25
+                {{ item.createTime }}
               </div>
             </div>
           </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号墒情仪
-              </div>
-              <div class="btnd flexcenter" @click="goDetail2(3)">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
-          </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
+          <div class="index1 index90">
+            <div
+              class="index91"
+              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
+              v-for="(item, index) in item.arr"
+              :key="index"
+            >
+              <image mode="widthFix" class="pic92" :src="item.pic" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{ item.num }}</span
+                  >{{ item.unit }}
+                </div>
+                {{ item.name }}
               </div>
             </div>
           </div>
@@ -558,20 +240,28 @@
     <div v-if="active == 2 || active == 3" class="content">
       <div class="test1">
         <div class="test2" v-if="active == 2">当前共计3个长势监测站</div>
-        <div class="test2" v-else>当前共计3个视频监控摄像头</div>
+        <div class="test2" v-if="active == 3 && videoListGetFlag">
+          当前共计{{ videoList.length }}个视频监控摄像头
+        </div>
         <div class="test3 flexcenter">
           <u--input
-            placeholder="请输入站点名称"
+            v-if="active == 2"
+            placeholder="请输入监测站名称"
             border="surround"
-            v-model="value"
-            @change="change"
+            v-model="siteValue"
           ></u--input>
-          <div class="search">
+          <u--input
+            v-else
+            placeholder="请输入摄像头名称"
+            border="surround"
+            v-model="videoValue"
+          ></u--input>
+          <div class="search" @click="searchHandle">
             <u-icon color="#939599" size="25" name="search"></u-icon>
           </div>
         </div>
       </div>
-      <div class="test5">
+      <div class="test5" v-if="active == 2">
         <div
           class="test6"
           @click="goDetail"
@@ -594,17 +284,54 @@
           <div class="text">{{ index + 1 }}号长势监测站</div>
         </div>
       </div>
+      <div class="test5" v-if="active == 3">
+        <div
+          class="test6"
+          @click="goDetail(item)"
+          v-for="(item, index) in videoListShow"
+          :key="index"
+        >
+          <div>
+            <div class="imgwraps">
+              <image
+                mode="widthFix"
+                class="videopic"
+                src="@/static/image/videopic.png"
+              />
+              <image
+                mode="widthFix"
+                v-if="active == 3"
+                class="play"
+                src="@/static/image/play.png"
+              />
+            </div>
+            <div class="text">
+              <div>
+                {{ item.deviceName }}
+              </div>
+              {{ item.url == "" ? "离线" : "在线" }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      weatherList: [],
+      videoListShow: [],
+      videoValue: "",
+      siteValue: "",
+      videoListGetFlag: false,
+      videoList: [],
       chartData: {
         series: [
           {
@@ -638,7 +365,8 @@ export default {
       active: 1,
       showType: false,
       showType2: false,
-      pageName: "农情检测",
+      pageName: "农情监测",
+      soilList: [],
       numValue: "",
       typeList: [
         {
@@ -666,28 +394,271 @@ export default {
       typeValue: "",
     };
   },
+  onLoad() {
+    this.getEnvironment();
+  },
+  onShow() {
+    if (uni.getStorageSync("four2TabIndex")) {
+      this.index = uni.getStorageSync("four2TabIndex");
+    } else {
+      this.index = 1;
+    }
+  },
   methods: {
-    typeSelect() {},
-    goDetail2(type) {
-      uni.navigateTo({
-        url: "/pages/four2/detail/index?type="+type,
+    getEnvironment() {
+      request({
+        url: "/data/meteorologicalrecords/getCurrentWeather",
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        console.log("resdfdfdfdfd", res);
+        this.weatherList = res.data;
+        this.weatherList.forEach((item2, index) => {
+          let add = [];
+          add[0] = {
+            num: item2.windGrade!=null ? item2.windGrade : "-",
+            unit: "级",
+            name: "风力",
+            pic: require("@/static/image/new1.png"),
+          };
+          add[1] = {
+            num: item2.wind_speed!=null ? item2.wind_speed : "-",
+            unit: "m/s",
+            name: "风速",
+            pic: require("@/static/image/new2.png"),
+          };
+          add[2] = {
+            num: item2.wind_direct!=null ? item2.wind_direct : "-",
+            unit: "",
+            name: "风向",
+            pic: require("@/static/image/new3.png"),
+          };
+          add[3] = {
+            num: item2.soilTem!=null ? item2.soilTem : "-",
+            unit: "℃",
+            name: "空气温度",
+            pic: require("@/static/image/new4.png"),
+          };
+          add[4] = {
+            num: item2.soilHum!=null ? item2.soilHum : "-",
+            unit: "%RH",
+            name: "空气湿度",
+            pic: require("@/static/image/new5.png"),
+          };
+          add[5] = {
+            num: item2.pm10!=null ? item2.pm10 : "-",
+            unit: "ug/m3",
+            name: "Pm10",
+            pic: require("@/static/image/new6.png"),
+          };
+          add[6] = {
+            num: item2.kpa!=null ? item2.kpa : "-",
+            unit: "kpa",
+            name: "大气压",
+            pic: require("@/static/image/new7.png"),
+          };
+          add[7] = {
+            num: item2.lux!=null ? item2.lux : "-",
+            unit: "lux",
+            name: "光照",
+            pic: require("@/static/image/new8.png"),
+          };
+          this.$set(item2, "arr", add);
+        });
+
+        return;
+        res.data.forEach((item, index) => {
+          let addArr = [];
+          let addArr2 = [];
+          addArr[0] = {
+            num: item.data[0]["alarmMsg"],
+            unit: "级",
+            name: "风力",
+            pic: require("@/static/image/new1.png"),
+          };
+          addArr[1] = {
+            num: item.data[1]["alarmMsg"],
+            unit: "m/s",
+            name: "风速",
+            pic: require("@/static/image/new2.png"),
+          };
+          addArr[2] = {
+            num: item.data[2]["alarmMsg"],
+            unit: "",
+            name: "风向",
+            pic: require("@/static/image/new3.png"),
+          };
+          addArr[3] = {
+            num: item.data[7]["alarmMsg"],
+            unit: "℃",
+            name: "空气温度",
+            pic: require("@/static/image/new4.png"),
+          };
+          addArr[4] = {
+            num: item.data[8]["alarmMsg"],
+            unit: "%RH",
+            name: "空气湿度",
+            pic: require("@/static/image/new5.png"),
+          };
+          addArr[5] = {
+            num: item.data[9]["alarmMsg"],
+            unit: "ug/m3",
+            name: "Pm10",
+            pic: require("@/static/image/new6.png"),
+          };
+          addArr[6] = {
+            num: item.data[11]["alarmMsg"],
+            unit: "kpa",
+            name: "大气压",
+            pic: require("@/static/image/new7.png"),
+          };
+          addArr[7] = {
+            num: item.data[12]["alarmMsg"],
+            unit: "lux",
+            name: "光照",
+            pic: require("@/static/image/new8.png"),
+          };
+          //墒情
+          addArr2[0] = {
+            num: item.data[3]["alarmMsg"],
+            unit: "℃",
+            name: "土壤温度",
+            pic: require("@/static/image/f3.png"),
+          };
+          addArr2[1] = {
+            num: item.data[4]["alarmMsg"],
+            unit: "%RH",
+            name: "土壤湿度",
+            pic: require("@/static/image/addicon2.png"),
+          };
+          addArr2[2] = {
+            num: item.data[5]["alarmMsg"],
+            unit: "",
+            name: "土壤PH值",
+            pic: require("@/static/image/s8.png"),
+          };
+          addArr2[3] = {
+            num: item.data[6]["alarmMsg"],
+            unit: "",
+            name: "土壤EC值",
+            pic: require("@/static/image/s7.png"),
+          };
+
+          this.$set(this.weatherList, index, {
+            createTime: item.datetime,
+            arr: addArr,
+            id: item.id,
+          });
+          this.$set(this.soilList, index, {
+            createTime: item.datetime,
+            arr: addArr2,
+            id: item.id,
+          });
+        });
+        console.log(this.weatherList);
+        //this.$forceUpdate();
       });
     },
-    goDetail() {
+    searchHandle() {
+      if (this.active == 3) {
+        let arr = this.videoList.filter((item) => {
+          return item.deviceName.indexOf(this.videoValue) > -1;
+        });
+        this.videoListShow = arr;
+      }
+    },
+    onBackPress(e) {
+      uni.setStorageSync("four2TabIndex", "");
+    },
+    typeSelect() {},
+    changeTab(index) {
+      this.active = index;
+      uni.setStorageSync("four2TabIndex", index);
+      if (!this.videoListGetFlag && index == 3) {
+        this.askVideo();
+      }
+    },
+    askVideo() {
+      request({
+        url: "/data-thirdpart/fluorite/getVideoList",
+        method: "get",
+        isAuth: false,
+        data: {},
+      })
+        .then((res) => {
+          console.log("res", res);
+          this.videoList = JSON.parse(JSON.stringify(res.data));
+          this.videoListShow = res.data;
+          this.videoListGetFlag = true;
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    },
+    goDetail2(type) {
+      uni.navigateTo({
+        url: "/pages/four2/detail/index?type=" + type,
+      });
+    },
+    goDetail(item) {
       if (this.active == 2) {
         uni.navigateTo({
           url: "/pages/four2/site/index",
         });
       } else {
-        uni.navigateTo({
-          url: "/pages/four2/camera/index",
-        });
+        console.log(item);
+        if (item.url) {
+          uni.navigateTo({
+            url:
+              "/pages/four2/camera/index?videourl=" +
+              item.url +
+              "&name=" +
+              item.deviceName +
+              "&token=" +
+              item.accessToken,
+          });
+        } else {
+          uni.showToast({
+            title: "当前设备离线",
+            icon: "none",
+            duration: 1200,
+          });
+        }
       }
     },
   },
 };
 </script>
 <style lang="scss" scoped>
+.index1 {
+  background: #ffffff;
+  padding: 20rpx 32rpx;
+  border-radius: 16rpx 16rpx 16rpx 16rpx;
+}
+.index90 {
+  background: #fafafa !important;
+  display: flex;
+  flex-wrap: wrap;
+  .index91 {
+    width: 50%;
+    display: flex;
+    margin-bottom: 20rpx;
+    .index92 {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 24rpx;
+      margin-left: 20rpx;
+      color: #939599;
+      span {
+        font-weight: bold;
+        color: #000;
+        font-size: 32rpx !important;
+      }
+    }
+  }
+}
 .detailwrap {
   font-size: 24rpx;
   color: #626466;
@@ -712,6 +683,7 @@ export default {
     font-weight: normal !important;
     font-size: 24rpx;
     border-radius: 8rpx;
+    margin-right: 10rpx;
   }
   .d2warning {
     background: rgba(245, 98, 98, 0.16) !important;
@@ -807,9 +779,11 @@ export default {
       width: 100%;
     }
     .text {
-      padding: 15rpx;
+      padding: 15rpx 30rpx;
       font-size: 28rpx;
       color: #626466;
+      display: flex;
+      justify-content: space-between;
     }
   }
   .test1 {

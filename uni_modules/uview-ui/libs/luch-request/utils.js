@@ -94,7 +94,7 @@ export function isBoolean(val) {
 
 /**
  * 是否为真正的对象{} new Object
- * @param {any} obj - 检测的对象
+ * @param {any} obj - 监测的对象
  * @returns {boolean}
  */
 export function isPlainObject(obj) {

@@ -1,8 +1,16 @@
 <template>
   <div class="wrap">
-    <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
-    <div class="picdiv flexcenter">
-      <map
+    <header-diy
+      id="headerdiy"
+      class="topbar"
+      :type="2"
+      :titleName="pageName"
+    ></header-diy>
+    <!-- <web-view
+        src="http://121.36.247.77/tdt.html"
+        @message="handleMessage"
+      ></web-view> -->
+    <!-- <map
         name=""
         class="map"
         :latitude="latitude"
@@ -10,42 +18,60 @@
         scale="16"
         :markers="markers"
         :polygons="polygons"
-      ></map>
-      <!-- <image mode="widthFix" class="pic picab" src="@/static/image/xq.png" /> -->
-    </div>
+      ></map> -->
+    <!-- <image mode="widthFix" class="pic picab" src="@/static/image/xq.png" /> -->
     <div class="content">
       <div class="index1 index1clearbottom">
-        <div class="header">
+        <div class="header header3">
           <div class="header2">茶园信息</div>
+          <image
+            @click="goMap"
+            mode="widthFix"
+            class="set"
+            src="@/static/image/map.png"
+          />
         </div>
-        <div class="info2">
+        <div class="info2" v-if="infoGet">
           <div class="info3 info7">
-            <div class="info4">茶园名称：<span>1号茶园</span></div>
-            <div class="info4">茶园面积：<span>181.23亩</span></div>
+            <div class="info4">茶园名称：<span>{{infoGet.name}}</span></div>
+            <div class="info4">茶园面积：<span>{{infoGet.area}}</span></div>
           </div>
-          <div class="info3">种植品种：<span>台地茶/古树茶</span></div>
+          <div class="info3">种植品种：<span>{{infoGet.species}}</span></div>
           <div class="info3">
-            茶园面积：<span>云南省西双版纳傣族自治州勐海县XX镇</span>
+            茶园地址：<span>{{infoGet.address}}</span>
           </div>
         </div>
         <div class="header">
           <div class="header2">视频监控</div>
         </div>
         <div class="test5">
-          <div class="test6">
-            <div class="imgwraps">
-              <image
-                mode="widthFix"
-                class="videopic"
-                src="@/static/image/videopic.png"
-              />
-              <image
-                mode="widthFix"
-                class="play"
-                src="@/static/image/play.png"
-              />
+          <div
+            class="test6"
+            @click="goDetail(item)"
+            v-for="(item, index) in videoListShow"
+            :key="index"
+          >
+            <div>
+              <div class="imgwraps">
+                <image
+                  mode="widthFix"
+                  class="videopic"
+                  src="@/static/image/videopic.png"
+                />
+                <image
+                  mode="widthFix"
+                  v-if="active == 3"
+                  class="play"
+                  src="@/static/image/play.png"
+                />
+              </div>
+              <div class="text textflex">
+                <div>
+                  {{ item.deviceName }}
+                </div>
+                {{ item.url == "" ? "离线" : "在线" }}
+              </div>
             </div>
-            <div class="text">1号长势监测站</div>
           </div>
         </div>
         <div class="header header3">
@@ -77,7 +103,7 @@
         <div>
           <div class="tabchange">
             <div
-              @click="activeTab = index"
+              @click="changeTabHandle(index)"
               :class="[activeTab == index ? 'activec' : '', 'c1']"
               v-for="(item, index) in tab"
               :key="index"
@@ -90,12 +116,15 @@
             <div class="header header7">
               <div class="header2">15天天气预报</div>
             </div>
-            <image mode="widthFix" class="pic" src="@/static/image/tqyb.png" />
+            <div class="weatherdiv">
+              <weather ref="weather" :weatherData="weatherData" />
+            </div>
+            <!-- <image mode="widthFix" class="pic" src="@/static/image/tqyb.png" /> -->
             <div class="header header7">
               <div class="header2">气象站信息</div>
               <div class="cj">
                 <span> 采集时间: </span>
-                <span> 07.20 11:08:32 </span>
+                <span> {{ weatherCreateTime }} </span>
               </div>
             </div>
             <div class="index1 index90">
@@ -207,8 +236,8 @@
             </div>
             <div class="test1">
               <div class="test5">
-                <div class="test6" @click="goDetail">
-                  <div class="imgwraps">
+                <div class="test6">
+                  <div class="imgwraps" @click="goDetailGrowth">
                     <image
                       mode="widthFix"
                       class="videopic"
@@ -394,117 +423,7 @@
           </div>
           <div class="changechild" v-if="activeTab == 3">
             <div class="header header3">
-              <div class="header2">水肥灌溉</div>
-            </div>
-            <div class="detailwrap">
-              <div class="d1wrap">
-                <div class="d1 flexcenter">
-                  <div class="d2 flexcenter">在线</div>
-                  1号水肥机
-                </div>
-                <div class="btnd flexcenter">查看详情</div>
-              </div>
-
-              <div class="d3">
-                <div class="d4" flexcenter>
-                  <image
-                    mode="widthFix"
-                    class="set"
-                    src="@/static/image/adress2.png"
-                  />
-                  (鄂托克前旗三段村)
-                </div>
-                <div class="d4 flexcenter">
-                  <image
-                    mode="widthFix"
-                    class="set"
-                    src="@/static/image/time.png"
-                  />
-                  2022.02.10 16:25
-                </div>
-              </div>
-            </div>
-            <div class="oftenpanle">
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/k1.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold"><span class="bigfont">30</span>m3</div>
-                  当日灌溉量
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/k2.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold"><span class="bigfont">1</span>次</div>
-                  当日灌溉次数
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/k3.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">
-                    <span class="bigfont">3</span>m3/s
-                  </div>
-                  单位流量
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/k4.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">
-                    <span class="bigfont">0.25</span>ms/cm
-                  </div>
-                  可溶性盐浓度
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/k5.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold"><span class="bigfont">7.9</span></div>
-                  土壤酸碱度
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/k6.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold"><span class="bigfont">1.5</span>M</div>
-                  液位传感器
-                </div>
-              </div>
-            </div>
-
-            <div class="header header3">
-              <div class="header2">气象检测</div>
+              <div class="header2">气象监测</div>
             </div>
             <div class="detailwrap">
               <div class="d1wrap">
@@ -609,7 +528,7 @@
               </div>
             </div>
 
-            <div class="header header3">
+            <div class="header header3 header3Top">
               <div class="header2">墒情监测</div>
             </div>
             <div class="detailwrap">
@@ -715,7 +634,7 @@
               </div>
             </div>
 
-            <div class="header header3">
+            <div class="header header3 header3Top">
               <div class="header2">虫情监测</div>
               <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
             </div>
@@ -1169,19 +1088,27 @@
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
-import {getCenter} from '../../../common/utils/utils'
+import weather from "../../component/weather";
+import { getCenter, weekDay } from "../../../common/utils/utils";
+import request from "../../../common/utils/request";
+import moment from "moment";
+import { weatherIdToName, wind } from "../../../common/utils/weather";
 export default {
   components: {
     headerDiy,
+    weather,
   },
   data() {
     return {
-      longitude: '',
-			latitude: '',
+      infoGet:null,
+      videoListShow: [],
+      weatherCreateTime: "",
+      moment,
+      weatherData: [],
+      longitude: "",
+      latitude: "",
       markers: [],
-      polyline: [
-        
-      ],
+      polyline: [],
 
       polygons: [],
       fertilizer: {
@@ -1595,62 +1522,7 @@ export default {
           pic: require("@/static/image/s8.png"),
         },
       ],
-      list2: [
-        {
-          num: 0.0,
-          unit: "mm",
-          name: "雨量",
-          pic: require("@/static/image/f1.png"),
-        },
-        {
-          num: 14.9,
-          unit: "%",
-          name: "雨量累计",
-          pic: require("@/static/image/f2.png"),
-        },
-        {
-          num: "27.4",
-          unit: "℃",
-          name: "大气温度",
-          pic: require("@/static/image/f3.png"),
-        },
-        {
-          num: 897.2,
-          unit: "Pa",
-          name: "气压",
-          pic: require("@/static/image/f4.png"),
-        },
-        {
-          num: 23,
-          unit: "mm",
-          name: "TQB总辐射",
-          pic: require("@/static/image/f5.png"),
-        },
-        {
-          num: 23,
-          unit: "%",
-          name: "光照",
-          pic: require("@/static/image/f6.png"),
-        },
-        {
-          num: 0.35,
-          unit: "m/s",
-          name: "风速",
-          pic: require("@/static/image/f7.png"),
-        },
-        {
-          num: 6.5,
-          unit: "PPM",
-          name: "二氧化碳",
-          pic: require("@/static/image/f8.png"),
-        },
-        {
-          num: 234.2,
-          unit: "W/㎡",
-          name: "光合",
-          pic: require("@/static/image/f9.png"),
-        },
-      ],
+      list2: [],
       activeone: 4,
       active: false,
       showType: false,
@@ -1661,54 +1533,190 @@ export default {
       typeValue: "",
     };
   },
-  onLoad(){
-    this.polygons= [{
-			//多边形的坐标数组
-			points: [{
-						"longitude": 100.789761,
-						"latitude": 22.022137
-					}, {
-						"longitude": 100.789833,
-						"latitude": 22.022136
-					}, {
-						"longitude": 100.790838,
-						"latitude": 22.019582
-					}, {
-						"longitude": 100.794509,
-						"latitude": 22.020163
-					}, {
-						"longitude": 100.792928,
-						"latitude": 22.022182
-					}, {
-						"longitude": 100.789761,
-						"latitude": 22.022137
-					}],
-			fillColor: "#CEFFCE8F",//填充颜色
-			strokeColor: "#29CC96",//描边颜色
-			strokeWidth: 2,//描边宽度
-			zIndex: 0,//层级
-		}]
-    let center=getCenter(this.polygons[0]['points'])
-    this.mapCenter=center
-    this.longitude=center[0]
-    this.latitude=center[1]
-    this.markers[0]={
-          "longitude": center[0],
-					"latitude": center[1],
-          iconPath: "../../../static/image/ad1.png",
-    }
+  onLoad() {
+    this.askWeather();
+    this.askWeatherStation();
+    this.askVideo();
+    this.askInfo()
   },
   methods: {
     typeSelect() {},
+    handleMessage() {},
+    askInfo(){
+       request({
+        url: "/data/teagarden/1",
+        method: "get",
+        isAuth: false,
+        data: {},
+      })
+        .then((res) => {
+          console.log("restttttt", res);
+          this.infoGet=res.data
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    },
+    goDetail(item) {
+        if (item.url) {
+          uni.navigateTo({
+            url:
+              "/pages/four2/camera/index?videourl=" +
+              item.url +
+              "&name=" +
+              item.deviceName+'&token='+item.accessToken,
+          });
+        }else{
+          uni.showToast({
+            title: '当前设备离线',
+            icon:'none',
+            duration:1200
+			    });
+        }
+    },
+    goDetailGrowth() {
+      uni.navigateTo({
+        url: "/pages/four2/site/index",
+      });
+    },
+    askVideo() {
+      request({
+        url: "/data-thirdpart/fluorite/getVideoList",
+        method: "get",
+        isAuth: false,
+        data: {},
+      })
+        .then((res) => {
+          console.log("res", res);
+          this.videoListShow = res.data;
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    },
+    askWeather() {
+      if(uni.getStorageSync('MJweather')){
+         this.weatherData=uni.getStorageSync('MJweather')
+         this.$nextTick(() => {
+          this.$refs.weather.init();
+        });
+      }
+    },
+    askWeatherStation() {
+      request({
+        url: "/data/weatherdev/getFrontJsonList/40204067",
+        method: "get",
+        isAuth: false,
+        data: {},
+      })
+        .then((res) => {
+          console.log("xxx", res);
+          let dataGet = res.data[0]["data"];
+          console.log("xxxsss", dataGet);
+          this.list2[0] = {
+            num: dataGet[0]["alarmMsg"],
+            unit: "级",
+            name: "风力",
+            pic: require("@/static/image/new1.png"),
+          };
+          this.list2[1] = {
+            num: dataGet[1]["alarmMsg"],
+            unit: "m/s",
+            name: "风速",
+            pic: require("@/static/image/new2.png"),
+          };
+          this.list2[2] = {
+            num: dataGet[2]["alarmMsg"],
+            unit: "",
+            name: "风向",
+            pic: require("@/static/image/new3.png"),
+          };
+          this.list2[3] = {
+            num: dataGet[7]["alarmMsg"],
+            unit: "℃",
+            name: "空气温度",
+            pic: require("@/static/image/new4.png"),
+          };
+          this.list2[4] = {
+            num: dataGet[8]["alarmMsg"],
+            unit: "%RH",
+            name: "空气湿度",
+            pic: require("@/static/image/new5.png"),
+          };
+          this.list2[5] = {
+            num: dataGet[9]["alarmMsg"],
+            unit: "ug/m3",
+            name: "Pm10",
+            pic: require("@/static/image/new6.png"),
+          };
+          // this.list2[6]={
+          //   num: dataGet[5][1]['alarmMsg'],
+          //   unit: "ug/m3",
+          //   name: "Pm2.5",
+          //   pic: require("@/static/image/new.png"),
+          // }
+
+          this.list2[6] = {
+            num: dataGet[11]["alarmMsg"],
+            unit: "kpa",
+            name: "大气压",
+            pic: require("@/static/image/new7.png"),
+          };
+          this.list2[7] = {
+            num: dataGet[12]["alarmMsg"],
+            unit: "lux",
+            name: "光照",
+            pic: require("@/static/image/new8.png"),
+          };
+          this.weatherCreateTime = res.data[0]["datetime"];
+          this.$forceUpdate();
+        })
+        .catch((err) => {});
+    },
+
     goSet() {
       uni.navigateTo({
         url: "/pages/wisdom/param/index",
       });
     },
+    goMap() {
+      let that=this
+      uni.navigateTo({
+        url: "/pages/map/index?log="+that.infoGet.longitude+'&lat='+that.infoGet.latitude,
+      });
+    },
+    changeTabHandle(index) {
+      this.activeTab = index;
+      if (index == 0) {
+        this.$nextTick(() => {
+          this.$refs.weather.init();
+        });
+      }
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
+.textflex{
+  display: flex;
+  justify-content: space-between;
+
+}
+.header3Top {
+  margin-top: 22rpx;
+}
+.mapicon {
+  width: 96rpx;
+}
+.weatherdiv {
+  overflow-x: scroll;
+  .mckou-weather-content {
+    width: 100% !important;
+  }
+  .body-item {
+    width: 54px !important;
+  }
+}
 .map {
   height: 360rpx;
   position: relative;
@@ -2029,7 +2037,6 @@ export default {
     .index92 {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       font-size: 24rpx;
       margin-left: 20rpx;
       color: #939599;
@@ -2037,6 +2044,7 @@ export default {
         font-weight: bold;
         color: #000;
         font-size: 32rpx !important;
+        margin-right: 4rpx;
       }
     }
   }

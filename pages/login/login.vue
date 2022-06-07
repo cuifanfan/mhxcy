@@ -19,6 +19,7 @@
 			v-for="(item, index) in list"
 			:class="currentIndex==index? 'activiate': ''"
 			@click="tabClick(index)"
+			:key="index"
 			>{{item.name}}</view>
 		</view>
 		<view class="tab-content">
@@ -30,20 +31,20 @@
 				</view>
 				<view class="loginItem" @click="changeHandler($refs,'loginItem1')" ref='loginItem1'>
 					<image class="userPic" src="../../static/image/login/pas.png" mode=""></image>
-					<input class="username" type="text" v-model="loginData.pwd" placeholder="请输入账号密码" placeholder-class="phfontsize"/>
+					<input class="username" type="password" v-model="loginData.pwd" placeholder="请输入账号密码" placeholder-class="phfontsize"/>
 					<image class="userPic" src="../../static/image/login/eye.png" mode=""></image>				
 				</view>
-				<view class="loginItem checkItem" @click="changeHandler($refs,'loginItem2')" ref='loginItem2'>
+				<!-- <view class="loginItem checkItem" @click="changeHandler($refs,'loginItem2')" ref='loginItem2'>
 					<image class="userPic" src="../../static/image/login/check.png" mode=""></image>
 					<input class="username" type="text" v-model="loginData.checkm" placeholder="请输入验证码" placeholder-class="phfontsize"/>
-				</view>
-				<button class="loginBtn" ref="loginBtn" :disabled="isFormReady(loginData)">
+				</view> -->
+				<button class="loginBtn" @click="goLogin" ref="loginBtn">
 					<span>登录</span>
 				</button>
 				<view class="pasLogic">
-					<label>
+					<!-- <label>
 						<checkbox class="cs" ref="checkRef" @click="loginCheckHandler"/><text class="remPas">记住密码</text>
-					</label>
+					</label> -->
 					<a href="http://" class="forgetPas">忘记密码</a>
 				</view>
 				<!-- 底部 -->
@@ -86,6 +87,7 @@
 <script>
 import headerDiy from "../component/header/header.vue";
 import request from '../../common/utils/request'
+import {encryption} from '../../common/utils/utils'
 export default {
   components: {
     headerDiy,
@@ -93,7 +95,7 @@ export default {
   data() {
     return {
         username:'admin',
-        password:'123456',
+        password:'JFat0Zdc',
         pageName: "登录",
 		currentIndex:0,
 		list:[
@@ -101,10 +103,10 @@ export default {
 			{name:"注册"}
 		],
 		loginData:{
-			name:'',
-			pwd:'',
-			checkm:'', // 验证码
-			checkb:false // 复选框
+			name:'admin',
+			pwd:'123456',
+			//checkm:'', // 验证码
+			//checkb:false // 复选框
 		},
 		registerData:{
 			name:'',
@@ -116,6 +118,42 @@ export default {
     };
   },
   methods:{
+	  goLogin(){
+		let that=this
+		let params={
+			data:{
+				username:that.loginData.name,
+				password:that.loginData.pwd
+			},
+			type:'',
+			key:'pigxpigxpigxpigx',
+			param:['password']
+		}
+		let get=encryption(params)
+		request({
+			url:'/auth/oauth/token?grant_type=password&scope=server',
+			method:'post',
+			isAuth:false,
+    		data:{
+				username:get.username,
+				password:get.password
+			},	
+		}).then(res=>{
+			console.log('xxx',res)
+			uni.switchTab({
+				url:'/pages/index/index'
+			})
+			uni.setStorageSync('token',res.access_token)
+			let info={
+				userId:res.user_id,
+				userName:res.username
+
+			}
+			uni.setStorageSync('userInfo',info)
+		}).catch(err=>{
+			console.log('err',err)
+		})
+	  },
 	  // 选项卡
 		tabClick(index){
 			if(this.currentIndex !== index){
@@ -123,11 +161,11 @@ export default {
 			}
 	  },
 		changeHandler(test, name){
-			console.log(test[name]);
-			test[name].$el.style.backgroundColor = "#F5FAF9"
-			test[name].$el.style.borderColor = "#09CD95"
-			test[name].$el.style.borderStyle = "solid"
-			test[name].$el.style.borderWidth = 2 + 'rpx'
+			// console.log(test[name]);
+			// test[name].$el.style.backgroundColor = "#F5FAF9"
+			// test[name].$el.style.borderColor = "#09CD95"
+			// test[name].$el.style.borderStyle = "solid"
+			// test[name].$el.style.borderWidth = 2 + 'rpx'
 		},
 		// 登录表单验证
 		loginCheckHandler(){
@@ -138,7 +176,9 @@ export default {
 			for(let i in formData){
 				if(!formData[i]) return true
 			}
-			this.$refs.loginBtn.$el.style.backgroundColor="#09CD95"
+			this.$nextTick(() => {
+				//this.$refs.loginBtn.$el.style.backgroundColor="#09CD95"
+			})
 			return false
 		},
 		
@@ -151,7 +191,7 @@ export default {
 			for(let i in formData){
 				if(!formData[i]) return true
 			}
-			this.$refs.registerBtn.$el.style.backgroundColor="#09CD95"
+			//this.$refs.registerBtn.$el.style.backgroundColor="#09CD95"
 			return false
 		},
   }
@@ -307,7 +347,9 @@ export default {
 	width: 414rpx;
 	margin-left: 32rpx;
 }
-
+.loginBtn{
+	background: #09CD95;
+}
 .loginBtn, .registerBtn{
 	width: 686rpx;
 	height: 88rpx;

@@ -7,10 +7,10 @@
        
         <div class="test3 flexcenter">
           <div class="inputdiy">
-              输入日期或点击按钮选择日期
+            {{dateInput}}
           </div>
           <div class="search">
-            <image mode="widthFix" class="datepic" src="@/static/image/date.png" />
+            <image @click="dateShow=true" mode="widthFix" class="datepic" src="@/static/image/date.png" />
           </div>
         </div>
       </div>
@@ -21,7 +21,13 @@
         </div>
       </div>
     </div>
-   
+    <u-calendar
+      :closeOnClickOverlay="true"
+      @close="dateShow = false"
+      :show="dateShow"
+      :mode="mode"
+      @confirm="confirm"
+    ></u-calendar>
   </div>
 </template>
 <script>
@@ -32,11 +38,14 @@ export default {
   },
   data() {
     return {
+      dateInput:'请选择日期',
+      mode: "single",
+      dateShow:false,
       value: "",
       
       showType: false,
       showType2: false,
-      pageName: "农情检测",
+      pageName: "农情监测",
       numValue: "",
       typeList: [
         {
@@ -66,6 +75,11 @@ export default {
   },
   methods: {
     typeSelect() {},
+     confirm(e) {
+      this.dateShow = false;
+      this.dateInput = e[0];
+      console.log(e);
+    },
   },
 };
 </script>

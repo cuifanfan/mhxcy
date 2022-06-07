@@ -5,19 +5,19 @@
       <div class="wrapcommon form">
         <div class="edit">
           <div class="formchild">
-            <div class="name">选择地块:</div>
+            <div class="name">选择茶园:</div>
             <div class="input input2">
               <div class="disablewrap">
                 <u--input
-                  v-model="typeValue"
+                  v-model="teaName"
                   disabled
                   disabledColor="#fafafa"
-                  placeholder="请选择商品种类"
+                  placeholder="请选择茶园"
                   border="none"
                 ></u--input>
                 <u-icon
                   slot="right"
-                  @click="showType = true"
+                  @click="showTypeTea = true"
                   color="#C4C7CC"
                   size="20"
                   name="arrow-down"
@@ -55,10 +55,10 @@
             <div class="input input2">
               <div class="disablewrap">
                 <u--input
-                  v-model="typeValue"
+                  v-model="handleContent"
                   disabled
                   disabledColor="#fafafa"
-                  placeholder="水肥一体"
+                  placeholder="请选择操作种类"
                   border="none"
                 ></u--input>
                 <u-icon
@@ -71,6 +71,7 @@
               </div>
             </div>
             <div class="tipedit wrapcommon wrapcommonbg">
+              <div class="addone"></div>
               <div class="childedit">一胺：2.6kg</div>
               <div class="childedit">一胺：2.6kg</div>
               <div class="childedit">硫酸钾：2.4kg</div>
@@ -82,36 +83,13 @@
           <div class="formchild">
             <div class="name">添加照片:(最多三张)</div>
             <div class="editpic">
-              <div class="picpic">
-                <image
-                  mode="widthFix"
-                  class="handlepic"
-                  src="@/static/image/i1.png"
-                  alt=""
-                />
-                <div class="icon">
-                  <u-icon color="#fff" size="14" name="close"></u-icon>
-                </div>
-              </div>
-              <div class="picpic">
-                <image
-                  mode="widthFix"
-                  class="handlepic"
-                  src="@/static/image/i2.png"
-                  alt=""
-                />
-                <div class="icon">
-                  <u-icon color="#fff" size="14" name="close"></u-icon>
-                </div>
-              </div>
-              <div class="picpic">
-                <image
-                  mode="widthFix"
-                  class="handlepic"
-                  src="@/static/image/i3.png"
-                  alt=""
-                />
-                <div class="icon">
+              <div
+                class="picpic"
+                v-for="(item, index) in resultPic"
+                :key="index"
+              >
+                <image class="handlepic" :src="baseUrl + item" alt="" />
+                <div class="icon" @click="deleteOne(index)">
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
@@ -131,17 +109,17 @@
             <div class="name">备注:</div>
             <div class="input input2">
               <div class="disablewrap">
-                <u--input
-                  v-model="typeValue"
-                  placeholder="请输入备注内容"
+                <u--textarea
                   border="none"
-                ></u--input>
+                  v-model="remark"
+                  placeholder="请输入备注内容"
+                ></u--textarea>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="btnsumit butsumbit">确认提交</div>
+      <div @click="submieSure" class="btnsumit butsumbit">确认提交</div>
     </div>
     <u-calendar
       :closeOnClickOverlay="true"
@@ -153,26 +131,42 @@
     <u-action-sheet
       :show="showType"
       :actions="typeList"
-      title="请选择商品种类"
-      description="商品种类哦"
+      title="请选择操作种类"
       @close="showType = false"
       @select="typeSelect"
+    >
+    </u-action-sheet>
+    <u-action-sheet
+      :show="showTypeTea"
+      :actions="teaList"
+      title="请选择茶园"
+      @close="showTypeTea = false"
+      @select="typeSelectTea"
     >
     </u-action-sheet>
   </div>
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
-import {getNowDate} from '../../common/utils/utils'
+import { getNowDate } from "../../common/utils/utils";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      remark: "",
+      teaName: "",
+      teaId: "",
+      handleContent: "",
+      teaList: [],
+      showTypeTea: false,
+      resultPic: [],
+      baseUrl: "http://121.36.247.77:9999",
       mode: "single",
-      show:false,
-      date:'',
+      show: false,
+      date: "",
       showType: false,
       active: true,
       showType: false,
@@ -181,13 +175,25 @@ export default {
       numValue: "",
       typeList: [
         {
-          name: "种类1",
+          name: "除草",
         },
         {
-          name: "种类2",
+          name: "深耕",
         },
         {
-          name: "保密",
+          name: "病虫防治",
+        },
+        {
+          name: "施肥",
+        },
+        {
+          name: "灌溉",
+        },
+        {
+          name: "修枝",
+        },
+        {
+          name: "采摘",
         },
       ],
       typeList2: [
@@ -205,45 +211,89 @@ export default {
       typeValue: "",
     };
   },
-  onLoad(){
-    let now=getNowDate()
-    this.date=(now.split(' '))[0]
+  onLoad() {
+    let now = getNowDate();
+    this.date = now.split(" ")[0];
+    this.askTea();
   },
   methods: {
-    confirm(e){
-      this.show=false
-      this.date=e[0]
+    submieSure() {
+      // if (this.teaId == "") {
+      //   // uni.showToast({
+      //   //   title: '请选择茶园',
+      //   //   icon: "none",
+      //   //   duration: 850,
+      //   // });
+      //   return 
+      // }
+    },
+    askTea() {
+      let userInfo = uni.getStorageSync("userInfo");
+      if (!userInfo) {
+        return;
+      }
+      request({
+        url: "/data/teagarden/getGardenOptionsByUser?userId=" + userInfo.userId,
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        console.log("xxxx", res);
+        this.teaList = res.data;
+      });
+    },
+    typeSelect(val) {
+      console.log(val);
+      this.handleContent = val.name;
+    },
+    typeSelectTea(val) {
+      this.teaName = val.name;
+      this.teaId = val.id;
+    },
+    confirm(e) {
+      this.show = false;
+      this.date = e[0];
+    },
+    deleteOne(index) {
+      this.resultPic.splice(index, 1);
     },
     onGetImgClick: function () {
       uni.chooseImage({
         sizeType: ["compressed"], //original 原图，compressed 压缩图，默认二者都有
         sourceType: ["album", "camera"], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
         success: (res) => {
-          this.imageList = res.tempFilePaths[0];
+          //this.imageList = res.tempFilePaths[0];
           console.log("res", res);
           console.log(this);
-          uni.uploadFile({
-            url: ``, //接口
+          res.tempFiles.forEach((item, index) => {
+            uni.uploadFile({
+              url: `http://121.36.247.77:9999/admin/sys-file/upload`, //接口
 
-            filePath: res.tempFilePaths[0],
-            // formData: {
-            //   name: 'token',
-            //   token: window.uni.getStorageSync("accessToken")
-            // },
-            name: "multipartFile",
-            header: {
-              token: this.accessToken,
-            },
-            file: res.tempFiles[0],
-            success: (res) => {
-              this.objList = JSON.parse(res.data);
-              if (this.objList.code == 200) {
-                this.newtime = this.objList.time;
-                this.resData = this.objList.data;
-                console.log(this.objList, this.newtime, this.resData, "6666");
-                console.log(this);
-              }
-            },
+              //filePath: res.tempFilePaths[0],
+
+              // formData: {
+              //   name: 'token',
+              //   token: window.uni.getStorageSync("accessToken")
+              // },
+              name: "file",
+              header: {
+                Authorization: "Bearer " + uni.getStorageSync("token"),
+              },
+              file: item,
+              success: (res) => {
+                let dataget = JSON.parse(res.data);
+                console.log("上传！！", dataget);
+                this.resultPic.push(dataget.data.url);
+                console.log(this.resultPic);
+                // this.objList = JSON.parse(res.data);
+                // if (this.objList.code == 200) {
+                //   this.newtime = this.objList.time;
+                //   this.resData = this.objList.data;
+                //   console.log(this.objList, this.newtime, this.resData, "6666");
+                //   console.log(this);
+                // }
+              },
+            });
           });
         },
       });
@@ -252,6 +302,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.u-textarea {
+  background: #fafafa !important;
+}
 .content {
   margin: 32rpx;
   .butsumbit {
@@ -259,10 +312,11 @@ export default {
   }
   .editpic {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     .handlepic {
       width: 160rpx;
-      height: 120rpx;
+      height: 132rpx;
+      margin-right: 20rpx;
     }
     .iconpic {
       width: 48rpx;
@@ -271,8 +325,8 @@ export default {
       position: relative;
       .icon {
         position: absolute;
-        top: 10rpx;
-        right: 10rpx;
+        top: 0rpx;
+        right: 24rpx;
         background: #c4c4c4;
         border-radius: 100rpx;
         overflow: hidden;
@@ -287,6 +341,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 132rpx;
     }
   }
   .wrapcommonbg {

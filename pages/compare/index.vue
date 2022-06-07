@@ -96,7 +96,7 @@ export default {
       tablist: [
         {
           num: 10,
-          text: "水肥灌溉",
+          text: "摄像头",
         },
         {
           num: 4,

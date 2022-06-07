@@ -2,26 +2,32 @@
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
     <div class="content">
-      <div class="titleparam">环境参数预警值</div>
+      <div class="titleparam">环境参数告警值</div>
       <div class="param">
         <div class="list" v-for="(item, index) in paramList" :key="index">
           <div class="c1">
             {{ index + 1 }}.{{ item.name }}（{{ item.unit }}）
           </div>
           <div class="c2">
-            白天
+           
             <div class="c3">
-              <div class="c4">20.0</div>
+              <div class="c4"> 
+                <u--input
+                    type="number"
+                    placeholder="10"
+                    border="none"
+                    clearable
+                  ></u--input>
+              </div>
               <div class="c5">~</div>
-              <div class="c4">21.0</div>
-            </div>
-          </div>
-          <div class="c2">
-            夜间
-            <div class="c3">
-              <div class="c4">20.0</div>
-              <div class="c5">~</div>
-              <div class="c4">21.0</div>
+              <div class="c4">
+                <u--input
+                    type="number"
+                    placeholder="20"
+                    border="none"
+                    clearable
+                  ></u--input>
+              </div>
             </div>
           </div>
         </div>
@@ -232,6 +238,7 @@ export default {
   .titleparam {
     font-size: 28rpx;
     color: #626466;
+    margin-bottom: 34rpx;
   }
   .param {
     .c4 {
@@ -243,7 +250,7 @@ export default {
     }
     .list {
       background: #fff;
-      padding: 24rpx;
+      padding: 24rpx 24rpx 10rpx 24rpx;
       margin-bottom: 20rpx;
       border-radius: 16rpx;
       .c1 {

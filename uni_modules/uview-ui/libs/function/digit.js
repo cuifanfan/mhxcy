@@ -35,7 +35,7 @@ function float2Fixed(num) {
 }
 
 /**
- * 检测数字是否越界，如果越界给出提示
+ * 监测数字是否越界，如果越界给出提示
  * @private
  * @param {*number} num 输入数
  */

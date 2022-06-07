@@ -111,7 +111,7 @@
 				// 先断掉之前的观察
 				this.disconnectObserver('contentObserver')
 				const contentObserver = uni.createIntersectionObserver({
-					// 检测的区间范围
+					// 监测的区间范围
 					thresholds: [0.95, 0.98, 1]
 				})
 				// 到屏幕顶部的高度时触发

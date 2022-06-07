@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <header-diy  class="topbar" :type="2" :titleName="pageName+pageType[(urlType-1)]"></header-diy>
-    <div class="top">
+    <!-- <div class="top">
       <div class="t1">
         <image mode="widthFix" class="datepic" src="@/static/image/xh.png" />
         <div class="text text3">信号强度</div>
@@ -15,7 +15,7 @@
         <div class="t2">50<span>小时</span></div>
         <div class="text">工作强度</div>
       </div>
-    </div>
+    </div> -->
     <div class="content clearcontent">
       <div class="test1">
         <div class="test3 flexcenter">
@@ -227,7 +227,7 @@ export default {
       showType: false,
       showType2: false,
       pageName: "一号",
-      pageType:['水肥机','气象站','墒情仪','虫情仪'],
+      pageType:['','气象站','墒情仪','虫情仪'],
       numValue: "",
       typeList: [
         {
@@ -429,7 +429,6 @@ export default {
     }
   }
   .test1 {
-    margin-top: 20rpx;
     background: #fff;
     padding: 20rpx;
     color: #626466;

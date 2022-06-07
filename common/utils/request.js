@@ -1,4 +1,6 @@
-const BASE_URL='';
+import {btoa} from '../utils/utils'
+const BASE_URL='http://121.36.247.77:9999';
+//const BASE_URL='http://linzhikeji-gateway.com';
 
 //  公共的请求方法
 function request({
@@ -10,10 +12,27 @@ function request({
     // 默认显示Loading
     isShowLoading = true
 }) {
+    let tokenGet=uni.getStorageSync('token')
+    if(!tokenGet){
+        uni.navigateTo({
+            url: '/pages/login/login'
+        })
+    }
     return new Promise((resolve, reject) => {
+        let Authorization=''
+        if(url.indexOf('auth/oauth/token')>-1){
+            Authorization='Basic ' +  uni.arrayBufferToBase64(btoa('pig:pig'))   
+        }else{
+            Authorization='Bearer ' +  uni.getStorageSync('token')
+        }
         // 接口不需要传token,默认值为{}
-        let header = {}
-
+        let header = {
+            'content-type': 'application/x-www-form-urlencoded' ,
+            Authorization:Authorization ,
+            isToken: false,
+            'TENANT-ID': '1',
+           
+        }
         if (isAuth) {
             // 接口需要传token
             let token = uni.getStorageSync('token')
@@ -37,7 +56,6 @@ function request({
                 mask: true
             })
         }
-
         uni.request({
             url: BASE_URL + url,
             method,
@@ -51,7 +69,13 @@ function request({
                 if (isShowLoading) {
                     uni.hideLoading()
                 }
-                if (statusCode === 401) {
+                if (statusCode === 424||statusCode==428) {
+                    // let currentRoutes = getCurrentPages(); // 获取当前打开过的页面路由数组
+                    // let currentRoute = currentRoutes[currentRoutes.length - 1].route 
+                    // console.log(currentRoute)
+                    // if(currentRoute.indexOf('login/login')<=-1){
+
+                    // }
                     uni.clearStorageSync()
                     uni.showToast({
                         icon: 'none',

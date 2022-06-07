@@ -1,22 +1,12 @@
 {
 	"pages": [ 
-		// {
-		// 	"path": "pages/component/header/header"
-		// },
-		// {
-		// 	"path": "pages/login/mask",
-		// 	"style": {
-		// 		"navigationBarTitleText": "封面",
-		// 		"navigationStyle": "custom"
-		// 	}
-		// },
-		// {
-		// 	"path": "pages/login/test",
-		// 	"style": {
-		// 		"navigationBarTitleText": "测试",
-		// 		"navigationStyle": "custom"
-		// 	}
-		// },
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "溯源首页",
+				"navigationStyle": "custom" 
+			}
+		},
 		{
 			"path": "pages/login/login",
 			"style": {
@@ -25,12 +15,13 @@
 			}
 		},
 		{
-			"path": "pages/index/index",
+			"path": "pages/map/index",
 			"style": {
-				"navigationBarTitleText": "溯源首页",
-				"navigationStyle": "custom" 
+				"navigationBarTitleText": "茶园地图",
+				"navigationStyle": "custom"
 			}
 		},
+		
 		{
 			"path": "pages/my/index",
 			"style": {
@@ -45,13 +36,6 @@
 				"navigationStyle": "custom" 
 			}
 		},
-		// {
-		// 	"path": "pages/login/login",
-		// 	"style": {
-		// 		"navigationBarTitleText": "登录",
-		// 		"navigationStyle": "custom" 
-		// 	}
-		// },
 		{
 			"path": "pages/news/index",
 			"style": {
@@ -132,7 +116,7 @@
 		{
 			"path": "pages/four2/index",
 			"style": {
-				"navigationBarTitleText": "农情检测",
+				"navigationBarTitleText": "农情监测",
 				"navigationStyle": "custom" 
 			}
 		},
@@ -210,25 +194,7 @@
 			"path": "pages/setMap/index",
 			"style": {
 				"navigationBarTitleText": "设备地图",
-				"navigationStyle": "custom", 
-				"app-plus":{
-					"subNVues": [{
-						"id": "comment",
-						"path": "pages/setMap/bottomNvue/index",
-						"style": {
-							"height": "100%",
-							"width":"100%",
-							"position":"absolute",
-							"top":"0",
-							"right":"0",
-							"bottom":"0",
-							"left":"0",
-							"color":"#000000",
-							"background":"transparent",
-							"zindex":10000000
-						}
-					}]
-				}
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -262,8 +228,8 @@
 	"tabBar": {
 		"color": "#626466",
 		"selectedColor": "#11A668",
-		// "borderStyle": "#EBEBEB",
-		"backgroundColor": "#F8F8F8",
+		"borderStyle": "#fff",
+		"backgroundColor": "#fff",
 		"list": [{
 				"pagePath": "pages/index/index",
 				"iconPath": "static/image/tab1.png",

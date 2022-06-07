@@ -31,241 +31,24 @@
       </div>
       <div class="index2">
         <div class="title1">
-          <span>农事记录</span>
-          <div class="border"></div>
-        </div>
-        <!-- <div @click="goFarm" class="title2">全部设备</div> -->
-      </div>
-      <div class="scrolldiv">
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号水肥机
-              </div>
-              <div @click="goDetail2(1)" class="btnd flexcenter">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
-          </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">30</span>m3</div>
-                当日灌溉量
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">1</span>次</div>
-                当日灌溉次数
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k3.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">3</span>m3/s</div>
-                单位流量
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k4.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">
-                  <span class="bigfont">0.25</span>ms/cm
-                </div>
-                可溶性盐浓度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k5.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">7.9</span></div>
-                土壤酸碱度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k6.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">1.5</span>M</div>
-                液位传感器
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号水肥机
-              </div>
-              <div @click="goDetail2(1)" class="btnd flexcenter">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
-          </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">30</span>m3</div>
-                当日灌溉量
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">1</span>次</div>
-                当日灌溉次数
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k3.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">3</span>m3/s</div>
-                单位流量
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k4.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">
-                  <span class="bigfont">0.25</span>ms/cm
-                </div>
-                可溶性盐浓度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k5.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">7.9</span></div>
-                土壤酸碱度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/k6.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold"><span class="bigfont">1.5</span>M</div>
-                液位传感器
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="index2">
-        <div class="title1">
           <span>气象监测</span>
           <div class="border"></div>
         </div>
         <!-- <div @click="goFarm" class="title2">全部设备</div> -->
       </div>
       <div class="scrolldiv">
-        <div class="scrollchild">
+        <div
+          class="scrollchild"
+          v-for="(item, index) in weatherList"
+          :key="index"
+        >
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
                 <div class="d2 flexcenter">在线</div>
-                1号气象站
+                {{ item.id }}
               </div>
-              <div @click="goDetail2(2)" class="btnd flexcenter">查看详情</div>
+              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
             </div>
 
             <div class="d3">
@@ -283,185 +66,24 @@
                   class="set"
                   src="@/static/image/time.png"
                 />
-                2022.02.10 16:25
+                {{ item.createTime }}
               </div>
             </div>
           </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3℃</div>
-                温度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3%</div>
-                湿度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon3.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">32444Lux</div>
-                光照
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon4.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">454645mm</div>
-                降雨
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon5.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">东偏南</div>
-                风向
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon6.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">12.2m/s</div>
-                风速
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号气象站
-              </div>
-              <div @click="goDetail2(2)" class="btnd flexcenter">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
-          </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3℃</div>
-                温度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.3%</div>
-                湿度
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon3.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">32444Lux</div>
-                光照
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon4.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">454645mm</div>
-                降雨
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon5.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">东偏南</div>
-                风向
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon6.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">12.2m/s</div>
-                风速
+          <div class="index1 index90">
+            <div
+              class="index91"
+              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
+              v-for="(item, index) in item.arr"
+              :key="index"
+            >
+              <image mode="widthFix" class="pic92" :src="item.pic" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{ item.num }}</span
+                  >{{ item.unit }}
+                </div>
+                {{ item.name }}
               </div>
             </div>
           </div>
@@ -475,14 +97,14 @@
         <!-- <div @click="goFarm" class="title2">全部设备</div> -->
       </div>
       <div class="scrolldiv">
-        <div class="scrollchild">
+         <div class="scrollchild" v-for="(item,index) in soilList" :key="index">
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
                 <div class="d2 flexcenter">在线</div>
-                1号墒情仪
+                {{item.id}}
               </div>
-              <div @click="goDetail2(3)" class="btnd flexcenter">查看详情</div>
+              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
             </div>
 
             <div class="d3">
@@ -500,185 +122,24 @@
                   class="set"
                   src="@/static/image/time.png"
                 />
-                2022.02.10 16:25
+                {{item.createTime}}
               </div>
             </div>
           </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号墒情仪
-              </div>
-              <div @click="goDetail2(3)" class="btnd flexcenter">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
-          </div>
-          <div class="oftenpanle">
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon1.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">27.5摄氏度</div>
-                土壤温度(-10cm)
-              </div>
-            </div>
-            <div class="oftenpanlechild flexcenter">
-              <image
-                mode="widthFix"
-                class="oftenpic"
-                src="@/static/image/addicon2.png"
-                alt=""
-              />
-              <div class="oftenright">
-                <div class="oftenbold">44.93%</div>
-                土壤湿度(-10cm)
+          <div class="index1 index90">
+            <div
+              class="index91"
+              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
+              v-for="(item, index) in item.arr"
+              :key="index"
+            >
+              <image mode="widthFix" class="pic92" :src="item.pic" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{ item.num }}</span
+                  >{{ item.unit }}
+                </div>
+                {{ item.name }}
               </div>
             </div>
           </div>
@@ -825,13 +286,13 @@
         </div>
         <div class="cirbox">
           <qiun-data-charts
-          type="rose"
-          canvasId="four_d"
-          :chartData="chartDataPie"
-          :resshow="false"
-          :opts="{
-            legend: { position: 'right' },
-          }"
+            type="rose"
+            canvasId="four_d"
+            :chartData="chartDataPie"
+            :resshow="false"
+            :opts="{
+              legend: { position: 'right' },
+            }"
           />
         </div>
       </div>
@@ -842,11 +303,11 @@
         </div>
         <div class="cirbox">
           <qiun-data-charts
-          type="pie"
-          canvasId="four_e"
-          :chartData="chartDataPie2"
-          :resshow="false"
-          :opts="{}"
+            type="pie"
+            canvasId="four_e"
+            :chartData="chartDataPie2"
+            :resshow="false"
+            :opts="{}"
           />
         </div>
       </div>
@@ -861,7 +322,7 @@
             canvasId="three_f"
             :resshow="false"
             :opts="{
-              legend: { position: 'top',show:false },
+              legend: { position: 'top', show: false },
               yAxis: {
                 disableGrid: true,
 
@@ -893,54 +354,41 @@
             }"
             :chartData="chartDataTemperature"
           />
-        </div>  
-      </div>  
+        </div>
+      </div>
     </div>
   </div>
-
 </template>
 
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
-      chartDataTemperature:{
-          "categories": [
-            "00",
-            "02",
-            "04",
-            "06",
-            "08",
-            "10",
-            "12",
-          ],
-          "series": [{
-              "name": "今年",
-              "data": [
-                15,
-                12,
-                13,
-                23,
-                25,
-                23,
-                22
-              ],
-              "type": "line",
-              "addPoint": true,
-              "color": "#17E6A1",
-            },
-           
-           
-
-          ],
-          "yAxis": [{
+      weatherList: [],
+      soilList: [],
+      weatherList: [],
+      chartDataTemperature: {
+        categories: ["00", "02", "04", "06", "08", "10", "12"],
+        series: [
+          {
+            name: "今年",
+            data: [15, 12, 13, 23, 25, 23, 22],
+            type: "line",
+            addPoint: true,
+            color: "#17E6A1",
+          },
+        ],
+        yAxis: [
+          {
             // "max": 60,
             // "min": 0
-          }]
+          },
+        ],
       },
       chartDataPie: {
         series: [
@@ -1024,11 +472,11 @@ export default {
             data: 50,
             color: "#17E5CA",
           },
-          {
-            name: "水肥一体机",
-            data: 62,
-            color: "#3199F5",
-          },
+          // {
+          //   name: "水肥一体机",
+          //   data: 62,
+          //   color: "#3199F5",
+          // },
           {
             name: "虫情监测站",
             data: 23,
@@ -1049,7 +497,7 @@ export default {
       tablist: [
         {
           num: 10,
-          text: "水肥灌溉",
+          text: "摄像头",
         },
         {
           num: 4,
@@ -1063,60 +511,14 @@ export default {
           num: 12,
           text: "墒情监测",
         },
+         {
+          num: 12,
+          text: "水肥灌溉",
+        },
       ],
       active: true,
       active2: true,
       active1: true,
-      list: [
-        {
-          num: 15,
-          unit: "mm",
-          name: "降雨量",
-          pic: require("@/static/image/s1.png"),
-        },
-        {
-          num: 44.9,
-          unit: "%",
-          name: "相对湿度",
-          pic: require("@/static/image/s2.png"),
-        },
-        {
-          num: "西北风",
-          unit: "",
-          name: "风向",
-          pic: require("@/static/image/s3.png"),
-        },
-        {
-          num: 3,
-          unit: "m/s",
-          name: "风速",
-          pic: require("@/static/image/s4.png"),
-        },
-        {
-          num: 23,
-          unit: "℃",
-          name: "土壤温度",
-          pic: require("@/static/image/s5.png"),
-        },
-        {
-          num: 23,
-          unit: "%",
-          name: "土壤湿度",
-          pic: require("@/static/image/s6.png"),
-        },
-        {
-          num: 0.35,
-          unit: "us/cm",
-          name: "土壤EC值",
-          pic: require("@/static/image/s7.png"),
-        },
-        {
-          num: 6.5,
-          unit: "",
-          name: "土壤PH值",
-          pic: require("@/static/image/s8.png"),
-        },
-      ],
       info: {
         one: 12.35,
         two: 12.35,
@@ -1149,10 +551,114 @@ export default {
       ],
     };
   },
+  onLoad() {
+    this.getEnvironment();
+  },
   methods: {
+    getEnvironment() {
+      request({
+        url: "/data/weatherdev/getFrontJsonList/40204067,40202409",
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        console.log("res", res);
+
+        res.data.forEach((item, index) => {
+          let addArr = [];
+          let addArr2 = [];
+          addArr[0] = {
+            num: item.data[0]["alarmMsg"],
+            unit: "级",
+            name: "风力",
+            pic: require("@/static/image/new1.png"),
+          };
+          addArr[1] = {
+            num: item.data[1]["alarmMsg"],
+            unit: "m/s",
+            name: "风速",
+            pic: require("@/static/image/new2.png"),
+          };
+          addArr[2] = {
+            num: item.data[2]["alarmMsg"],
+            unit: "",
+            name: "风向",
+            pic: require("@/static/image/new3.png"),
+          };
+          addArr[3] = {
+            num: item.data[7]["alarmMsg"],
+            unit: "℃",
+            name: "空气温度",
+            pic: require("@/static/image/new4.png"),
+          };
+          addArr[4] = {
+            num: item.data[8]["alarmMsg"],
+            unit: "%RH",
+            name: "空气湿度",
+            pic: require("@/static/image/new5.png"),
+          };
+          addArr[5] = {
+            num: item.data[9]["alarmMsg"],
+            unit: "ug/m3",
+            name: "Pm10",
+            pic: require("@/static/image/new6.png"),
+          };
+          addArr[6] = {
+            num: item.data[11]["alarmMsg"],
+            unit: "kpa",
+            name: "大气压",
+            pic: require("@/static/image/new7.png"),
+          };
+          addArr[7] = {
+            num: item.data[12]["alarmMsg"],
+            unit: "lux",
+            name: "光照",
+            pic: require("@/static/image/new8.png"),
+          };
+          //墒情
+          addArr2[0] = {
+            num: item.data[3]["alarmMsg"],
+            unit: "℃",
+            name: "土壤温度",
+            pic: require("@/static/image/f3.png"),
+          };
+          addArr2[1] = {
+            num: item.data[4]["alarmMsg"],
+            unit: "%RH",
+            name: "土壤湿度",
+            pic: require("@/static/image/addicon2.png"),
+          };
+          addArr2[2] = {
+            num: item.data[5]["alarmMsg"],
+            unit: "",
+            name: "土壤PH值",
+            pic: require("@/static/image/s8.png"),
+          };
+          addArr2[3] = {
+            num: item.data[6]["alarmMsg"],
+            unit: "",
+            name: "土壤EC值",
+            pic: require("@/static/image/s7.png"),
+          };
+
+          this.$set(this.weatherList, index, {
+            createTime: item.datetime,
+            arr: addArr,
+            id: item.id,
+          });
+          this.$set(this.soilList, index, {
+            createTime: item.datetime,
+            arr: addArr2,
+            id: item.id,
+          });
+        });
+        console.log(this.weatherList);
+        //this.$forceUpdate();
+      });
+    },
     goDetail2(val) {
       uni.navigateTo({
-        url: "/pages/four2/detail/index?type="+val,
+        url: "/pages/four2/detail/index?type=" + val,
       });
     },
 
@@ -1208,9 +714,38 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.index1 {
+  background: #ffffff;
+  padding: 20rpx 32rpx;
+  border-radius: 16rpx 16rpx 16rpx 16rpx;
+  margin-bottom: 0!important;
+}
+.index90 {
+  background: #fafafa !important;
+  display: flex;
+  flex-wrap: wrap;
+  .index91 {
+    width: 50%;
+    display: flex;
+    margin-bottom: 20rpx;
+    .index92 {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 24rpx;
+      margin-left: 20rpx;
+      color: #939599;
+      span {
+        font-weight: bold;
+        color: #000;
+        font-size: 32rpx !important;
+      }
+    }
+  }
+}
 .index11 {
   background: transparent !important;
-  margin-bottom: 0!important;
+  margin-bottom: 0 !important;
 }
 .title1 {
   position: relative;
@@ -1355,7 +890,7 @@ export default {
   border-radius: 24rpx;
   margin-top: 30rpx;
   padding: 15rpx;
-
+  justify-content: space-between!important;
   .text {
     color: #626466;
     font-size: 28rpx;
@@ -1373,10 +908,17 @@ export default {
   .panle:nth-child(4) {
     color: #f5a631;
   }
+   .panle:nth-child(5) {
+    color: #8F30BF;
+  }
+  
   .panle {
     width: 25%;
     font-size: 64rpx;
     font-weight: bold;
+    .text{
+      font-weight: normal!important;
+    }
   }
   .c1 {
   }

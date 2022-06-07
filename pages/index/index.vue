@@ -20,23 +20,23 @@
             </div>
           </div>
         </div>
-        <div class="indexinfor flexcenter index1">
+        <div class="indexinfor flexcenter index1" @click="goNews">
           <image
             mode="widthFix"
             class="pic picindex1"
             src="@/static/image/lb.png"
           />
           <div class="slh">
-            监测预警：2号虫情数量过高，当前为监测预警：2号虫情数量过高，当前为监测预警：2号虫情数量过高，当前为
+            监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为
           </div>
           <u-icon
-            @click="goNews"
+            
             color="#939599"
             size="14"
             name="arrow-right"
           ></u-icon>
         </div>
-        <div class="index1 index7">
+        <div class="index1 index7" v-if="this.weatherInfo">
           <div class="index71">
             <div class="index72">
               <image
@@ -44,7 +44,7 @@
                 class="pic72"
                 src="@/static/image/p2.png"
               />
-              <div class="text">勐海县老班章茶叶种植基地</div>
+              <div class="text">{{this.weatherInfo.address}}</div>
               <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
             </div>
             <div class="addmap" @click="goMap">
@@ -58,29 +58,29 @@
           </div>
           <div class="index73 flexcenter">
             <div class="index74">
-              <div class="index75">300.5</div>
+              <div class="index75">{{this.weatherInfo.gardenArea}}</div>
               茶园面积
             </div>
             <div class="index74">
-              <div class="index75 index79">3</div>
+              <div class="index75 index79">{{this.weatherInfo.gardenCount}}</div>
               茶园数量
             </div>
             <div class="index74">
-              <div class="index75 index80">台地茶/古树茶</div>
+              <div class="index75 index80">{{this.weatherInfo.teaSpecies}}</div>
               种植品类
             </div>
           </div>
-          <div class="index81">
+          <div class="index81" v-if="this.weatherData.length>0">
             <div class="index83">
-              <div class="index82">27.5</div>
+              <div class="index82">{{(this.weatherData[1]['max']+this.weatherData[1]['min'])/2}}</div>
               <div class="index85">℃</div>
             </div>
             <div class="index83">
-              多云
+              {{this.weatherData[1]['weatherLabel']}}
               <image
                 mode="widthFix"
                 class="index84"
-                src="@/static/image/dy.png"
+                :src="this.weatherData[1]['weatherIcon']"
               />
             </div>
           </div>
@@ -168,13 +168,13 @@
                     @click="changeTab(1)"
                     :class="[active2 ? 'gray4' : '', 'gray2']"
                   >
-                    本季度
+                    {{active1?'本季度':'本年'}}  
                   </div>
                   <div
                     @click="changeTab(2)"
                     :class="[!active2 ? 'gray4' : '', 'gray2']"
                   >
-                    下季度
+                    {{active1?'上季度':'去年'}}
                   </div>
                 </div>
                 <div class="gray5" v-if="!lookType">
@@ -185,7 +185,7 @@
                     </div>
                     <div class="circhild flexcenter">
                       <div class="fk fk2"></div>
-                      下季度
+                      上季度
                     </div>
                   </div>
                 </div>
@@ -205,45 +205,83 @@
                   src="@/static/image/tj33.png"
                 />
               </div>
-              <div  v-if="!lookType&&active1" class="tjdiv">
-                  <div v-for="(item,index) in investmentArr" :key="index" class="tjdivc1">
-                    <div class="jdtlabel">
-                      {{item.name}}
-                    </div>
-                    <div class="jdt">
-                      <div class="jdt1">
-                        <u-line-progress height="8" activeColor="#8F30BF" inactiveColor="#FAFAFA" :percentage="30" :showText="false"></u-line-progress>
-                        <div class="jdt3">{{(item.val)[0]}} <span class="unit">{{item.unit}}</span> </div>
+              <div v-if="!lookType && active1" class="tjdiv">
+                <div
+                  v-for="(item, index) in investmentArr"
+                  :key="index"
+                  class="tjdivc1"
+                >
+                  <div class="jdtlabel">
+                    {{ item.name }}
+                  </div>
+                  <div class="jdt">
+                    <div class="jdt1">
+                      <u-line-progress
+                        height="8"
+                        activeColor="#8F30BF"
+                        inactiveColor="#FAFAFA"
+                        :percentage="30"
+                        :showText="false"
+                      ></u-line-progress>
+                      <div class="jdt3">
+                        {{ item.val[0] }}
+                        <span class="unit">{{ item.unit }}</span>
                       </div>
-                      <div class="jdt1">
-                        <u-line-progress height="8" activeColor="#29CC96" inactiveColor="#FAFAFA" :percentage="30" :showText="false"></u-line-progress>
-                        <div class="jdt3">{{(item.val)[1]}}<span class="unit">{{item.unit}}</span> </div>
-                         
+                    </div>
+                    <div class="jdt1">
+                      <u-line-progress
+                        height="8"
+                        activeColor="#29CC96"
+                        inactiveColor="#FAFAFA"
+                        :percentage="30"
+                        :showText="false"
+                      ></u-line-progress>
+                      <div class="jdt3">
+                        {{ item.val[1]
+                        }}<span class="unit">{{ item.unit }}</span>
                       </div>
                     </div>
                   </div>
-                  
-                  
+                </div>
               </div>
-              <div  v-if="!lookType&&!active1" class="tjdiv">
-                  <div v-for="(item,index) in incomeArr" :key="index" class="tjdivc1">
-                    <div class="jdtlabel">
-                      {{item.name}}
-                    </div>
-                    <div class="jdt">
-                      <div class="jdt1">
-                        <u-line-progress height="8" activeColor="#8F30BF" inactiveColor="#FAFAFA" :percentage="30" :showText="false"></u-line-progress>
-                        <div class="jdt3">{{(item.val)[0]}} <span class="unit">{{item.unit}}</span> </div>
+              <div v-if="!lookType && !active1" class="tjdiv">
+                <div
+                  v-for="(item, index) in incomeArr"
+                  :key="index"
+                  class="tjdivc1"
+                >
+                  <div class="jdtlabel">
+                    {{ item.name }}
+                  </div>
+                  <div class="jdt">
+                    <div class="jdt1">
+                      <u-line-progress
+                        height="8"
+                        activeColor="#8F30BF"
+                        inactiveColor="#FAFAFA"
+                        :percentage="30"
+                        :showText="false"
+                      ></u-line-progress>
+                      <div class="jdt3">
+                        {{ item.val[0] }}
+                        <span class="unit">{{ item.unit }}</span>
                       </div>
-                      <div class="jdt1">
-                        <u-line-progress height="8" activeColor="#29CC96" inactiveColor="#FAFAFA" :percentage="30" :showText="false"></u-line-progress>
-                        <div class="jdt3">{{(item.val)[1]}}<span class="unit">{{item.unit}}</span> </div>
-                         
+                    </div>
+                    <div class="jdt1">
+                      <u-line-progress
+                        height="8"
+                        activeColor="#29CC96"
+                        inactiveColor="#FAFAFA"
+                        :percentage="30"
+                        :showText="false"
+                      ></u-line-progress>
+                      <div class="jdt3">
+                        {{ item.val[1]
+                        }}<span class="unit">{{ item.unit }}</span>
                       </div>
                     </div>
                   </div>
-                  
-                  
+                </div>
               </div>
               <!-- <image
                 mode="widthFix"
@@ -298,10 +336,14 @@
                 src="@/static/image/false31.png"
               /> -->
               <div class="srdiv" v-if="lookType && !active1">
-                <div class="srdiv1" v-for="(item,index) in income" :key="index">
-                  <div class="srdiv2">{{incomeBig[index]}}月</div>
+                <div
+                  class="srdiv1"
+                  v-for="(item, index) in income"
+                  :key="index"
+                >
+                  <div class="srdiv2">{{ incomeBig[index] }}月</div>
                   <div class="srdiv3">
-                    {{item}}<span class="srdiv4">吨</span>
+                    {{ item }}<span class="srdiv4">吨</span>
                   </div>
                 </div>
               </div>
@@ -328,199 +370,135 @@
 </template>
 
 <script>
+import { weekDay } from "../../common/utils/utils";
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
+import moment from 'moment'
+import { weatherIdToName, wind } from "../../common/utils/weather";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
-      income:[12.32,11.22,12.32,11.22,12.32,11.22,12.32,11.22,12.32,11.22,12.32,11.22,],
-      incomeBig:['一','二','三','四','五','六','七','八','九','十','十一','十二'],
-      incomeArr:[
-        {
-          name:'一月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'二月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'三月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'四月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'五月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'六月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'七月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'八月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'九月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'十月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'十一月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-        {
-          name:'十二月',
-          val:[
-            5,15
-          ],
-          unit:'吨'
-        },
-       
+      weatherInfo: null,
+      income: [
+        12.32, 11.22, 12.32, 11.22, 12.32, 11.22, 12.32, 11.22, 12.32, 11.22,
+        12.32, 11.22,
       ],
-      investmentArr:[
+      incomeBig: [
+        "一",
+        "二",
+        "三",
+        "四",
+        "五",
+        "六",
+        "七",
+        "八",
+        "九",
+        "十",
+        "十一",
+        "十二",
+      ],
+      incomeArr: [
         {
-          name:'人力',
-          val:[
-            5,15
-          ],
-          unit:''
+          name: "一月",
+          val: [5, 15],
+          unit: "吨",
         },
         {
-          name:'灌溉水',
-          val:[
-            5,15
-          ],
-          unit:'吨'
+          name: "二月",
+          val: [5, 15],
+          unit: "吨",
         },
         {
-          name:'二胺',
-          val:[
-            5,15
-          ],
-          unit:'kg'
+          name: "三月",
+          val: [5, 15],
+          unit: "吨",
         },
         {
-          name:'硫酸钾',
-          val:[
-            5,15
-          ],
-          unit:'kg'
+          name: "四月",
+          val: [5, 15],
+          unit: "吨",
         },
         {
-          name:'尿素',
-          val:[
-            5,15
-          ],
-          unit:'kg'
+          name: "五月",
+          val: [5, 15],
+          unit: "吨",
         },
         {
-          name:'噻虫嗪',
-          val:[
-            5,15
-          ],
-          unit:'kg'
-        }
+          name: "六月",
+          val: [5, 15],
+          unit: "吨",
+        },
+        {
+          name: "七月",
+          val: [5, 15],
+          unit: "吨",
+        },
+        {
+          name: "八月",
+          val: [5, 15],
+          unit: "吨",
+        },
+        {
+          name: "九月",
+          val: [5, 15],
+          unit: "吨",
+        },
+        {
+          name: "十月",
+          val: [5, 15],
+          unit: "吨",
+        },
+        {
+          name: "十一月",
+          val: [5, 15],
+          unit: "吨",
+        },
+        {
+          name: "十二月",
+          val: [5, 15],
+          unit: "吨",
+        },
+      ],
+      investmentArr: [
+        {
+          name: "人力",
+          val: [5, 15],
+          unit: "",
+        },
+        {
+          name: "灌溉水",
+          val: [5, 15],
+          unit: "吨",
+        },
+        {
+          name: "二胺",
+          val: [5, 15],
+          unit: "kg",
+        },
+        {
+          name: "硫酸钾",
+          val: [5, 15],
+          unit: "kg",
+        },
+        {
+          name: "尿素",
+          val: [5, 15],
+          unit: "kg",
+        },
+        {
+          name: "噻虫嗪",
+          val: [5, 15],
+          unit: "kg",
+        },
       ],
       lookType: true,
+      moment,
       active2: true,
       active1: true,
-      list: [
-        {
-          num: 15,
-          unit: "mm",
-          name: "降雨量",
-          pic: require("@/static/image/s1.png"),
-        },
-        {
-          num: 44.9,
-          unit: "%",
-          name: "相对湿度",
-          pic: require("@/static/image/s2.png"),
-        },
-        {
-          num: "西北风",
-          unit: "",
-          name: "风向",
-          pic: require("@/static/image/s3.png"),
-        },
-        {
-          num: 3,
-          unit: "m/s",
-          name: "风速",
-          pic: require("@/static/image/s4.png"),
-        },
-        {
-          num: 23,
-          unit: "℃",
-          name: "土壤温度",
-          pic: require("@/static/image/s5.png"),
-        },
-        {
-          num: 23,
-          unit: "%",
-          name: "土壤湿度",
-          pic: require("@/static/image/s6.png"),
-        },
-        {
-          num: 0.35,
-          unit: "us/cm",
-          name: "土壤EC值",
-          pic: require("@/static/image/s7.png"),
-        },
-        {
-          num: 6.5,
-          unit: "",
-          name: "土壤PH值",
-          pic: require("@/static/image/s8.png"),
-        },
-      ],
+      list: [],
       info: {
         one: 12.35,
         two: 12.35,
@@ -528,6 +506,7 @@ export default {
         four: 85.2,
         five: 15,
       },
+      weatherData:[],
       pageName: "茶园种植",
       indexMenu: [
         {
@@ -553,7 +532,126 @@ export default {
       ],
     };
   },
+  onLoad() {
+    this.getEnvironment();
+    this.askWeather();
+  },
   methods: {
+    askWeather() {
+      request({
+        url: "/data-thirdpart/mojiWeather/getMojiByLonLat",
+        method: "get",
+        isAuth: false,
+        data: {
+          day: moment().format("YYYY-MM-DD HH:mm:ss"),
+          lat: 39.97569,
+          lon: 116.41136,
+        },
+      }).then((res) => {
+        console.log("xxx", res);
+        res.data.daily.forEach((item, index) => {
+          let date = item.predict_date.split("-");
+          let date2 = date[1] + "/" + date[2];
+
+          //wind_dir_id
+          let week = "";
+          if (index == 0) {
+            week = "昨天";
+          } else if (index == 1) {
+            week = "今天";
+          } else {
+            week = weekDay(item.predict_date);
+          }
+          
+          
+          let weatherList = weatherIdToName();
+          let windList = wind();
+          this.weatherData.push({
+            dayLabel: date2,
+            weatherLabel: weatherList[item.weather_id_day][2],
+            weatherIcon: require("@/static/image/weather/W" +
+              weatherList[item.weather_id_day][0] +
+              ".png"),
+            max: item.temp_high,
+            min: item.temp_low,
+            level: item.wind_level_night,
+            wind: windList[item.wind_dir_day],
+          });
+        });
+        uni.setStorageSync('MJweather',this.weatherData)
+        console.log('xxx0000',this.weatherData)
+      });
+    },
+    getEnvironment() {
+      let userInfo=uni.getStorageSync('userInfo')
+      if(!userInfo){
+        return
+      }
+      //传设备的id
+      request({
+        url: "/data/teabase/getBaseInfo?userId="+userInfo.userId,
+        method: "get",
+        isAuth: false,
+        data: {},
+      })
+        .then((res) => {
+          this.weatherInfo = res.data;
+          console.log("xxx", res);
+          this.list[0] = {
+            num: this.weatherInfo.windGrade!=null?this.weatherInfo.windGrade:'-',
+            unit: "级",
+            name: "风力",
+            pic: require("@/static/image/new1.png"),
+          };
+          this.list[1] = {
+            num: this.weatherInfo.windSpeed!=null?this.weatherInfo.windSpeed:'-',
+            unit: "m/s",
+            name: "风速",
+            pic: require("@/static/image/new2.png"),
+          };
+          this.list[2] = {
+            num:this.weatherInfo.windDirect!=null?this.weatherInfo.windDirect:'-',
+            unit: "",
+            name: "风向",
+            pic: require("@/static/image/new3.png"),
+          };
+          this.list[3] = {
+            num: this.weatherInfo.soilTem!=null?this.weatherInfo.soilTem:'-',
+            unit: "℃",
+            name: "空气温度",
+            pic: require("@/static/image/new4.png"),
+          };
+          this.list[4] = {
+            num: this.weatherInfo.soilHum!=null?this.weatherInfo.soilHum:'-',
+            unit: "%RH",
+            name: "空气湿度",
+            pic: require("@/static/image/new5.png"),
+          };
+          this.list[5] = {
+            num: this.weatherInfo.pm10!=null?this.weatherInfo.pm10:'-',
+            unit: "ug/m3",
+            name: "Pm10",
+            pic: require("@/static/image/new6.png"),
+          };
+          this.list[6] = {
+            num: this.weatherInfo.kpa!=null?this.weatherInfo.kpa:'-',
+            unit: "kpa",
+            name: "大气压",
+            pic: require("@/static/image/new7.png"),
+          };
+          this.list[7] = {
+            num: this.weatherInfo.lux!=null?this.weatherInfo.lux:'-',
+            unit: "lux",
+            name: "光照",
+            pic: require("@/static/image/new8.png"),
+          };
+          this.$forceUpdate();
+        })
+
+        .catch((err) => {
+          console.log("err", err);
+        });
+    },
     goPrice() {
       if (this.lookType) {
         uni.navigateTo({
@@ -637,22 +735,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.srdiv{
+.srdiv {
   display: flex;
   flex-wrap: wrap;
-  .srdiv2{
+  .srdiv2 {
     color: #626466;
     font-size: 28rpx;
   }
-  .srdiv3{
+  .srdiv3 {
     font-weight: bold;
   }
-  .srdiv4{
+  .srdiv4 {
     color: #626466;
-    font-weight: normal!important;
-    font-size: 24rpx!important;
+    font-weight: normal !important;
+    font-size: 24rpx !important;
   }
-  .srdiv1{
+  .srdiv1 {
     width: 33.33%;
     display: flex;
     flex-direction: column;
@@ -660,34 +758,33 @@ export default {
     margin: 10rpx 0;
   }
 }
-.tjdiv{
-  .tjdivc1{
+.tjdiv {
+  .tjdivc1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin: 10rpx 0;
-    .jdt{
+    .jdt {
       flex: 1;
     }
-    .jdt1{
+    .jdt1 {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      .jdt3{
+      .jdt3 {
         margin-left: 20rpx;
         font-weight: bold;
-        .unit{
+        .unit {
           color: #626466;
           font-size: 20rpx;
-          font-weight: normal!important;
+          font-weight: normal !important;
         }
       }
     }
-    .jdtlabel{
+    .jdtlabel {
       width: 100rpx;
       text-align: right;
       margin-right: 20rpx;
-
     }
   }
 }
@@ -754,6 +851,7 @@ export default {
       align-items: center;
       justify-content: space-between;
       color: #626466;
+      padding: 10rpx 0;
       .index83 {
         display: flex;
         align-items: center;
@@ -795,7 +893,8 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-items: center;
+      justify-content: space-between;
+      height: 120rpx;
     }
     .index73 {
       font-size: 24rpx;
@@ -808,7 +907,9 @@ export default {
         padding: 20rpx 0 5rpx 0;
       }
       .index80 {
-        font-size: 32rpx !important;
+        position: relative;
+        top: 14rpx;
+        font-size: 28rpx !important;
       }
       .index79 {
         color: #3199f5 !important;
@@ -991,7 +1092,7 @@ export default {
       background: linear-gradient(134deg, #62b0f5 0%, #317ff5 100%) !important;
     }
   }
-  
+
   .index3 {
     .tabtitle {
       display: flex;
