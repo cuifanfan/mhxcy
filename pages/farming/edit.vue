@@ -7,7 +7,7 @@
           <div class="formchild">
             <div class="name">选择茶园:</div>
             <div class="input input2">
-              <div class="disablewrap">
+              <div class="disablewrap" @click="showTypeTea = true">
                 <u--input
                   v-model="teaName"
                   disabled
@@ -17,7 +17,6 @@
                 ></u--input>
                 <u-icon
                   slot="right"
-                  @click="showTypeTea = true"
                   color="#C4C7CC"
                   size="20"
                   name="arrow-down"
@@ -30,7 +29,7 @@
           <div class="formchild">
             <div class="name">操作时间:</div>
             <div class="input2">
-              <div class="disablewrap disablewrap3">
+              <div class="disablewrap disablewrap3" @click="show = true">
                 <u--input
                   v-model="date"
                   disabled
@@ -40,7 +39,6 @@
                 ></u--input>
                 <u-icon
                   slot="right"
-                  @click="show = true"
                   color="#C4C7CC"
                   size="20"
                   name="arrow-down"
@@ -53,7 +51,7 @@
           <div class="formchild">
             <div class="name">操作内容:</div>
             <div class="input input2">
-              <div class="disablewrap">
+              <div class="disablewrap" @click="showType = true">
                 <u--input
                   v-model="handleContent"
                   disabled
@@ -63,7 +61,6 @@
                 ></u--input>
                 <u-icon
                   slot="right"
-                  @click="showType = true"
                   color="#C4C7CC"
                   size="20"
                   name="arrow-down"
@@ -119,7 +116,7 @@
           </div>
         </div>
       </div>
-      <div @click="submieSure" class="btnsumit butsumbit">确认提交</div>
+      <div @click="submieSure" class="btnsumit">确认提交</div>
     </div>
     <u-calendar
       :closeOnClickOverlay="true"
@@ -150,6 +147,7 @@
 import headerDiy from "../component/header/header.vue";
 import { getNowDate } from "../../common/utils/utils";
 import request from "../../common/utils/request";
+import moment from "moment";
 export default {
   components: {
     headerDiy,
@@ -207,6 +205,7 @@ export default {
           name: "保密",
         },
       ],
+      teaType:'',
       nameValue: "",
       typeValue: "",
     };
@@ -218,14 +217,52 @@ export default {
   },
   methods: {
     submieSure() {
-      // if (this.teaId == "") {
-      //   // uni.showToast({
-      //   //   title: '请选择茶园',
-      //   //   icon: "none",
-      //   //   duration: 850,
-      //   // });
-      //   return 
-      // }
+      if (this.teaId == "") {
+        uni.showToast({
+          title: "请选择茶园",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+      if (this.handleContent == "") {
+        uni.showToast({
+          title: "请选择操作内容",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+      let picUrl = this.resultPic.join(",");
+      request({
+        url: "/data/farmrecords",
+        method: "post",
+        isAuth: false,
+        data: {
+          comment: this.remark,
+          content: this.handleContent,
+          fertilizerDose: "硫酸钾:10,草木灰:10",
+          gardenId: this.teaId,
+          imageUrls: this.resultPic.join(","),
+          time: this.date + " 12:20:00",
+          gardenName: this.teaName,
+          species:this.teaType
+        },
+      }).then((res) => {
+        if (res.code == 200) {
+          uni.navigateTo({
+            url: "/pages/farming/index",
+          });
+          uni.setStorageSync("farmingTabindex", 1);
+          this.remark = "";
+          this.handleContent = "";
+          this.date = moment().format("YYYY-MM-DD");
+          this.teaId = "";
+          this.resultPic = [];
+          this.teaType=''
+          this.teaName = "";
+        }
+      });
     },
     askTea() {
       let userInfo = uni.getStorageSync("userInfo");
@@ -239,7 +276,12 @@ export default {
         data: {},
       }).then((res) => {
         console.log("xxxx", res);
-        this.teaList = res.data;
+        res.data.forEach((item, index) => {
+          this.teaList.push({
+            name: item.label,
+            id: item.value,
+          });
+        });
       });
     },
     typeSelect(val) {
@@ -247,8 +289,10 @@ export default {
       this.handleContent = val.name;
     },
     typeSelectTea(val) {
+      console.log(val);
       this.teaName = val.name;
       this.teaId = val.id;
+      this.teaType=val.species
     },
     confirm(e) {
       this.show = false;
@@ -307,6 +351,9 @@ export default {
 }
 .content {
   margin: 32rpx;
+  .btnsumit {
+    margin-top: 40rpx;
+  }
   .butsumbit {
     margin-top: 80rpx;
   }

@@ -20,14 +20,17 @@ function request({
     }
     return new Promise((resolve, reject) => {
         let Authorization=''
+        let contentType=''
         if(url.indexOf('auth/oauth/token')>-1){
             Authorization='Basic ' +  uni.arrayBufferToBase64(btoa('pig:pig'))   
+            contentType='application/x-www-form-urlencoded'
         }else{
             Authorization='Bearer ' +  uni.getStorageSync('token')
+            contentType='application/json'
         }
         // 接口不需要传token,默认值为{}
         let header = {
-            'content-type': 'application/x-www-form-urlencoded' ,
+            'content-type': contentType ,
             Authorization:Authorization ,
             isToken: false,
             'TENANT-ID': '1',

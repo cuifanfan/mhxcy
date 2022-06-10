@@ -123,7 +123,7 @@
                 <div class="addchild flexcenter">
                   <div class="addchild2">
                     <div class="top">
-                      2022年，已完成<span class="boldspanadd">9</span> 项农事！
+                      {{moment().format("YYYY") }}年，已完成<span class="boldspanadd">{{farmTotal}}</span> 项农事！
                     </div>
                     <div class="bottom">4月季节性病虫增加,可增加黄板,提高…</div>
                   </div>
@@ -381,6 +381,7 @@ export default {
   },
   data() {
     return {
+      farmTotal:'-',
       weatherInfo: null,
       income: [
         12.32, 11.22, 12.32, 11.22, 12.32, 11.22, 12.32, 11.22, 12.32, 11.22,
@@ -535,8 +536,42 @@ export default {
   onLoad() {
     this.getEnvironment();
     this.askWeather();
+    this.getFarmList();
+    this.askInvestment(1);
+    this.askInvestment(2)
   },
   methods: {
+    askInvestment(type){
+      let endTime=type==1?moment(moment().quarter(moment().quarter()).startOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss'):moment(moment().quarter(moment().quarter() - 1).startOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss')
+      let startTime=type==2?moment(moment().quarter(moment().quarter()).endOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss'):moment(moment().quarter(moment().quarter() - 1).endOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss')
+      let userInfo=uni.getStorageSync('userInfo')
+      request({
+        url: "/data/farmrecords/getAllPutIn",
+        method: "get",
+        isAuth: false,
+        data: {
+          startTime:endTime,
+          endTime:startTime,
+          userId:userInfo.userId
+        },
+      }).then((res) => {
+        console.log('xxxxresxxx',res)
+      })
+    },
+    getFarmList() {
+      request({
+        url: "/data/farmrecords/page",
+        method: "get",
+        isAuth: false,
+        data: {
+          current: this.current,
+        },
+      }).then((res) => {
+        console.log("res5464545456456", res);
+        this.farmTotal=res.data.total
+        
+      });
+    },
     askWeather() {
       request({
         url: "/data-thirdpart/mojiWeather/getMojiByLonLat",
@@ -579,7 +614,6 @@ export default {
           });
         });
         uni.setStorageSync('MJweather',this.weatherData)
-        console.log('xxx0000',this.weatherData)
       });
     },
     getEnvironment() {

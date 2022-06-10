@@ -2,20 +2,27 @@
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
     <div class="farmtab">
-      <div @click="active = !active" :class="[active ? 'c1active' : '', 'c1']">
+      <div @click="changeTabIndex(0)" :class="[active ? 'c1active' : '', 'c1']">
         农事建议
       </div>
-      <div @click="active = !active" :class="[!active ? 'c1active' : '', 'c1']">
+      <div
+        @click="changeTabIndex(1)"
+        :class="[!active ? 'c1active' : '', 'c1']"
+      >
         已完成农事
       </div>
     </div>
-    <div class="content">
-      <div class="wrapcommon wrapcommonfarm" v-for="(item,index) in 12" :key="index">
+    <div class="content" v-if="active">
+      <div
+        class="wrapcommon wrapcommonfarm"
+        v-for="(item, index) in 12"
+        :key="index"
+      >
         <div class="titlewrap">
-          <div class="title"><span>{{index+1}}号茶园</span> ：古树茶</div>
-          <div class="date">
-              2022.02.10 10:00
+          <div class="title">
+            <span>{{ index + 1 }}号茶园</span>
           </div>
+          <div class="date">2022.02.10 10:00</div>
         </div>
         <div class="farmtitle">病虫防治</div>
         <div class="farmcontent">
@@ -23,16 +30,43 @@
         </div>
       </div>
     </div>
+    <div class="content" v-else>
+      <div
+        class="wrapcommon wrapcommonfarm"
+        v-for="(item, index) in farmList"
+        :key="index"
+      >
+        <div class="titlewrap">
+          <div class="title">
+            <span>{{
+              item.gardenName ? item.gardenName : "暂无茶园名称"
+            }}</span>
+            {{ item.species ? ":" + item.species : "" }}
+          </div>
+          <div class="date">
+            {{ item.time }}
+          </div>
+        </div>
+        <div class="farmtitle">{{ item.content }}</div>
+        <div class="farmcontent">
+          {{ item.fertilizerDose }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      listOver:false,
+      current: 1,
+      farmList: [],
       active: true,
       showType: false,
       showType2: false,
@@ -64,14 +98,60 @@ export default {
       typeValue: "",
     };
   },
+  onLoad() {
+    let tabIndex = uni.getStorageSync("farmingTabindex");
+    if (tabIndex && tabIndex == 1) {
+      this.active = false;
+    } else {
+      this.active = true;
+    }
+    this.getFarmList();
+  },
+  onUnload() {
+    uni.setStorageSync("farmingTabindex", 0);
+  },
+
+  onReachBottom() {
+    console.log("触底了");
+    if(!this.listOver){
+      this.current++;
+      this.getFarmList();
+    }
+  },
   methods: {
     typeSelect() {},
+    changeTabIndex(index) {
+      uni.setStorageSync("farmingTabindex", index);
+      this.active = !this.active;
+    },
+    getFarmList() {
+      request({
+        url: "/data/farmrecords/page",
+        method: "get",
+        isAuth: false,
+        data: {
+          current: this.current,
+        },
+      }).then((res) => {
+        console.log("res", res);
+        this.farmList = this.farmList.concat(res.data.records);
+        console.log(this.farmList);
+        if (res.data.records.length == 0) {
+          uni.showToast({
+            title: "暂无更多数据",
+            icon: "none",
+            duration: 850,
+          });
+          this.listOver=true
+        }
+      });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-.wrapcommonfarm{
-    margin: 45rpx 0;
+.wrapcommonfarm {
+  margin: 45rpx 0;
 }
 .farmtab {
   background: #fff;
@@ -94,14 +174,14 @@ export default {
 }
 .content {
   margin: 32rpx;
-  .farmtitle{
-        font-weight: bold;
-        margin-bottom: 10rpx;
-    }
-    .farmcontent{
-        font-size: 24rpx;
-        font-weight: bold;
-    }
+  .farmtitle {
+    font-weight: bold;
+    margin-bottom: 10rpx;
+  }
+  .farmcontent {
+    font-size: 24rpx;
+    font-weight: bold;
+  }
   .tip {
     font-size: 28rpx;
     color: #939599;
@@ -151,12 +231,12 @@ export default {
     margin-bottom: 20rpx;
     display: flex;
     justify-content: space-between;
-    .date{
-        color: #626466;
-        font-size: 24rpx;
+    .date {
+      color: #626466;
+      font-size: 24rpx;
     }
-    span{
-        color: #626466;
+    span {
+      color: #626466;
     }
   }
 }
