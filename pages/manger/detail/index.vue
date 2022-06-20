@@ -33,12 +33,19 @@
         </div>
         <div class="info2" v-if="infoGet">
           <div class="info3 info7">
-            <div class="info4">茶园名称：<span>{{infoGet.name}}</span></div>
-            <div class="info4">茶园面积：<span>{{infoGet.area}}</span></div>
+            <div class="info4">
+              茶园名称：<span>{{ infoGet.name }}</span>
+            </div>
+            <div class="info4">
+              茶园面积：<span>{{ infoGet.area }}</span
+              >亩
+            </div>
           </div>
-          <div class="info3">种植品种：<span>{{infoGet.species}}</span></div>
           <div class="info3">
-            茶园地址：<span>{{infoGet.address}}</span>
+            种植品种：<span>{{ infoGet.species }}</span>
+          </div>
+          <div class="info3">
+            茶园地址：<span>{{ infoGet.address }}</span>
           </div>
         </div>
         <div class="header">
@@ -47,29 +54,26 @@
         <div class="test5">
           <div
             class="test6"
-            @click="goDetail(item)"
-            v-for="(item, index) in videoListShow"
-            :key="index"
+            @click="goDetail(videoListShow)"
           >
             <div>
               <div class="imgwraps">
                 <image
                   mode="widthFix"
                   class="videopic"
-                  src="@/static/image/videopic.png"
+                  :src="baseUrl+videoListShow.cover"
                 />
                 <image
                   mode="widthFix"
-                  v-if="active == 3"
                   class="play"
                   src="@/static/image/play.png"
                 />
               </div>
               <div class="text textflex">
                 <div>
-                  {{ item.deviceName }}
+                 {{videoListShow.deviceName}}
                 </div>
-                {{ item.url == "" ? "离线" : "在线" }}
+                {{ videoListShow.url == "" ? "离线" : "在线" }}
               </div>
             </div>
           </div>
@@ -83,7 +87,7 @@
             src="@/static/image/set.png"
           />
         </div>
-        <div class="index1 index90">
+        <div class="index1 index90" v-if="!notSetFlag">
           <div
             class="index91"
             :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
@@ -93,13 +97,14 @@
             <image mode="widthFix" class="pic92" :src="item.pic" />
             <div class="index92">
               <div class="index93">
-                <span>{{ item.num }}</span
+                <span>{{ item.val[0] }}~{{ item.val[1] }}</span
                 >{{ item.unit }}
               </div>
               {{ item.name }}
             </div>
           </div>
         </div>
+        <div v-else class="index1 index90">暂未设置环境参数</div>
         <div>
           <div class="tabchange">
             <div
@@ -147,7 +152,7 @@
             <div class="header header7">
               <div class="header2">积温变化</div>
             </div>
-            <div class="cirbox">
+            <div class="cirbox" v-if="chartDataTemperatureFlag">
               <qiun-data-charts
                 type="mix"
                 canvasId="three_b"
@@ -163,7 +168,7 @@
                         fontColor: '#939599',
                         position: 'left',
                         title: '单位(℃)',
-                        titleOffsetX: -20,
+                        titleOffsetX: -15,
                         titleOffsetY: -10,
                         titleFontColor: '#939599',
                         max: chartDataTemperature
@@ -189,7 +194,7 @@
             <div class="header header7">
               <div class="header2">积雨变化</div>
             </div>
-            <div class="cirbox">
+            <div class="cirbox" v-if="chartDataRainFlag">
               <qiun-data-charts
                 type="mix"
                 canvasId="three_c"
@@ -241,21 +246,21 @@
                     <image
                       mode="widthFix"
                       class="videopic"
-                      src="@/static/image/videopic.png"
+                      :src="baseUrl+fluoritescreenshotData['url']"
                     />
                   </div>
                   <div class="text flextextadd">
-                    <div>2021-11-05 08:30</div>
+                    <div>{{fluoritescreenshotData.createTime}}</div>
                     <div>查看详情</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="header header3">
+            <!-- <div class="header header3">
               <div class="header2">遥感报告</div>
               <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
-            </div>
-            <div class="test1">
+            </div> -->
+            <!-- <div class="test1">
               <div class="test5">
                 <div class="test6" @click="goDetail">
                   <div class="imgwraps">
@@ -275,8 +280,25 @@
             <div class="header header3">
               <div class="header2">巡检报告</div>
               <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
+            </div> -->
+            <!-- <div class="test1">
+              <div class="test5">
+                <div class="test6" @click="goDetail">
+                  <div class="imgwraps">
+                    <image
+                      mode="widthFix"
+                      class="videopic"
+                      src="@/static/image/xj.png"
+                    />
+                  </div>
+                  <div class="text flextextadd">
+                    <div>2021-11-05 08:30</div>
+                    <div>查看详情</div>
+                  </div>
+                </div>
+              </div> -->
             </div>
-            <div class="test1">
+            <!-- <div class="test1">
               <div class="test5">
                 <div class="test6" @click="goDetail">
                   <div class="imgwraps">
@@ -292,24 +314,7 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="test1">
-              <div class="test5">
-                <div class="test6" @click="goDetail">
-                  <div class="imgwraps">
-                    <image
-                      mode="widthFix"
-                      class="videopic"
-                      src="@/static/image/xj.png"
-                    />
-                  </div>
-                  <div class="text flextextadd">
-                    <div>2021-11-05 08:30</div>
-                    <div>查看详情</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            </div> -->
           </div>
           <div class="changechild" v-if="activeTab == 2">
             <div class="header header3">
@@ -1093,6 +1098,7 @@ import { getCenter, weekDay } from "../../../common/utils/utils";
 import request from "../../../common/utils/request";
 import moment from "moment";
 import { weatherIdToName, wind } from "../../../common/utils/weather";
+import { BASE_URL } from "../../../common/utils/config";
 export default {
   components: {
     headerDiy,
@@ -1100,7 +1106,9 @@ export default {
   },
   data() {
     return {
-      infoGet:null,
+      fluoritescreenshotData:null,
+      baseUrl:BASE_URL,
+      infoGet: null,
       videoListShow: [],
       weatherCreateTime: "",
       moment,
@@ -1109,7 +1117,7 @@ export default {
       latitude: "",
       markers: [],
       polyline: [],
-
+      chartDataTemperatureFlag:false,
       polygons: [],
       fertilizer: {
         categories: ["1月11", "1月12", "1月11", "1月14", "1月15"],
@@ -1364,27 +1372,27 @@ export default {
       redarArr: [
         {
           name: "氮",
-          value: "32.22",
+          value: "0",
         },
         {
           name: "有机质",
-          value: "12.22",
+          value: "0",
         },
         {
           name: "有效磷",
-          value: "20.22",
+          value: "0",
         },
         {
           name: "PH",
-          value: "13.22",
+          value: "0",
         },
         {
           name: "缓效钾",
-          value: "22.22",
+          value: "0",
         },
         {
           name: "速效钾",
-          value: "8.22",
+          value: "0",
         },
       ],
       RadarModel: {
@@ -1401,7 +1409,7 @@ export default {
             name: "一班",
             area: [123.45, 234, 192.5, 245],
             color: "#1890ff",
-            data: [90, 110, 165, 195, 187, 172],
+            data: [0, 0, 0, 0, 0, 0],
             index: 0,
             legendShape: "circle",
             pointShape: "",
@@ -1411,18 +1419,18 @@ export default {
         ],
       },
       chartDataTemperature: {
-        categories: ["1.15", "2.15", "3.15", "4.15", "5.15", "6.15", "7.15"],
+        categories: [],
         series: [
           {
             name: "今年",
-            data: [1111, 1210, 2222, 3333, 4444, 5899, 6554],
+            data: [],
             type: "line",
             addPoint: true,
             color: "#F56262",
           },
           {
             name: "去年",
-            data: [1111, 1510, 2522, 3633, 4844, 5899, 6754],
+            data: [],
             type: "line",
             addPoint: true,
             color: "#FFB900",
@@ -1436,11 +1444,11 @@ export default {
         ],
       },
       chartDataRain: {
-        categories: ["1.15", "2.15", "3.15", "4.15", "5.15", "6.15", "7.15"],
+        categories: [],
         series: [
           {
             name: "今年",
-            data: [1111, 1210, 2222, 3333, 4444, 5899, 6554],
+            data: [],
             type: "line",
             addPoint: true,
             color: "#29CC96",
@@ -1448,7 +1456,7 @@ export default {
           },
           {
             name: "去年",
-            data: [1111, 1510, 2522, 3633, 4844, 5899, 6754],
+            data: [],
             type: "line",
             addPoint: true,
             color: "#3199F5",
@@ -1475,50 +1483,58 @@ export default {
       list: [
         {
           num: 15,
-          unit: "mm",
-          name: "降雨量",
-          pic: require("@/static/image/s1.png"),
+          unit: "℃",
+          name: "温度",
+          val: ["", ""],
+          pic: require("@/static/image/new5.png"),
         },
         {
           num: 44.9,
           unit: "%",
           name: "相对湿度",
-          pic: require("@/static/image/s2.png"),
+          val: ["", ""],
+          pic: require("@/static/image/new6.png"),
         },
         {
           num: "西北风",
-          unit: "",
-          name: "风向",
-          pic: require("@/static/image/s3.png"),
+          unit: "PPM",
+          name: "二氧化碳",
+          val: ["", ""],
+          pic: require("@/static/image/f8.png"),
         },
         {
           num: 3,
-          unit: "m/s",
-          name: "风速",
-          pic: require("@/static/image/s4.png"),
+          unit: "Lux",
+          name: "光照",
+          val: ["", ""],
+          pic: require("@/static/image/f6.png"),
         },
         {
           num: 23,
           unit: "℃",
           name: "土壤温度",
+          val: ["", ""],
           pic: require("@/static/image/s5.png"),
         },
         {
           num: 23,
           unit: "%",
           name: "土壤湿度",
-          pic: require("@/static/image/s6.png"),
+          val: ["", ""],
+          pic: require("@/static/image/k4.png"),
         },
         {
           num: 0.35,
           unit: "us/cm",
           name: "土壤EC值",
-          pic: require("@/static/image/s7.png"),
+          val: ["", ""],
+          pic: require("@/static/image/k5.png"),
         },
         {
           num: 6.5,
           unit: "",
           name: "土壤PH值",
+          val: ["", ""],
           pic: require("@/static/image/s8.png"),
         },
       ],
@@ -1531,158 +1547,321 @@ export default {
       numValue: "",
       nameValue: "",
       typeValue: "",
+      teaId: null,
+      notSetFlag: false,
+      getDeviceList: null,
+      chartDataRainFlag:false,
     };
   },
-  onLoad() {
+  onLoad(option) {
+    this.teaId = option.id;
+    let getDeviceList = uni.getStorageSync("deviceList");
+    if (getDeviceList) {
+      this.getDeviceList = JSON.parse(getDeviceList);
+    }
     this.askWeather();
     this.askWeatherStation();
-    this.askVideo();
-    this.askInfo()
+    this.askInfo();
+    this.gardenthresholdday();
+    let now = moment().format("YYYY");
+    let ago = moment().add(-1, "y").format("YYYY");
+    this.getSumRainInYear(now, 1);
+    this.getSumRainInYear(ago, 0);
+    this.getSumTemInYear(now, 1);
+    this.getSumTemInYear(ago, 0);
+    this.fluoritescreenshot()
   },
   methods: {
     typeSelect() {},
     handleMessage() {},
-    askInfo(){
+    fluoritescreenshot(){
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 2;
+      });
        request({
-        url: "/data/teagarden/1",
+        url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial="+find.id,
+        method: "get",
+        isAuth: false,
+        data: {},
+      })
+      .then((res) => {
+        console.log('aaaa',res)
+        this.fluoritescreenshotData=res.data.records[res.data.records.length-1]
+      })
+    },
+    askInfo() {
+      request({
+        url: "/data/teagarden/" + this.teaId,
         method: "get",
         isAuth: false,
         data: {},
       })
         .then((res) => {
-          console.log("restttttt", res);
-          this.infoGet=res.data
+          this.infoGet = res.data;
+          this.askVideo();
         })
         .catch((err) => {
-          console.log("err", err);
+         
         });
     },
     goDetail(item) {
-        if (item.url) {
-          uni.navigateTo({
-            url:
-              "/pages/four2/camera/index?videourl=" +
-              item.url +
-              "&name=" +
-              item.deviceName+'&token='+item.accessToken,
-          });
-        }else{
-          uni.showToast({
-            title: '当前设备离线',
-            icon:'none',
-            duration:1200
-			    });
-        }
+      if (item.url) {
+        uni.navigateTo({
+          url:
+            "/pages/four2/camera/index?videourl=" +
+            item.url +
+            "&name=" +
+            item.deviceName +
+            "&token=" +
+            item.accessToken,
+        });
+      } else {
+        uni.showToast({
+          title: "当前设备离线",
+          icon: "none",
+          duration: 1200,
+        });
+      }
     },
     goDetailGrowth() {
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 2;
+      });
       uni.navigateTo({
-        url: "/pages/four2/site/index",
+        url: "/pages/four2/site/index?id="+find.id,
       });
     },
     askVideo() {
-      request({
-        url: "/data-thirdpart/fluorite/getVideoList",
-        method: "get",
-        isAuth: false,
-        data: {},
-      })
-        .then((res) => {
-          console.log("res", res);
-          this.videoListShow = res.data;
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 2;
+      });
+      if (find) {
+        request({
+          url: "/data-thirdpart/fluorite/getVideoDevice/" + find.id,
+          method: "get",
+          isAuth: false,
+          data: {},
         })
-        .catch((err) => {
-          console.log("err", err);
-        });
+          .then((res) => {
+            this.videoListShow = res.data.data;
+          })
+          .catch((err) => {
+            console.log("err", err);
+          });
+      }
     },
     askWeather() {
-      if(uni.getStorageSync('MJweather')){
-         this.weatherData=uni.getStorageSync('MJweather')
-         this.$nextTick(() => {
+      if (uni.getStorageSync("MJweather")) {
+        this.weatherData = uni.getStorageSync("MJweather");
+        this.$nextTick(() => {
           this.$refs.weather.init();
         });
       }
     },
-    askWeatherStation() {
+    //获取积雨
+    getSumRainInYear(year, type) {
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 1;
+      });
       request({
-        url: "/data/weatherdev/getFrontJsonList/40204067",
+        url: "/data/meteorologicalrecords/getSumRainInYear",
+        method: "get",
+        isAuth: false,
+        data: {
+          deviceId: find.id,
+          year: year,
+        },
+      }).then((res) => {
+        if (type == 1) {
+          let dataGet=[]
+          let year=[]
+          for(let p in res.data){
+            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
+            dataGet.push(pushVal)
+             year.push((res.data[p]['name']).split('月')[0])
+          }
+          console.log(year)
+          this.chartDataRain.categories=year
+          this.chartDataRain.series[0]['data']=dataGet
+        } else {
+          let dataGet=[]
+          for(let p in res.data){
+            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
+            dataGet.push(pushVal)
+          }
+          this.chartDataRain.series[1]['data']=dataGet
+          setTimeout(() => {
+             this.chartDataRainFlag=true 
+          }, 500);
+        }
+      });
+    },
+    //获取积温
+    getSumTemInYear(year, type) {
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 1;
+      });
+      request({
+        url: "/data/meteorologicalrecords/getSumTemInYear",
+        method: "get",
+        isAuth: false,
+        data: {
+          deviceId: find.id,
+          year: year,
+        },
+      }).then((res) => {
+        if (type == 1) {
+          let dataGet=[]
+          let year=[]
+          for(let p in res.data){
+            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
+            dataGet.push(pushVal)
+            year.push((res.data[p]['name']).split('月')[0])
+          }
+          this.chartDataTemperature.categories=year
+          this.chartDataTemperature.series[0]['data']=dataGet
+        } else {
+          let dataGet=[]
+          for(let p in res.data){
+            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
+            dataGet.push(pushVal)
+          }
+          this.chartDataTemperature.series[1]['data']=dataGet
+          setTimeout(() => {
+             this.chartDataTemperatureFlag=true
+          }, 500);
+        }
+      });
+    },
+    //获取参数设置
+    gardenthresholdday() {
+      console.log(848456456546456);
+      request({
+        url: "/data/gardenthresholdday/" + this.teaId,
         method: "get",
         isAuth: false,
         data: {},
-      })
-        .then((res) => {
-          console.log("xxx", res);
-          let dataGet = res.data[0]["data"];
-          console.log("xxxsss", dataGet);
-          this.list2[0] = {
-            num: dataGet[0]["alarmMsg"],
-            unit: "级",
-            name: "风力",
-            pic: require("@/static/image/new1.png"),
-          };
-          this.list2[1] = {
-            num: dataGet[1]["alarmMsg"],
-            unit: "m/s",
-            name: "风速",
-            pic: require("@/static/image/new2.png"),
-          };
-          this.list2[2] = {
-            num: dataGet[2]["alarmMsg"],
-            unit: "",
-            name: "风向",
-            pic: require("@/static/image/new3.png"),
-          };
-          this.list2[3] = {
-            num: dataGet[7]["alarmMsg"],
-            unit: "℃",
-            name: "空气温度",
-            pic: require("@/static/image/new4.png"),
-          };
-          this.list2[4] = {
-            num: dataGet[8]["alarmMsg"],
-            unit: "%RH",
-            name: "空气湿度",
-            pic: require("@/static/image/new5.png"),
-          };
-          this.list2[5] = {
-            num: dataGet[9]["alarmMsg"],
-            unit: "ug/m3",
-            name: "Pm10",
-            pic: require("@/static/image/new6.png"),
-          };
-          // this.list2[6]={
-          //   num: dataGet[5][1]['alarmMsg'],
-          //   unit: "ug/m3",
-          //   name: "Pm2.5",
-          //   pic: require("@/static/image/new.png"),
-          // }
-
-          this.list2[6] = {
-            num: dataGet[11]["alarmMsg"],
-            unit: "kpa",
-            name: "大气压",
-            pic: require("@/static/image/new7.png"),
-          };
-          this.list2[7] = {
-            num: dataGet[12]["alarmMsg"],
-            unit: "lux",
-            name: "光照",
-            pic: require("@/static/image/new8.png"),
-          };
-          this.weatherCreateTime = res.data[0]["datetime"];
-          this.$forceUpdate();
+      }).then((res) => {
+        console.log("resxxx", res);
+        if (!res.data) {
+          this.notSetFlag = true;
+          uni.setStorageSync("setParams", null);
+          return;
+        }
+        let get = res.data;
+        this.list[0]["val"] = [get.airTemMin, get.airTemMax];
+        this.list[1]["val"] = [get.airHumMin, get.airHumMax];
+        this.list[2]["val"] = [get.ppmMin, get.ppmMax];
+        this.list[3]["val"] = [get.luxMin, get.luxMax];
+        this.list[4]["val"] = [get.soilTemMin, get.soilTemMax];
+        this.list[5]["val"] = [get.soilHumMin, get.soilHumMax];
+        this.list[6]["val"] = [get.soilEcMin, get.soilEcMax];
+        this.list[7]["val"] = [get.soilPhMin, get.soilPhMax];
+        uni.setStorageSync("setParams", JSON.stringify(get));
+      });
+    },
+    askWeatherStation() {
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 1;
+      });
+      if (find) {
+        request({
+          url: "/data/meteorologicalrecords/getCurrentWeather/" + find.id,
+          method: "get",
+          isAuth: false,
+          data: {},
         })
-        .catch((err) => {});
+          .then((res) => {
+            console.log("xxx", res);
+            let dataGet = res.data[0]["data"];
+            console.log("xxxsss", dataGet);
+            this.list2[0] = {
+              num: dataGet[0]["alarmMsg"],
+              unit: "级",
+              name: "风力",
+              pic: require("@/static/image/new1.png"),
+            };
+            this.list2[1] = {
+              num: dataGet[1]["alarmMsg"],
+              unit: "m/s",
+              name: "风速",
+              pic: require("@/static/image/new2.png"),
+            };
+            this.list2[2] = {
+              num: dataGet[2]["alarmMsg"],
+              unit: "",
+              name: "风向",
+              pic: require("@/static/image/new3.png"),
+            };
+            this.list2[3] = {
+              num: dataGet[7]["alarmMsg"],
+              unit: "℃",
+              name: "空气温度",
+              pic: require("@/static/image/new4.png"),
+            };
+            this.list2[4] = {
+              num: dataGet[8]["alarmMsg"],
+              unit: "%RH",
+              name: "空气湿度",
+              pic: require("@/static/image/new5.png"),
+            };
+            this.list2[5] = {
+              num: dataGet[9]["alarmMsg"],
+              unit: "ug/m3",
+              name: "Pm10",
+              pic: require("@/static/image/new6.png"),
+            };
+            // this.list2[6]={
+            //   num: dataGet[5][1]['alarmMsg'],
+            //   unit: "ug/m3",
+            //   name: "Pm2.5",
+            //   pic: require("@/static/image/new.png"),
+            // }
+
+            this.list2[6] = {
+              num: dataGet[11]["alarmMsg"],
+              unit: "kpa",
+              name: "大气压",
+              pic: require("@/static/image/new7.png"),
+            };
+            this.list2[7] = {
+              num: dataGet[12]["alarmMsg"],
+              unit: "lux",
+              name: "光照",
+              pic: require("@/static/image/new8.png"),
+            };
+            this.weatherCreateTime = res.data[0]["datetime"];
+            this.$forceUpdate();
+          })
+          .catch((err) => {});
+      }
     },
 
     goSet() {
       uni.navigateTo({
-        url: "/pages/wisdom/param/index",
+        url:
+          "/pages/wisdom/param/index?id=" +
+          this.teaId +
+          "&name=" +
+          this.infoGet.name,
       });
     },
     goMap() {
-      let that=this
+      let that = this;
+      let set={
+        center:[that.infoGet.longitude,that.infoGet.latitude],
+        pointArr:[
+          {
+            lat:that.infoGet.latitude, 
+            lng: that.infoGet.longitude,
+            icon:'icon'
+          }
+        ]
+      }
+      uni.setStorageSync("mapParams",JSON.stringify(set))
       uni.navigateTo({
-        url: "/pages/map/index?log="+that.infoGet.longitude+'&lat='+that.infoGet.latitude,
+        url:
+          "/pages/map/index"
       });
     },
     changeTabHandle(index) {
@@ -1697,10 +1876,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.textflex{
+.textflex {
   display: flex;
   justify-content: space-between;
-
+}
+.info4 {
+  span {
+    margin-right: 10rpx;
+  }
 }
 .header3Top {
   margin-top: 22rpx;

@@ -99,6 +99,11 @@
               name="arrow-right"
             ></u-icon>
           </div>
+           <div @click="loginOut" class="child child2 chilid8">
+            <div class="c1">
+              退出登录
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -199,6 +204,23 @@ export default {
     };
   },
   methods: {
+    loginOut(){
+      uni.showModal({
+        title: '提示',
+        content: '确认退出登录?',
+        success: function (res) {
+          if (res.confirm) {
+            uni.setStorageSync('token','')
+            uni.navigateTo({
+              url:'/pages/login/login'
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        }
+      });
+
+    },
     goNews(){
       uni.navigateTo({
           url: "/pages/news/index",
@@ -267,6 +289,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.chilid8{
+  background: rgb(255, 67, 60)!important;
+  color: #fff!important;
+  justify-content: center!important;
+  margin-top: 60rpx!important;
+}
 .child11{
   border-bottom-left-radius: 0!important;
    border-bottom-right-radius: 0!important;

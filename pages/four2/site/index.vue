@@ -1,23 +1,31 @@
 <template>
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
-   
-    <div  class="content">
+
+    <div class="content">
       <div class="test1">
-       
-        <div class="test3 flexcenter">
+        <div class="test3 flexcenter" @click="dateShow = true">
           <div class="inputdiy">
-            {{dateInput}}
+            {{ dateInput }}
           </div>
           <div class="search">
-            <image @click="dateShow=true" mode="widthFix" class="datepic" src="@/static/image/date.png" />
+            <image
+              mode="widthFix"
+              class="datepic"
+              src="@/static/image/date.png"
+            />
           </div>
         </div>
       </div>
       <div class="test5">
-        <div class="test6" v-for="(item,index) in 5" :key="index">
-          <image mode="widthFix" class="videopic" src="@/static/image/videopic.png" />
-          <div class="text">2022.04.22 16:33</div>
+        <div class="test6" v-for="(item, index) in list" :key="index">
+          <image
+            @click="preview(index)"
+            mode="widthFix"
+            class="videopic"
+            :src="baseUrl + item.url"
+          />
+          <div class="text">{{ item.createTime }}</div>
         </div>
       </div>
     </div>
@@ -28,21 +36,26 @@
       :mode="mode"
       @confirm="confirm"
     ></u-calendar>
+    
   </div>
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import request from "../../../common/utils/request";
+import { BASE_URL } from "../../../common/utils/config";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
-      dateInput:'请选择日期',
-      mode: "single",
-      dateShow:false,
+      baseUrl: BASE_URL,
+      list: [],
+      dateInput: "请选择日期",
+      mode: "range",
+      dateShow: false,
       value: "",
-      
+
       showType: false,
       showType2: false,
       pageName: "农情监测",
@@ -71,48 +84,83 @@ export default {
       ],
       nameValue: "",
       typeValue: "",
+      startTime:'',
+      endTime:'',
+      getId:'',
     };
+  },
+  onLoad(option) {
+    this.getId=option.id
+    this.fluoritescreenshot();
   },
   methods: {
     typeSelect() {},
-     confirm(e) {
+    preview(i) {
+      uni.previewImage({
+        // 预览时，默认显示图片的索引
+        current: i,
+        // 所有图片 url 路径的数组  //这里直接把图片列表的数组放入即可
+        urls: this.list.map((item) => this.baseUrl+item.url),
+      });
+    },
+    confirm(e) {
       this.dateShow = false;
-      this.dateInput = e[0];
-      console.log(e);
+      this.startTime=e[0]
+      this.endTime=e[e.length-1]
+      this.dateInput=this.startTime+'-'+this.endTime
+      this.fluoritescreenshot()
+    },
+    fluoritescreenshot() {
+      let data={}
+      if(this.endTime){
+        data.startTime=this.startTime
+        data.endTime=this.endTime
+
+      }
+      request({
+        url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial=" + this.getId,
+        method: "get",
+        isAuth: false,
+        data: data,
+      }).then((res) => {
+        console.log("aaaa", res);
+        this.list = res.data.records.reverse();
+      });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 .content {
-    .test5{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-    .inputdiy{
-        background: #fff;
-        font-size: 24rpx;
-        color: #C4C7CC;
-        height: 64rpx;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding-left: 40rpx;
-    }
-  .datepic{
-      width: 48rpx;
+  .test5 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
-  .test6{
+  .inputdiy {
+    background: #fff;
+    font-size: 24rpx;
+    color: #c4c7cc;
+    height: 64rpx;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 40rpx;
+  }
+  .datepic {
+    width: 48rpx;
+  }
+  .test6 {
     border-radius: 32rpx;
     overflow: hidden;
-    width:330rpx;
+    width: 330rpx;
     margin-top: 30rpx;
-     background: #fff;
-    .videopic{
+    background: #fff;
+    height: 264rpx;
+    .videopic {
       width: 100%;
     }
-    .text{
+    .text {
       padding: 15rpx;
       font-size: 28rpx;
       color: #626466;

@@ -45,8 +45,8 @@
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                {{ item.id }}
+                <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
+                {{ item.name }}
               </div>
               <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
             </div>
@@ -58,7 +58,7 @@
                   class="set"
                   src="@/static/image/adress2.png"
                 />
-                (鄂托克前旗三段村)
+                {{ item.address ? item.address : "-" }}
               </div>
               <div class="d4 flexcenter">
                 <image
@@ -66,7 +66,7 @@
                   class="set"
                   src="@/static/image/time.png"
                 />
-                {{ item.createTime }}
+                {{ item.create_time }}
               </div>
             </div>
           </div>
@@ -97,12 +97,12 @@
         <!-- <div @click="goFarm" class="title2">全部设备</div> -->
       </div>
       <div class="scrolldiv">
-         <div class="scrollchild" v-for="(item,index) in soilList" :key="index">
+        <div class="scrollchild" v-for="(item, index) in soilList" :key="index">
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                {{item.id}}
+                <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
+                {{ item.name }}
               </div>
               <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
             </div>
@@ -114,7 +114,7 @@
                   class="set"
                   src="@/static/image/adress2.png"
                 />
-                (鄂托克前旗三段村)
+                {{item.address?item.address:'-'}}
               </div>
               <div class="d4 flexcenter">
                 <image
@@ -122,24 +122,61 @@
                   class="set"
                   src="@/static/image/time.png"
                 />
-                {{item.createTime}}
+                {{ item.record_time }}
               </div>
             </div>
           </div>
           <div class="index1 index90">
             <div
               class="index91"
-              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
-              v-for="(item, index) in item.arr"
-              :key="index"
+              
             >
-              <image mode="widthFix" class="pic92" :src="item.pic" />
+              <image mode="widthFix" class="pic92" src="@/static/image/s7.png" />
               <div class="index92">
                 <div class="index93">
-                  <span>{{ item.num }}</span
-                  >{{ item.unit }}
+                  <span>{{item.ec}}</span
+                  >us/cm
                 </div>
-                {{ item.name }}
+                土壤EC值
+              </div>
+            </div>
+            <div
+              class="index91"
+              
+            >
+              <image mode="widthFix" class="pic92" src="@/static/image/s8.png" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{item.ph}}</span
+                  >
+                </div>
+                土壤PH值
+              </div>
+            </div>
+            <div
+              class="index91" 
+            >
+              <image mode="widthFix" class="pic92" src="@/static/image/s5.png" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{item.temperature}}</span
+                  >℃
+                </div>
+                土壤温度
+              </div>
+            </div>
+            <div
+              class="index91"
+              
+            >
+              <image mode="widthFix" class="pic92" src="@/static/image/s6.png" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{item.humidity}}</span
+                  >
+                  %
+                </div>
+                土壤湿度
               </div>
             </div>
           </div>
@@ -257,7 +294,7 @@
       <div class="index1">
         <div class="header">
           <div class="header2">设备统计</div>
-          <div class="header3">全部设备</div>
+          <!-- <div class="header3">全部设备</div> -->
         </div>
         <div class="cirbox">
           <qiun-data-charts
@@ -282,7 +319,7 @@
       <div class="index1">
         <div class="header">
           <div class="header2">设备状态</div>
-          <div class="header3">全部设备</div>
+          <!-- <div class="header3">全部设备</div> -->
         </div>
         <div class="cirbox">
           <qiun-data-charts
@@ -298,8 +335,8 @@
       </div>
       <div class="index1">
         <div class="header">
-          <div class="header2">设备统计</div>
-          <div class="header3">全部设备</div>
+          <div class="header2">设备工作时长占比</div>
+          <!-- <div class="header3">全部设备</div> -->
         </div>
         <div class="cirbox">
           <qiun-data-charts
@@ -369,7 +406,7 @@ export default {
   },
   data() {
     return {
-      weatherList: [],
+      userInfo:null,
       soilList: [],
       weatherList: [],
       chartDataTemperature: {
@@ -394,21 +431,21 @@ export default {
         series: [
           {
             data: [
-              {
-                name: "在线",
-                value: 50,
-                color: "#29CC96",
-              },
-              {
-                name: "离线",
-                value: 60,
-                color: "#939599",
-              },
-              {
-                name: "异常",
-                value: 70,
-                color: "#F56262",
-              },
+              // {
+              //   name: "在线",
+              //   value: 50,
+              //   color: "#29CC96",
+              // },
+              // {
+              //   name: "离线",
+              //   value: 60,
+              //   color: "#939599",
+              // },
+              // {
+              //   name: "异常",
+              //   value: 70,
+              //   color: "#F56262",
+              // },
             ],
           },
         ],
@@ -417,21 +454,21 @@ export default {
         series: [
           {
             data: [
-              {
-                name: "工作时长",
-                value: 50,
-                color: "#317FF5",
-              },
-              {
-                name: "离线时长",
-                value: 60,
-                color: "#F56262",
-              },
-              {
-                name: "异常时长",
-                value: 70,
-                color: "#3199F5",
-              },
+              // {
+              //   name: "工作时长",
+              //   value: 50,
+              //   color: "#317FF5",
+              // },
+              // {
+              //   name: "离线时长",
+              //   value: 60,
+              //   color: "#F56262",
+              // },
+              // {
+              //   name: "异常时长",
+              //   value: 70,
+              //   color: "#3199F5",
+              // },
             ],
           },
         ],
@@ -467,54 +504,29 @@ export default {
       },
       chartDataSet: {
         series: [
-          {
-            name: "气象监测站",
-            data: 50,
-            color: "#17E5CA",
-          },
           // {
-          //   name: "水肥一体机",
-          //   data: 62,
-          //   color: "#3199F5",
+          //   name: "气象监测站",
+          //   data: 50,
+          //   color: "#17E5CA",
           // },
-          {
-            name: "虫情监测站",
-            data: 23,
-            color: "#F5A631",
-          },
-          {
-            name: "土壤墒情仪",
-            data: 96,
-            color: "#8F30BF",
-          },
-          {
-            name: "摄像机",
-            data: 42,
-            color: "#17CAE5",
-          },
+          // {
+          //   name: "虫情监测站",
+          //   data: 23,
+          //   color: "#F5A631",
+          // },
+          // {
+          //   name: "土壤墒情仪",
+          //   data: 96,
+          //   color: "#8F30BF",
+          // },
+          // {
+          //   name: "摄像机",
+          //   data: 42,
+          //   color: "#17CAE5",
+          // },
         ],
       },
       tablist: [
-        {
-          num: 10,
-          text: "摄像头",
-        },
-        {
-          num: 4,
-          text: "气象监测",
-        },
-        {
-          num: 96,
-          text: "虫情监测",
-        },
-        {
-          num: 12,
-          text: "墒情监测",
-        },
-         {
-          num: 12,
-          text: "水肥灌溉",
-        },
       ],
       active: true,
       active2: true,
@@ -552,108 +564,167 @@ export default {
     };
   },
   onLoad() {
-    this.getEnvironment();
+    this.userInfo=uni.getStorageSync('userInfo')
+    this.getEnvironment()
+    this.getCurrentMoisture()
+    this.getAllDeviceStatusNow()
+    this.getEachDeviceCountByUser()
+    this.getAllDeviceWorkTimes()
   },
   methods: {
-    getEnvironment() {
-      request({
-        url: "/data/weatherdev/getFrontJsonList/40204067,40202409",
+    getAllDeviceStatusNow(){
+       
+       request({
+        url: "/data/iotdevice/getAllDeviceStatusNow",
         method: "get",
         isAuth: false,
-        data: {},
+        data: {userId:this.userInfo.userId},
+      })
+      .then((res) => { 
+          let online=parseInt(res.data.online)
+          let total=parseInt(res.data.total)
+          this.chartDataPie.series[0]['data'].push({
+                name: "在线",
+                value: online,
+                color: "#29CC96",
+          })
+           this.chartDataPie.series[0]['data'].push({
+                name: "离线",
+                value: total-online,
+                color: "#939599",
+          })
+           this.chartDataPie.series[0]['data'].push({
+                name: "异常",
+                value:0,
+                color: "yellow",
+          })
+       })
+    },
+    getAllDeviceWorkTimes(){
+      request({
+        url: "/data/iotdevice/getAllDeviceWorkTimes",
+        method: "get",
+        isAuth: false,
+        data: {userId:this.userInfo.userId},
+      })
+      .then((res) => { 
+        let online=res.data.worktimes
+        let total=res.data.allimes
+        this.chartDataPie2.series[0]['data'].push({
+                name: "工作时长",
+                value: online,
+                color: "#317FF5",
+        })
+        this.chartDataPie2.series[0]['data'].push({
+                name: "离线时长",
+                value: total-online,
+                color: "#F56262",
+        })
+        this.chartDataPie2.series[0]['data'].push({
+                name: "异常时长",
+                value: 0,
+                color: "yellow",
+        })
+      })
+    },
+    getEachDeviceCountByUser(){
+      request({
+        url: "/data/iotdevice/getEachDeviceCountByUser",
+        method: "get",
+        isAuth: false,
+        data: {userId:this.userInfo.userId},
+      })
+      .then((res) => { 
+        
+        let colorArr=['#17E5CA','#F5A631',"#8F30BF","#17CAE5"]
+        res.data.deviceList.forEach((item,index)=>{
+          this.chartDataSet.series.push({
+            name: item.name,
+            data: parseInt(item.value),
+            color: colorArr[index],
+          })
+          this.tablist.push({
+            num:parseInt(item.value),
+            text:item.name
+          })
+        })
+       })
+    },
+    getEnvironment() {
+      request({
+        url: "/data/meteorologicalrecords/getCurrentWeather",
+        method: "get",
+        isAuth: false,
+        data: {
+          userId:this.userInfo.userId
+        },
       }).then((res) => {
-        console.log("res", res);
-
-        res.data.forEach((item, index) => {
-          let addArr = [];
-          let addArr2 = [];
-          addArr[0] = {
-            num: item.data[0]["alarmMsg"],
+        this.weatherList = res.data;
+        this.weatherList.forEach((item2, index) => {
+          let add = [];
+          add[0] = {
+            //num: item2.wind_speed!=null ? item2.wind_speed : "-",
+            num:1,
             unit: "级",
             name: "风力",
             pic: require("@/static/image/new1.png"),
           };
-          addArr[1] = {
-            num: item.data[1]["alarmMsg"],
+          add[1] = {
+            num: item2.wind_speed!=null ? item2.wind_speed : "-",
             unit: "m/s",
             name: "风速",
             pic: require("@/static/image/new2.png"),
           };
-          addArr[2] = {
-            num: item.data[2]["alarmMsg"],
+          add[2] = {
+            num: item2.wind_direct!=null ? item2.wind_direct : "-",
             unit: "",
             name: "风向",
             pic: require("@/static/image/new3.png"),
           };
-          addArr[3] = {
-            num: item.data[7]["alarmMsg"],
+          add[3] = {
+            num: item2.air_tem!=null ? item2.air_tem : "-",
             unit: "℃",
             name: "空气温度",
             pic: require("@/static/image/new4.png"),
           };
-          addArr[4] = {
-            num: item.data[8]["alarmMsg"],
+          add[4] = {
+            num: item2.air_hum!=null ? item2.air_hum : "-",
             unit: "%RH",
             name: "空气湿度",
             pic: require("@/static/image/new5.png"),
           };
-          addArr[5] = {
-            num: item.data[9]["alarmMsg"],
+          add[5] = {
+            num: item2.pm2point5!=null ? item2.pm2point5 : "-",
             unit: "ug/m3",
-            name: "Pm10",
+            name: "Pm2",
             pic: require("@/static/image/new6.png"),
           };
-          addArr[6] = {
-            num: item.data[11]["alarmMsg"],
+          add[6] = {
+            num: item2.kpa!=null ? item2.kpa : "-",
             unit: "kpa",
             name: "大气压",
             pic: require("@/static/image/new7.png"),
           };
-          addArr[7] = {
-            num: item.data[12]["alarmMsg"],
+          add[7] = {
+            num: item2.lux!=null ? item2.lux : "-",
             unit: "lux",
             name: "光照",
             pic: require("@/static/image/new8.png"),
           };
-          //墒情
-          addArr2[0] = {
-            num: item.data[3]["alarmMsg"],
-            unit: "℃",
-            name: "土壤温度",
-            pic: require("@/static/image/f3.png"),
-          };
-          addArr2[1] = {
-            num: item.data[4]["alarmMsg"],
-            unit: "%RH",
-            name: "土壤湿度",
-            pic: require("@/static/image/addicon2.png"),
-          };
-          addArr2[2] = {
-            num: item.data[5]["alarmMsg"],
-            unit: "",
-            name: "土壤PH值",
-            pic: require("@/static/image/s8.png"),
-          };
-          addArr2[3] = {
-            num: item.data[6]["alarmMsg"],
-            unit: "",
-            name: "土壤EC值",
-            pic: require("@/static/image/s7.png"),
-          };
-
-          this.$set(this.weatherList, index, {
-            createTime: item.datetime,
-            arr: addArr,
-            id: item.id,
-          });
-          this.$set(this.soilList, index, {
-            createTime: item.datetime,
-            arr: addArr2,
-            id: item.id,
-          });
+          this.$set(item2, "arr", add);
         });
-        console.log(this.weatherList);
-        //this.$forceUpdate();
+      });
+    }, 
+    getCurrentMoisture() {
+      request({
+        url: "/data/moisturerecords/getCurrentMoisture",
+        method: "get",
+        isAuth: false,
+        data: {
+          userId:this.userInfo.userId
+        },
+      }).then((res) => {
+        this.soilList=res.data
       });
     },
     goDetail2(val) {

@@ -4,13 +4,13 @@
     <div class="topwrap">
       <div class="top">
         <u--input
-          v-model="typeValue"
-          placeholder="请输入站点名称"
+          v-model="keyword"
+          placeholder="请输入搜索关键字"
           border="none"
         ></u--input>
         <u-icon
           slot="right"
-          @click="showType = true"
+          @click="farminformation(true)"
           color="#C4C7CC"
           size="26"
           name="search"
@@ -25,18 +25,27 @@
         </div>
       </div>
       <div class="tab flexcenter">
-        <div class="tab1 tab2">最近更新</div>
-        <div class="tab1">推荐</div>
-        <div class="tab1">
+        <div :class="[activeTabIndex==0?'tab2':'','tab1']" @click="changeTab(0)">最近更新</div>
+        <div :class="[activeTabIndex==1?'tab2':'','tab1']" @click="changeTab(1)">推荐</div>
+        <!-- <div class="tab1">
           <div class="knowicon" @click="activeTab = !activeTab">
             知识推荐
             <div class="tab1icon">
               <u-icon
+                v-if="!activeTab"
                 slot="right"
                 @click="showType = true"
                 color="#C4C7CC"
                 size="15"
                 name="arrow-down-fill"
+              ></u-icon>
+                <u-icon
+                v-else
+                slot="right"
+                @click="showType = true"
+                color="#C4C7CC"
+                size="15"
+                name="arrow-up-fill"
               ></u-icon>
             </div>
           </div>
@@ -50,41 +59,38 @@
               {{ item.name }}
             </div>
           </div>
-        </div>
-        <div class="tab1">我的收藏</div>
+        </div> -->
+        <div :class="[activeTabIndex==3?'tab2':'','tab1']" @click="changeTab(3)">我的收藏</div>
       </div>
     </div>
     <div class="index1 index1clear">
-      <div v-for="(item, index) in 2" :key="index" class="img2">
+      <div v-for="(item, index) in list" :key="index" class="img2">
         <div class="wzdiv">
-          <div class="header header7 flexcenter">
+          <div class="header header7 flexcenter"  @click="goDetail(item)">
             <image mode="widthFix" class="zzpic2" src="@/static/image/Frame.png" />
-            <div class="header2">生长周期有多长，一年能种几次 ，需注意生长周期有多长，一年能种几次 ，需注意…生长周期有多长，一年能种几次 ，需注意…</div>
-            
+            <div class="header2">{{item.title}}</div>
           </div>
-          <div class="ns1 ns1flex">
-            <image mode="widthFix" class="zzpic" src="@/static/image/zz1.png" />
-            <image mode="widthFix" class="zzpic" src="@/static/image/zz2.png" />
-            <image mode="widthFix" class="zzpic" src="@/static/image/zz3.png" />
+          <div  @click="goDetail(item)" class="ns1 ns1flex" v-if="item.cover&&item.cover.length>0">
+            <image v-for="(item2,index2) in item.cover" :key="index2" mode="widthFix" class="zzpic" :src="baseUrl+item2" />
+           
           </div>
           <div class="text">
-            最常见的瓜果类蔬菜了，全国各地普遍栽培。今天我们为大家讲讲生长周期到6-7片叶后开始甩蔓的时候，要及时拉线吊蔓最常见的瓜果类蔬菜了，全国各地普遍栽培。今天我们为大家讲讲生长周期到6-7片叶后开始甩蔓的时候，要及时拉线吊蔓........
-            最常见的瓜果类蔬菜了，全国各地普遍栽培。今天我们为大家讲讲生长周期到6-7片叶后开始甩蔓的时候，要及时拉线吊蔓........
+            {{item.content}}
           </div>
           <div class="zt">
             <div class="ztt1">
               <image mode="widthFix" class="tx" src="@/static/image/man.png" />
               <span class="name">
-                李四
+                {{item.author}}
               </span>
               <div class="ztt2 flexcenter">
-                <image mode="widthFix" class="tx1" src="@/static/image/zan.png" />
-                <image mode="widthFix" class="tx1" src="@/static/image/sc.png" />
+                <image mode="widthFix" @click="addCollect(item)" v-if="!item.isCollectionByMe" class="tx2" src="@/static/image/sc.png" />
+                <image mode="widthFix" @click="removeCollect(item)" v-else class="tx2" src="@/static/image/sca.png" />
                 <image mode="widthFix" class="tx1" src="@/static/image/zf.png" />
               </div>
             </div>
             <div class="ztt1">
-              2022.02.01  09:35:20
+              {{item.createTime}}
             </div>
           </div>
         </div>
@@ -94,13 +100,21 @@
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import request from "../../../common/utils/request";
+import { BASE_URL } from "../../../common/utils/config";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      keyword:'',
+      baseUrl:BASE_URL,
+      userInfo:null,
+      list:[],
+      listOver:false,
       activeTab: false,
+      current: 1,
       select: [
         {
           name: "全部",
@@ -119,14 +133,114 @@ export default {
       numValue: "",
       nameValue: "",
       typeValue: "",
+      category:'',
+      recommend:false,
+      activeTabIndex:0,
+      collectionByMeFlag:false,
     };
   },
+  onLoad(){
+    this.userInfo=uni.getStorageSync('userInfo')
+    this.farminformation()
+  },
+  onReachBottom() {
+    console.log("触底了");
+    if(!this.listOver){
+      this.current++;
+      this.farminformation();
+    }
+  },
   methods: {
-    goDetail() {
+    goDetail(item){
+      uni.setStorageSync('articleContent',JSON.stringify(item))
       uni.navigateTo({
-        url: "/pages/expert/knowledgeDetail/index",
-      });
+        url:'/pages/expert/knowledgeDetail/index'
+      })
     },
+    addCollect(item){
+      request({
+        url: "/data/usercollection",
+        method: "post",
+        isAuth: false,
+        data: {
+          informationId:item.id,
+          userId:this.userInfo.userId
+        },
+      })
+      .then((res) => { 
+        item.isCollectionByMe=true
+        uni.showToast({
+          title: "收藏成功",
+          icon: "none",
+          duration: 850,
+        });
+      })
+    },
+    changeTab(val){
+      this.activeTabIndex=val
+      this.recommend=val==1?true:false
+      this.collectionByMeFlag=val==3?true:false
+      this.farminformation(true)
+    },
+    removeCollect(item){
+      request({
+        url: "/data/usercollection/removeByUserAndInformation?informationId="+item.id+"&userId="+this.userInfo.userId,
+        method: "delete",
+        isAuth: false,
+        data: {
+        
+        },
+      })
+      .then((res) => { 
+         uni.showToast({
+          title: "取消收藏成功",
+          icon: "none",
+          duration: 850,
+        });
+        item.isCollectionByMe=false
+      })
+    },
+    farminformation(init){
+     
+      if(init){
+        
+        // if(this.keyword==''){
+        //   return 
+        // }
+        this.current=1
+        this.list=[]
+      }
+      request({
+        url:"/data/farminformation/pageFront",
+        method: "get",
+        isAuth: false,
+        data: {
+          current: this.current,
+          userId:this.userInfo.userId,
+          category:this.category,
+          keyword:this.keyword,
+          recommend:this.recommend,
+          collectionByMe:this.collectionByMeFlag
+        },
+      })
+      .then((res) => { 
+        this.list=this.list.concat(res.data.records)
+        this.list.forEach((item,index)=>{
+          let get=item.coverImage.split(',')
+          this.$set(item,'cover',get)
+        })
+        console.log(this.list)
+        if (res.data.records.length == 0) {
+          uni.showToast({
+            title: "暂无更多文章",
+            icon: "none",
+            duration: 850,
+          });
+          this.listOver=true
+        }
+      })
+    },
+    
     chooseOne(item) {
       this.activeTab = !this.activeTab;
     },
@@ -152,6 +266,10 @@ export default {
 }
 .tx1{
   width: 32rpx;
+  margin-right: 10rpx;
+}
+.tx2{
+   width: 38rpx;
   margin-right: 10rpx;
 }
 .img2 {
@@ -247,7 +365,7 @@ export default {
   font-weight: bold;
 }
 .tab1 {
-  width: 25%;
+  width: 33.33%;
   display: flex;
   align-items: center;
   position: relative;

@@ -4,125 +4,93 @@
     <div class="content">
       <div class="titleparam">环境参数告警值</div>
       <div class="param">
-        <div class="list" v-for="(item, index) in paramList" :key="index">
+        <div class="list" v-for="(item, index) in list" :key="index">
           <div class="c1">
             {{ index + 1 }}.{{ item.name }}（{{ item.unit }}）
           </div>
           <div class="c2">
-           
             <div class="c3">
-              <div class="c4"> 
+              <div class="c4">
                 <u--input
-                    type="number"
-                    placeholder="10"
-                    border="none"
-                    clearable
-                  ></u--input>
+                  type="number"
+                  v-model="item['val'][0]"
+                  border="none"
+                  clearable
+                ></u--input>
               </div>
+
               <div class="c5">~</div>
               <div class="c4">
                 <u--input
-                    type="number"
-                    placeholder="20"
-                    border="none"
-                    clearable
-                  ></u--input>
+                  type="number"
+                  border="none"
+                  v-model="item['val'][1]"
+                  clearable
+                ></u--input>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="btntwo">
-        <div class="two1 two3">
-          确定
-        </div>
-        <div @click="goBack" class="two1 two2">
-          取消
-        </div>
+        <div @click="goBack" class="two1 two2">取消</div>
+        <div @click="submit" class="two1 two3">确定</div>
       </div>
     </div>
   </div>
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import request from "../../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
-      paramList: [
+      list: [
         {
           name: "温度",
           unit: "℃",
+          val: ["", ""],
         },
         {
           name: "湿度",
           unit: "%",
+          val: ["", ""],
         },
         {
-          name: "照度",
-          unit: "KLux",
-        },
-        {
-          name: "浓度",
+          name: "二氧化碳",
           unit: "PPM",
+          val: ["", ""],
+        },
+        {
+          name: "光照",
+          unit: "Lux",
+          val: ["", ""],
         },
         {
           name: "土壤温度",
           unit: "℃",
+          val: ["", ""],
         },
         {
           name: "土壤湿度",
           unit: "%",
-        },
-        {
-          name: "土壤PH值",
-          unit: "",
+          val: ["", ""],
         },
         {
           name: "土壤EC值",
           unit: "us/cm",
+          val: ["", ""],
+        },
+        {
+          name: "土壤PH值",
+          unit: "",
+          val: ["", ""],
         },
       ],
-      list: [
-        {
-          num: 15,
-          unit: "mm",
-          name: "降雨量",
-          pic: require("@/static/image/k1.png"),
-        },
-        {
-          num: 44.9,
-          unit: "%",
-          name: "相对湿度",
-          pic: require("@/static/image/k2.png"),
-        },
-        {
-          num: "西北风",
-          unit: "",
-          name: "风向",
-          pic: require("@/static/image/k3.png"),
-        },
-        {
-          num: 3,
-          unit: "m/s",
-          name: "风速",
-          pic: require("@/static/image/k4.png"),
-        },
-        {
-          num: 7.9,
-          unit: "",
-          name: "土壤酸碱度",
-          pic: require("@/static/image/k5.png"),
-        },
-        {
-          num: 1.5,
-          unit: "M",
-          name: "液位传感器",
-          pic: require("@/static/image/k6.png"),
-        },
-      ],
+
       activeChild: 0,
       value: "",
       active: 3,
@@ -192,19 +160,106 @@ export default {
       ],
       nameValue: "",
       typeValue: "",
+      teaName: "",
+      
     };
+  },
+  onLoad(option) {
+    this.teaId = option.id;
+    this.teaName = option.name;
+    //取之前的参数
+    let get = uni.getStorageSync("setParams");
+    if (get) {
+      this.initParams(get);
+    }
   },
   methods: {
     typeSelect() {},
+    initParams(val) {
+      let get = JSON.parse(val);
+      console.log('get',get)
+      this.$set(this.list[0],'val', [get.airTemMin, get.airTemMax])
+      this.$set(this.list[1],'val', [get.airHumMin, get.airHumMax])
+      this.$set(this.list[2],'val', [get.ppmMin, get.ppmMax])
+      this.$set(this.list[3],'val', [get.luxMin, get.luxMax])
+      this.$set(this.list[4],'val', [get.soilTemMin, get.soilTemMax])
+      this.$set(this.list[5],'val', [get.soilHumMin, get.soilHumMax])
+      this.$set(this.list[6],'val',[get.soilEcMin, get.soilEcMax])
+      this.$set(this.list[7],'val',[ get.soilPhMin, get.soilPhMax])
+    },
+    submit() {
+      let flag1=this.list.find(item=>{
+        return JSON.parse(item['val'][1])<=JSON.parse(item['val'][0])
+      })
+      let flag2=this.list.find(item=>{
+        return item['val'][0]===''||item['val'][1]===''
+      })
+      if(flag2){
+        uni.showToast({
+          title: "请完成最大值或者最小值",
+          icon: "none",
+          duration: 1000,
+        });
+        return
+      }
+      if(flag1){
+        uni.showToast({
+          title: "最大值必须大于最小值",
+          icon: "none",
+          duration: 1000,
+        });
+        console.log('flag',flag1)
+        return
+      }
+      this.submitTo();
+    },
+    submitTo() {
+      let dataSet={
+          gardenName: this.teaName,
+          id: this.teaId,
+          airTemMin:this.list[0]['val'][0], 
+          airTemMax:this.list[0]['val'][1], 
+          airHumMin:this.list[1]['val'][0], 
+          airHumMax:this.list[1]['val'][1], 
+          ppmMin:this.list[2]['val'][0], 
+          ppmMax:this.list[2]['val'][1], 
+          luxMin:this.list[3]['val'][0], 
+          luxMax:this.list[3]['val'][1], 
+          soilTemMin:this.list[4]['val'][0], 
+          soilTemMax:this.list[4]['val'][1], 
+          soilHumMin:this.list[5]['val'][0], 
+          soilHumMax:this.list[5]['val'][1], 
+          soilEcMin:this.list[6]['val'][0], 
+          soilEcMax:this.list[6]['val'][1], 
+          soilPhMin:this.list[7]['val'][0], 
+          soilPhMax:this.list[7]['val'][1], 
+      }
+      request({
+        url: "/data/gardenthresholdday",
+        method: "put",
+        isAuth: false,
+        data: dataSet,
+      }).then((res) => {
+        uni.showToast({
+          title: "设置成功",
+          icon: "exception",
+          duration: 850,
+        })
+        uni.setStorageSync("setParams", JSON.stringify(dataSet));
+        setTimeout(() => {
+          uni.navigateBack();
+        }, 1000);
+      });
+    },
     addTask() {
       uni.navigateTo({
         url: "/pages/wisdom/addWisdom/index",
       });
     },
-    goBack(){
+    goBack() {
       uni.navigateBack({
-		    delta:1,//返回层数，2则上上页
-	  })
+        delta: 1, //返回层数，2则上上页
+      });
     },
     goDetail() {
       if (this.active == 2) {
@@ -222,18 +277,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 .content {
-  .btntwo{
+  .btntwo {
     padding-bottom: 40rpx;
   }
-  .two1{
+  .two1 {
     border: 1px solid#12A669;
   }
-  .two3{
-    background: #12A669;
+  .two3 {
+    background: #12a669;
     color: #fff;
   }
-  .two2{
-    color: #12A669;
+  .two2 {
+    color: #12a669;
   }
   .titleparam {
     font-size: 28rpx;
@@ -247,6 +302,8 @@ export default {
       opacity: 1;
       border: 1px solid #f5f5f5;
       padding: 10rpx;
+      width: 272rpx;
+      overflow: hidden;
     }
     .list {
       background: #fff;
@@ -300,10 +357,10 @@ export default {
       background: #f5f5f5;
       color: #939599;
       width: 48rpx;
-    height: 48rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      height: 48rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
       border-radius: 50rpx;
     }

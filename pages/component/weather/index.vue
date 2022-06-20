@@ -245,7 +245,7 @@
 
 			.body-module {
 				width: 100%;
-				padding: 20rpx 0;
+				
 				display: flex;
 				flex-direction: row;
 				position: relative;

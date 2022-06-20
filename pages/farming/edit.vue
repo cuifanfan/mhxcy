@@ -67,14 +67,43 @@
                 ></u-icon>
               </div>
             </div>
-            <div class="tipedit wrapcommon wrapcommonbg">
-              <div class="addone"></div>
-              <div class="childedit">一胺：2.6kg</div>
-              <div class="childedit">一胺：2.6kg</div>
-              <div class="childedit">硫酸钾：2.4kg</div>
-              <div style="margin-bottom: 0" class="childedit">水：41m³</div>
+            <div v-if="handleContent" class="tipedit wrapcommon wrapcommonbg">
+                <div class="addone"></div>
+                <div class="childedit">{{contentAddText}}</div>
+                 <image
+                  mode="widthFix"
+                  class="iconpic newhandleicon"
+                  src="@/static/image/edit.png"
+                  @click="addOne"
+                />
             </div>
+            
           </div>
+          <div class="editmore">
+              <div class="morechild" v-for="(item,index) in contentAdd" :key="index">
+                  <u--input
+                  v-model="item.name"
+                  placeholder="请输入操作项"
+                  :disabled="onlyLeafFlag"
+                  border="surround"
+                ></u--input>
+                <span class="one">-</span>
+                <u--input
+                  v-model="item.val"
+                  placeholder="请输入操作量"
+                  type="number"
+                  border="surround"
+                ></u--input>
+                <span class="two">KG</span>
+                 <u-icon
+                  slot="right"
+                  color="#C4C7CC"
+                  size="20"
+                  name="close-circle"
+                  @click="contentAdd.splice(index,1)"
+                ></u-icon>
+              </div>
+            </div>
         </div>
         <div class="edit">
           <div class="formchild">
@@ -154,6 +183,8 @@ export default {
   },
   data() {
     return {
+      contentAddTextSend:'',
+      contentAdd:[],
       remark: "",
       teaName: "",
       teaId: "",
@@ -208,6 +239,7 @@ export default {
       teaType:'',
       nameValue: "",
       typeValue: "",
+      onlyLeafFlag:false,
     };
   },
   onLoad() {
@@ -215,8 +247,46 @@ export default {
     this.date = now.split(" ")[0];
     this.askTea();
   },
+  computed:{
+    contentAddText(){
+      let returnVal=''
+      this.contentAdd.forEach((item,index)=>{
+        if(item.name&&item.val){
+          returnVal+= item.name+':'+item.val+' KG'+'  '
+        }
+      })
+      return returnVal
+    }
+  },
+  onShow(){
+    this.contentAdd=[]
+    this.contentAddTextSend=''
+    this.teaId=''
+    this.teaName=''
+    this.remark=''
+    this.handleContent=''
+    this.teaType=''
+    this.resultPic=[]
+  },
   methods: {
+    addOne(){
+      console.log(this.handleContent)
+      let name=this.handleContent=='采摘'?'鲜叶':''
+      this.contentAdd.push({
+        name:name,
+        val:''
+      })
+    },
     submieSure() {
+      this.contentAdd.forEach((item,index)=>{
+        if(item.name&&item.val){
+          if(index==this.contentAdd.length-1){
+            this.contentAddTextSend+=item.name+':'+item.val
+          }else{
+            this.contentAddTextSend+=item.name+':'+item.val+','
+          }
+        }
+      })
       if (this.teaId == "") {
         uni.showToast({
           title: "请选择茶园",
@@ -233,6 +303,14 @@ export default {
         });
         return;
       }
+      if (this.contentAddTextSend=='') {
+        uni.showToast({
+          title: "请输入操作内容",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
       let picUrl = this.resultPic.join(",");
       request({
         url: "/data/farmrecords",
@@ -241,7 +319,7 @@ export default {
         data: {
           comment: this.remark,
           content: this.handleContent,
-          fertilizerDose: "硫酸钾:10,草木灰:10",
+          fertilizerDose: this.contentAddTextSend,
           gardenId: this.teaId,
           imageUrls: this.resultPic.join(","),
           time: this.date + " 12:20:00",
@@ -286,6 +364,14 @@ export default {
     },
     typeSelect(val) {
       console.log(val);
+      if(val.name=='采摘'){
+        this.onlyLeafFlag=true
+        this.contentAdd.forEach(item=>{
+          item.name='鲜叶'
+        })
+      }else{
+        this.onlyLeafFlag=false
+      }
       this.handleContent = val.name;
     },
     typeSelectTea(val) {
@@ -345,9 +431,52 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+.morechild{
+  display: flex;
+  margin: 10rpx 0;
+  align-items: center;
+  .one{
+    margin: 0 20rpx;
+  }
+  .two{
+    margin-left: 20rpx;
+    margin-right: 30rpx;
+  }
+  .u-input{
+    background: #fafafa !important;
+  }
+}
+</style>
 <style lang="scss" scoped>
 .u-textarea {
   background: #fafafa !important;
+}
+
+.newhandleicon{
+  width:50rpx;
+  position: absolute;
+  top: 10rpx;
+  right: 20rpx;
+ 
+}
+.tipedit{
+  position: relative;
+}
+.handle {
+      background: #fafafa;
+      border-radius: 16rpx;
+      border-radius: 16rpx;
+      padding: 0 20rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 132rpx;
+}
+.handlepic {
+      width: 160rpx;
+      height: 132rpx;
+      margin-right: 20rpx;
 }
 .content {
   margin: 32rpx;
@@ -360,11 +489,7 @@ export default {
   .editpic {
     display: flex;
     flex-wrap: wrap;
-    .handlepic {
-      width: 160rpx;
-      height: 132rpx;
-      margin-right: 20rpx;
-    }
+   
     .iconpic {
       width: 48rpx;
     }
@@ -380,16 +505,7 @@ export default {
         padding: 5rpx;
       }
     }
-    .handle {
-      background: #fafafa;
-      border-radius: 16rpx;
-      border-radius: 16rpx;
-      padding: 0 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 132rpx;
-    }
+    
   }
   .wrapcommonbg {
     margin-top: 20rpx;
@@ -399,6 +515,7 @@ export default {
     background: #fafafa !important;
     .childedit {
       margin-bottom: 10rpx;
+      padding-right: 50rpx;
     }
   }
   .tip {

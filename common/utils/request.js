@@ -1,5 +1,5 @@
 import {btoa} from '../utils/utils'
-const BASE_URL='http://121.36.247.77:9999';
+import { BASE_URL } from './config';
 //const BASE_URL='http://linzhikeji-gateway.com';
 
 //  公共的请求方法

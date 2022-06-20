@@ -29,7 +29,7 @@
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
+                <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
                 {{ item.name }}
               </div>
               <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
@@ -85,8 +85,8 @@
           <div class="detailwrap">
             <div class="d1wrap">
               <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                {{ item.id }}
+                <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
+                {{ item.name }}
               </div>
               <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
             </div>
@@ -98,7 +98,7 @@
                   class="set"
                   src="@/static/image/adress2.png"
                 />
-                (鄂托克前旗三段村)
+                {{item.address?item.address:'-'}}
               </div>
               <div class="d4 flexcenter">
                 <image
@@ -106,24 +106,61 @@
                   class="set"
                   src="@/static/image/time.png"
                 />
-                {{ item.createTime }}
+                {{ item.record_time }}
               </div>
             </div>
           </div>
           <div class="index1 index90">
             <div
               class="index91"
-              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
-              v-for="(item, index) in item.arr"
-              :key="index"
+              
             >
-              <image mode="widthFix" class="pic92" :src="item.pic" />
+              <image mode="widthFix" class="pic92" src="@/static/image/s7.png" />
               <div class="index92">
                 <div class="index93">
-                  <span>{{ item.num }}</span
-                  >{{ item.unit }}
+                  <span>{{item.ec}}</span
+                  >us/cm
                 </div>
-                {{ item.name }}
+                土壤EC值
+              </div>
+            </div>
+            <div
+              class="index91"
+              
+            >
+              <image mode="widthFix" class="pic92" src="@/static/image/s8.png" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{item.ph}}</span
+                  >
+                </div>
+                土壤PH值
+              </div>
+            </div>
+            <div
+              class="index91" 
+            >
+              <image mode="widthFix" class="pic92" src="@/static/image/s5.png" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{item.temperature}}</span
+                  >℃
+                </div>
+                土壤温度
+              </div>
+            </div>
+            <div
+              class="index91"
+              
+            >
+              <image mode="widthFix" class="pic92" src="@/static/image/s6.png" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{item.humidity}}</span
+                  >
+                  %
+                </div>
+                土壤湿度
               </div>
             </div>
           </div>
@@ -296,7 +333,7 @@
               <image
                 mode="widthFix"
                 class="videopic"
-                src="@/static/image/videopic.png"
+                :src=" baseUrl+item.cover"
               />
               <image
                 mode="widthFix"
@@ -320,12 +357,15 @@
 <script>
 import headerDiy from "../component/header/header.vue";
 import request from "../../common/utils/request";
+import { BASE_URL } from "../../common/utils/config";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      userInfo:null,
+      baseUrl:BASE_URL,
       weatherList: [],
       videoListShow: [],
       videoValue: "",
@@ -395,7 +435,10 @@ export default {
     };
   },
   onLoad() {
+    let userInfo=uni.getStorageSync('userInfo')
+    this.userInfo=userInfo
     this.getEnvironment();
+    this.getCurrentMoisture()
   },
   onShow() {
     if (uni.getStorageSync("four2TabIndex")) {
@@ -410,14 +453,16 @@ export default {
         url: "/data/meteorologicalrecords/getCurrentWeather",
         method: "get",
         isAuth: false,
-        data: {},
+        data: {
+          userId:this.userInfo.userId
+        },
       }).then((res) => {
-        console.log("resdfdfdfdfd", res);
         this.weatherList = res.data;
         this.weatherList.forEach((item2, index) => {
           let add = [];
           add[0] = {
-            num: item2.windGrade!=null ? item2.windGrade : "-",
+            //num: item2.wind_speed!=null ? item2.wind_speed : "-",
+            num:1,
             unit: "级",
             name: "风力",
             pic: require("@/static/image/new1.png"),
@@ -435,21 +480,21 @@ export default {
             pic: require("@/static/image/new3.png"),
           };
           add[3] = {
-            num: item2.soilTem!=null ? item2.soilTem : "-",
+            num: item2.air_tem!=null ? item2.air_tem : "-",
             unit: "℃",
             name: "空气温度",
             pic: require("@/static/image/new4.png"),
           };
           add[4] = {
-            num: item2.soilHum!=null ? item2.soilHum : "-",
+            num: item2.air_hum!=null ? item2.air_hum : "-",
             unit: "%RH",
             name: "空气湿度",
             pic: require("@/static/image/new5.png"),
           };
           add[5] = {
-            num: item2.pm10!=null ? item2.pm10 : "-",
+            num: item2.pm2point5!=null ? item2.pm2point5 : "-",
             unit: "ug/m3",
-            name: "Pm10",
+            name: "Pm2",
             pic: require("@/static/image/new6.png"),
           };
           add[6] = {
@@ -466,98 +511,19 @@ export default {
           };
           this.$set(item2, "arr", add);
         });
-
-        return;
-        res.data.forEach((item, index) => {
-          let addArr = [];
-          let addArr2 = [];
-          addArr[0] = {
-            num: item.data[0]["alarmMsg"],
-            unit: "级",
-            name: "风力",
-            pic: require("@/static/image/new1.png"),
-          };
-          addArr[1] = {
-            num: item.data[1]["alarmMsg"],
-            unit: "m/s",
-            name: "风速",
-            pic: require("@/static/image/new2.png"),
-          };
-          addArr[2] = {
-            num: item.data[2]["alarmMsg"],
-            unit: "",
-            name: "风向",
-            pic: require("@/static/image/new3.png"),
-          };
-          addArr[3] = {
-            num: item.data[7]["alarmMsg"],
-            unit: "℃",
-            name: "空气温度",
-            pic: require("@/static/image/new4.png"),
-          };
-          addArr[4] = {
-            num: item.data[8]["alarmMsg"],
-            unit: "%RH",
-            name: "空气湿度",
-            pic: require("@/static/image/new5.png"),
-          };
-          addArr[5] = {
-            num: item.data[9]["alarmMsg"],
-            unit: "ug/m3",
-            name: "Pm10",
-            pic: require("@/static/image/new6.png"),
-          };
-          addArr[6] = {
-            num: item.data[11]["alarmMsg"],
-            unit: "kpa",
-            name: "大气压",
-            pic: require("@/static/image/new7.png"),
-          };
-          addArr[7] = {
-            num: item.data[12]["alarmMsg"],
-            unit: "lux",
-            name: "光照",
-            pic: require("@/static/image/new8.png"),
-          };
-          //墒情
-          addArr2[0] = {
-            num: item.data[3]["alarmMsg"],
-            unit: "℃",
-            name: "土壤温度",
-            pic: require("@/static/image/f3.png"),
-          };
-          addArr2[1] = {
-            num: item.data[4]["alarmMsg"],
-            unit: "%RH",
-            name: "土壤湿度",
-            pic: require("@/static/image/addicon2.png"),
-          };
-          addArr2[2] = {
-            num: item.data[5]["alarmMsg"],
-            unit: "",
-            name: "土壤PH值",
-            pic: require("@/static/image/s8.png"),
-          };
-          addArr2[3] = {
-            num: item.data[6]["alarmMsg"],
-            unit: "",
-            name: "土壤EC值",
-            pic: require("@/static/image/s7.png"),
-          };
-
-          this.$set(this.weatherList, index, {
-            createTime: item.datetime,
-            arr: addArr,
-            id: item.id,
-          });
-          this.$set(this.soilList, index, {
-            createTime: item.datetime,
-            arr: addArr2,
-            id: item.id,
-          });
-        });
-        console.log(this.weatherList);
-        //this.$forceUpdate();
+        console.log('xxxscadas',this.weatherList)
+      });
+    },
+    getCurrentMoisture() {
+      request({
+        url: "/data/moisturerecords/getCurrentMoisture",
+        method: "get",
+        isAuth: false,
+        data: {
+          userId:this.userInfo.userId
+        },
+      }).then((res) => {
+        this.soilList=res.data
       });
     },
     searchHandle() {
@@ -580,8 +546,9 @@ export default {
       }
     },
     askVideo() {
+      let userInfo=uni.getStorageSync('userInfo')
       request({
-        url: "/data-thirdpart/fluorite/getVideoList",
+        url: "/data-thirdpart/fluorite/getVideoList/"+userInfo.userId+"?type=2",
         method: "get",
         isAuth: false,
         data: {},

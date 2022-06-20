@@ -1,24 +1,17 @@
 <template>
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
-    <div class="article index1 index1clear">
-      <div class="title">生长周期有多长，一年能种几次 ，需注意</div>
+    <div class="article index1 index1clear" v-if="detail">
+      <div class="title">{{detail.title}}</div>
       <div class="fb fb5">
-        <div class="fb1">发布人：<span>张三</span></div>
-        <div class="fb1">发布时间：2022.03.01 12:33:23</div>
+        <div class="fb1">发布人：<span>{{detail.author}}</span></div>
+        <div class="fb1">发布时间：{{detail.createTime}}</div>
       </div>
       <div class="fb">
-        <div class="fb1">所属分类：<span>茎叶经济作物种植</span></div>
+        <div class="fb1">所属分类：<span>{{detail.summary}}</span></div>
       </div>
       <div class="content3">
-        <image mode="widthFix" class="fullpic" src="@/static/image/i1.png" alt="">
-        <div class="p">
-          最常见的瓜果类蔬菜了，全国各地普遍栽培。今天我们为大家讲讲生长周期到6-7片叶后开始甩蔓的时候，要及时拉线吊蔓........
-          
-        </div>
-        <div class="p">
-            最常见的瓜果类蔬菜了，全国各地普遍栽培。今天我们为大家讲讲生长周期到6-7片叶后开始甩蔓的时候，要及时拉线吊蔓........
-        </div>
+        <rich-text :nodes="detail.content"></rich-text>
       </div>
     </div>
   </div>
@@ -31,11 +24,18 @@ export default {
   },
   data() {
     return {
+      detail:null,
       pageName: "知识详情",
       numValue: "",
       nameValue: "",
       typeValue: "",
     };
+  },
+  onLoad(){
+    if(uni.getStorageSync('articleContent')){
+      this.detail=JSON.parse(uni.getStorageSync('articleContent'))
+      console.log(this.detail)
+    }
   },
   methods: {
     goDetail() {
@@ -51,6 +51,9 @@ export default {
     text-indent: 60rpx;
     margin-bottom: 20rpx;
     line-height: 50rpx;
+}
+.content3{
+  margin-top: 20rpx;
 }
 .fullpic{
     width: 100%;

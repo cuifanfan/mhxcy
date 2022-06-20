@@ -29,12 +29,7 @@
           <div class="slh">
             监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为
           </div>
-          <u-icon
-            
-            color="#939599"
-            size="14"
-            name="arrow-right"
-          ></u-icon>
+          <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
         </div>
         <div class="index1 index7" v-if="this.weatherInfo">
           <div class="index71">
@@ -44,7 +39,7 @@
                 class="pic72"
                 src="@/static/image/p2.png"
               />
-              <div class="text">{{this.weatherInfo.address}}</div>
+              <div class="text">{{ this.weatherInfo.address }}</div>
               <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
             </div>
             <div class="addmap" @click="goMap">
@@ -58,25 +53,33 @@
           </div>
           <div class="index73 flexcenter">
             <div class="index74">
-              <div class="index75">{{this.weatherInfo.gardenArea}}</div>
+              <div class="index75">{{ this.weatherInfo.gardenArea }}</div>
               茶园面积
             </div>
             <div class="index74">
-              <div class="index75 index79">{{this.weatherInfo.gardenCount}}</div>
+              <div class="index75 index79">
+                {{ this.weatherInfo.gardenCount }}
+              </div>
               茶园数量
             </div>
             <div class="index74">
-              <div class="index75 index80">{{this.weatherInfo.teaSpecies}}</div>
+              <div class="index75 index80">
+                {{ this.weatherInfo.teaSpecies }}
+              </div>
               种植品类
             </div>
           </div>
-          <div class="index81" v-if="this.weatherData.length>0">
+          <div class="index81" v-if="this.weatherData.length > 0">
             <div class="index83">
-              <div class="index82">{{(this.weatherData[1]['max']+this.weatherData[1]['min'])/2}}</div>
+              <div class="index82">
+                {{
+                  (this.weatherData[1]["max"] + this.weatherData[1]["min"]) / 2
+                }}
+              </div>
               <div class="index85">℃</div>
             </div>
             <div class="index83">
-              {{this.weatherData[1]['weatherLabel']}}
+              {{ this.weatherData[1]["weatherLabel"] }}
               <image
                 mode="widthFix"
                 class="index84"
@@ -111,19 +114,16 @@
         </div>
         <div class="index3 index1">
           <div class="table">
-            <!-- <div class="tabtitle">
-              <div class="tabadd1 flexcenter">
-                <div class="tabadd3">叮一下</div>
-                今日“叮”了2次农事，点击完成详情！
-              </div>
-              <u-icon color="#C4C7CC" size="20" name="arrow-right"></u-icon>
-            </div> -->
             <div class="tabcontent">
               <div class="child" v-for="(item, index) in 1" :key="index">
                 <div class="addchild flexcenter">
                   <div class="addchild2">
                     <div class="top">
-                      {{moment().format("YYYY") }}年，已完成<span class="boldspanadd">{{farmTotal}}</span> 项农事！
+                      {{ moment().format("YYYY") }}年，已完成<span
+                        class="boldspanadd"
+                        >{{ farmTotal }}</span
+                      >
+                      项农事！
                     </div>
                     <div class="bottom">4月季节性病虫增加,可增加黄板,提高…</div>
                   </div>
@@ -168,24 +168,25 @@
                     @click="changeTab(1)"
                     :class="[active2 ? 'gray4' : '', 'gray2']"
                   >
-                    {{active1?'本季度':'本年'}}  
+                    {{ active1 ? "本季度" : "本年" }}
                   </div>
                   <div
                     @click="changeTab(2)"
                     :class="[!active2 ? 'gray4' : '', 'gray2']"
                   >
-                    {{active1?'上季度':'去年'}}
+                    {{ active1 ? "上季度" : "去年" }}
                   </div>
                 </div>
                 <div class="gray5" v-if="!lookType">
                   <div class="lookcir flexcenter">
+                   
                     <div class="circhild flexcenter">
                       <div class="fk"></div>
-                      上季度
+                       {{ active1 ? "上季度" : "去年" }}
                     </div>
-                    <div class="circhild flexcenter">
+                     <div class="circhild flexcenter">
                       <div class="fk fk2"></div>
-                      上季度
+                       {{ active1 ? "本季度" : "本年" }}
                     </div>
                   </div>
                 </div>
@@ -205,9 +206,10 @@
                   src="@/static/image/tj33.png"
                 />
               </div>
+              <!-- 投入对比 -->
               <div v-if="!lookType && active1" class="tjdiv">
                 <div
-                  v-for="(item, index) in investmentArr"
+                  v-for="(item, index) in incomeArr2"
                   :key="index"
                   class="tjdivc1"
                 >
@@ -215,12 +217,12 @@
                     {{ item.name }}
                   </div>
                   <div class="jdt">
-                    <div class="jdt1">
+                    <div class="jdt1" v-if="item['val'][0] > 0">
                       <u-line-progress
                         height="8"
                         activeColor="#8F30BF"
                         inactiveColor="#FAFAFA"
-                        :percentage="30"
+                        :percentage="item['val'][0]"
                         :showText="false"
                       ></u-line-progress>
                       <div class="jdt3">
@@ -228,12 +230,12 @@
                         <span class="unit">{{ item.unit }}</span>
                       </div>
                     </div>
-                    <div class="jdt1">
+                    <div class="jdt1" v-if="item['val'][1] > 0">
                       <u-line-progress
                         height="8"
                         activeColor="#29CC96"
                         inactiveColor="#FAFAFA"
-                        :percentage="30"
+                        :percentage="item['val'][1]"
                         :showText="false"
                       ></u-line-progress>
                       <div class="jdt3">
@@ -246,7 +248,7 @@
               </div>
               <div v-if="!lookType && !active1" class="tjdiv">
                 <div
-                  v-for="(item, index) in incomeArr"
+                  v-for="(item, index) in incomeArrProduct"
                   :key="index"
                   class="tjdivc1"
                 >
@@ -254,12 +256,12 @@
                     {{ item.name }}
                   </div>
                   <div class="jdt">
-                    <div class="jdt1">
+                    <div class="jdt1" v-if="item['val'][0] > 0">
                       <u-line-progress
                         height="8"
                         activeColor="#8F30BF"
                         inactiveColor="#FAFAFA"
-                        :percentage="30"
+                        :percentage="item.val[0]"
                         :showText="false"
                       ></u-line-progress>
                       <div class="jdt3">
@@ -267,12 +269,12 @@
                         <span class="unit">{{ item.unit }}</span>
                       </div>
                     </div>
-                    <div class="jdt1">
+                    <div class="jdt1" v-if="item['val'][1] > 0">
                       <u-line-progress
                         height="8"
                         activeColor="#29CC96"
                         inactiveColor="#FAFAFA"
-                        :percentage="30"
+                        :percentage="item.val[1]"
                         :showText="false"
                       ></u-line-progress>
                       <div class="jdt3">
@@ -290,62 +292,40 @@
                 src="@/static/image/false26.png"
               /> -->
               <div v-if="lookType && active1" class="grayinfo">
-                <div class="grayinfo1">
-                  <div class="infotitle">灌溉:</div>
-                  <div class="infowrap">
-                    <div class="grayinfo2">
-                      <div class="numbold clearmagin">{{ info.one }}</div>
-                      <div class="numoften">吨</div>
+                  <div
+                    class="grayinfo1"
+                    v-for="(item, index) in farmrecordsShow"
+                    :key="index"
+                  >
+                    <div class="infotitle">{{ item.name }}:</div>
+                    <div class="infowrap">
+                      <div
+                        class="grayinfo2"
+                        v-for="(item2, index2) in item.value"
+                        :key="index2"
+                      >
+                        <div class="numoften clearmagin">{{ item2.name }}</div>
+                        <div class="numbold">{{ item2.value }}</div> KG
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="grayinfo1">
-                  <div class="infotitle">施肥:</div>
-                  <div class="infowrap">
-                    <div class="grayinfo4">二胺</div>
-                    <div class="grayinfo2">
-                      <div class="numbold">{{ info.two }}</div>
-                      KG
-                    </div>
-                    <div class="grayinfo4">二胺</div>
-                    <div class="grayinfo2">
-                      <div class="numbold">{{ info.three }}</div>
-                      KG
-                    </div>
-                    <div class="grayinfo4">二胺</div>
-                    <div class="grayinfo2">
-                      <div class="numbold">{{ info.four }}</div>
-                      KG
-                    </div>
-                  </div>
-                </div>
-                <div class="grayinfo1">
-                  <div class="infotitle">人力:</div>
-                  <div class="infowrap">
-                    <div class="grayinfo2">
-                      <div class="numbold clearmagin">{{ info.five }}</div>
-                      <div class="numoften">人/天</div>
-                    </div>
-                  </div>
-                </div>
+               
+               <div class="nodataspan" v-if="farmrecordsShow.length == 0">暂无数据</div>
               </div>
-              <!-- <image
-                mode="widthFix"
-                v-if="lookType && !active1"
-                style="width: 100%"
-                src="@/static/image/false31.png"
-              /> -->
               <div class="srdiv" v-if="lookType && !active1">
-                <div
-                  class="srdiv1"
-                  v-for="(item, index) in income"
-                  :key="index"
-                >
-                  <div class="srdiv2">{{ incomeBig[index] }}月</div>
-                  <div class="srdiv3">
-                    {{ item }}<span class="srdiv4">吨</span>
+               
+                  <div
+                    class="srdiv1"
+                    v-for="(item, index) in produceShow"
+                    :key="index"
+                  >
+                    <div class="srdiv2">{{ item.name }}</div>
+                    <div class="srdiv3">
+                      {{ item.total }} <span class="srdiv4">KG</span>
+                    </div>
                   </div>
-                </div>
+            
+                <div class="nodataspan" v-if="produceShow.length == 0">暂无数据</div>
               </div>
             </div>
             <!-- <div v-if="active1" class="graytip flexcenter">
@@ -356,12 +336,12 @@
                 {{ lookType ? "查看同期数据对比" : "查看茶叶价格动态" }}
               </div>
             </div> -->
-            <div v-if="!active1" class="graytip flexcenter">
+            <!-- <div v-if="!active1" class="graytip flexcenter">
               <div class="left">
                 依照当前市场合理价格， 预计您本季收入可达：350000元
               </div>
-              <!-- <div class="right" @click="goPrice">查看茶叶价格动态</div> -->
-            </div>
+              
+            </div> -->
           </div>
         </div>
       </div>
@@ -373,7 +353,7 @@
 import { weekDay } from "../../common/utils/utils";
 import headerDiy from "../component/header/header.vue";
 import request from "../../common/utils/request";
-import moment from 'moment'
+import moment from "moment";
 import { weatherIdToName, wind } from "../../common/utils/weather";
 export default {
   components: {
@@ -381,8 +361,15 @@ export default {
   },
   data() {
     return {
-      farmTotal:'-',
+      produceShow: [],
+      produceNow: [],
+      produceAgo: [],
+      farmrecordsShow: [],
+      farmrecordsNow: [],
+      farmrecordsAgo: [],
+      farmTotal: "-",
       weatherInfo: null,
+      incomeArr2: [],
       income: [
         12.32, 11.22, 12.32, 11.22, 12.32, 11.22, 12.32, 11.22, 12.32, 11.22,
         12.32, 11.22,
@@ -401,105 +388,14 @@ export default {
         "十一",
         "十二",
       ],
-      incomeArr: [
-        {
-          name: "一月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "二月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "三月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "四月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "五月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "六月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "七月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "八月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "九月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "十月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "十一月",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "十二月",
-          val: [5, 15],
-          unit: "吨",
-        },
-      ],
-      investmentArr: [
-        {
-          name: "人力",
-          val: [5, 15],
-          unit: "",
-        },
-        {
-          name: "灌溉水",
-          val: [5, 15],
-          unit: "吨",
-        },
-        {
-          name: "二胺",
-          val: [5, 15],
-          unit: "kg",
-        },
-        {
-          name: "硫酸钾",
-          val: [5, 15],
-          unit: "kg",
-        },
-        {
-          name: "尿素",
-          val: [5, 15],
-          unit: "kg",
-        },
-        {
-          name: "噻虫嗪",
-          val: [5, 15],
-          unit: "kg",
-        },
-      ],
+      incomeArr: [],
+      investmentArr: [],
       lookType: true,
       moment,
       active2: true,
       active1: true,
       list: [],
+      incomeArrProduct:[],
       info: {
         one: 12.35,
         two: 12.35,
@@ -507,7 +403,7 @@ export default {
         four: 85.2,
         five: 15,
       },
-      weatherData:[],
+      weatherData: [],
       pageName: "茶园种植",
       indexMenu: [
         {
@@ -538,25 +434,219 @@ export default {
     this.askWeather();
     this.getFarmList();
     this.askInvestment(1);
-    this.askInvestment(2)
+
+    this.getPutInByContent(1);
   },
   methods: {
-    askInvestment(type){
-      let endTime=type==1?moment(moment().quarter(moment().quarter()).startOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss'):moment(moment().quarter(moment().quarter() - 1).startOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss')
-      let startTime=type==2?moment(moment().quarter(moment().quarter()).endOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss'):moment(moment().quarter(moment().quarter() - 1).endOf('quarter').valueOf()).format('YYYY/MM/DD HH:mm:ss')
-      let userInfo=uni.getStorageSync('userInfo')
+    getPutInByContent(type) {
+      let endTime =
+        type == 1
+          ? moment() .year(moment().year() ) .startOf("year") .format("YYYY")
+          : moment() .year(moment().year() - 1) .startOf("year") .format("YYYY")
+      
+      let userInfo = uni.getStorageSync("userInfo");
+      request({
+        url: "/data/farmrecords/getHistoryInputByContentInYear",
+        method: "get",
+        isAuth: false,
+        data: {
+          year:endTime,
+          userId: userInfo.userId,
+          content: "采摘",
+        },
+      }).then((res) => {
+        let get = res.data.filter((item) => {
+          return item.value.length > 0;
+        });
+        get.forEach((item, index) => {
+          let total = 0;
+          item.value.forEach((item2) => {
+            total += item2.value;
+          });
+          this.$set(item, "total", total);
+        });
+        if (type == 1) {
+          this.produceShow = get;
+          this.produceNow = get;
+          this.getPutInByContent(2);
+        } else {
+          this.produceAgo = get;
+          this.incomeArrProduct=[]
+          console.log('111',this.produceAgo)
+          console.log('000',this.produceNow)
+          let nowGet = [];
+          let agoGet = [];
+          this.produceNow.forEach((item) => {
+            
+              nowGet.push({
+                name: item.name,
+                total: item.total,
+              });
+           
+          });
+          this.produceAgo.forEach((item) => {
+           
+              agoGet.push({
+                name: item.name,
+                total: item.total,
+              });
+            
+          });
+          //取所有键
+          let keyVal=[]
+          let allArr=nowGet.concat(agoGet)
+          allArr.forEach(item=>{
+            let flag=keyVal.find(item2=>{
+              return item2==item.name
+            })
+            if(!flag){
+              keyVal.push(item.name)
+            }
+          })
+          console.log('xxx',keyVal)
+          keyVal.forEach(item=>{
+            let flag1=nowGet.find(item2=>{
+              return item2.name==item
+            })
+            let flag2=agoGet.find(item2=>{
+              return item2.name==item
+            })
+            let val1=flag1?flag1.total:0
+            let val2=flag2?flag2.total:0
+            this.incomeArrProduct.push({
+              name:item,
+              val:[val1,val2],
+              sort:item.split('月')[0]
+            })
+          })
+          console.log(this.incomeArrProduct)
+          this.incomeArrProduct.sort(function(x,y){
+            return x.sort - y.sort
+          })
+        }
+      });
+    },
+    askInvestment(type) {
+      let endTime =
+        type == 1
+          ? moment(
+              moment().quarter(moment().quarter()).startOf("quarter").valueOf()
+            ).format("YYYY-MM-DD")
+          : moment(
+              moment()
+                .quarter(moment().quarter() - 1)
+                .startOf("quarter")
+                .valueOf()
+            ).format("YYYY-MM-DD");
+      let startTime =
+        type == 1
+          ? moment(
+              moment().quarter(moment().quarter()).endOf("quarter").valueOf()
+            ).format("YYYY-MM-DD")
+          : moment(
+              moment()
+                .quarter(moment().quarter() - 1)
+                .endOf("quarter")
+                .valueOf()
+            ).format("YYYY-MM-DD");
+      let userInfo = uni.getStorageSync("userInfo");
+      console.log("endtime", type, endTime);
+      console.log("star", type, startTime);
       request({
         url: "/data/farmrecords/getAllPutIn",
         method: "get",
         isAuth: false,
         data: {
-          startTime:endTime,
-          endTime:startTime,
-          userId:userInfo.userId
+          startTime: endTime,
+          endTime: startTime,
+          userId: userInfo.userId,
         },
       }).then((res) => {
-        console.log('xxxxresxxx',res)
-      })
+        let get = res.data.filter((item) => {
+          return item.value.length > 0;
+        });
+        if (type == 1) {
+          this.farmrecordsShow = get;
+          this.farmrecordsNow = get;
+          this.askInvestment(2);
+        } else {
+          this.incomeArr2 = [];
+          this.farmrecordsAgo = get;
+          let nowGet = [];
+          let agoGet = [];
+          this.farmrecordsNow.forEach((item) => {
+            item.value.forEach((item2) => {
+              nowGet.push({
+                name: item2.name,
+                val: item2.value,
+              });
+            });
+          });
+          this.farmrecordsAgo.forEach((item) => {
+            item.value.forEach((item2) => {
+              agoGet.push({
+                name: item2.name,
+                val: item2.value,
+              });
+            });
+          });
+          //合并同类项
+          let mergeNow=[]
+          let mergeAgo=[]
+          nowGet.forEach(item=>{
+            let flag=mergeNow.find(item2=>{
+              return item2.name==item.name
+            })
+            if(!flag){
+              mergeNow.push({
+                name:item.name,
+                val:item.val
+              })
+            }else{
+              flag.val+=item.val
+            }
+          })
+          agoGet.forEach(item=>{
+            let flag=mergeAgo.find(item2=>{
+              return item2.name==item.name
+            })
+            if(!flag){
+              mergeAgo.push({
+                name:item.name,
+                val:item.val
+              })
+            }else{
+              flag.val+=item.val
+            }
+          })
+          console.log('mernow',mergeNow)
+          //取所有键
+          let keyVal=[]
+          let allArr=mergeNow.concat(mergeAgo)
+          allArr.forEach(item=>{
+            let flag=keyVal.find(item2=>{
+              return item2==item.name
+            })
+            if(!flag){
+              keyVal.push(item.name)
+            }
+          })
+          keyVal.forEach(item=>{
+            let flag1=mergeNow.find(item2=>{
+              return item2.name==item
+            })
+            let flag2=mergeAgo.find(item2=>{
+              return item2.name==item
+            })
+            let val1=flag1?flag1.val:0
+            let val2=flag2?flag2.val:0
+            this.incomeArr2.push({
+              name:item,
+              val:[val1,val2],
+            })
+          })
+        }
+      });
     },
     getFarmList() {
       request({
@@ -568,8 +658,7 @@ export default {
         },
       }).then((res) => {
         console.log("res5464545456456", res);
-        this.farmTotal=res.data.total
-        
+        this.farmTotal = res.data.total;
       });
     },
     askWeather() {
@@ -579,6 +668,7 @@ export default {
         isAuth: false,
         data: {
           day: moment().format("YYYY-MM-DD HH:mm:ss"),
+          //day:'2022-06-20',
           lat: 39.97569,
           lon: 116.41136,
         },
@@ -597,8 +687,7 @@ export default {
           } else {
             week = weekDay(item.predict_date);
           }
-          
-          
+
           let weatherList = weatherIdToName();
           let windList = wind();
           this.weatherData.push({
@@ -613,73 +702,86 @@ export default {
             wind: windList[item.wind_dir_day],
           });
         });
-        uni.setStorageSync('MJweather',this.weatherData)
+        uni.setStorageSync("MJweather", this.weatherData);
       });
     },
     getEnvironment() {
-      let userInfo=uni.getStorageSync('userInfo')
-      if(!userInfo){
-        return
+      let userInfo = uni.getStorageSync("userInfo");
+      if (!userInfo) {
+        return;
       }
       //传设备的id
       request({
-        url: "/data/teabase/getBaseInfo?userId="+userInfo.userId,
+        url: "/data/teabase/getBaseInfo?userId=" + userInfo.userId,
         method: "get",
         isAuth: false,
         data: {},
       })
         .then((res) => {
           this.weatherInfo = res.data;
-          console.log("xxx", res);
+          console.log("xxx00000xxxccc", res);
           this.list[0] = {
-            num: this.weatherInfo.windGrade!=null?this.weatherInfo.windGrade:'-',
+            num:
+              this.weatherInfo.windGrade != null
+                ? this.weatherInfo.windGrade
+                : "-",
             unit: "级",
             name: "风力",
             pic: require("@/static/image/new1.png"),
           };
           this.list[1] = {
-            num: this.weatherInfo.windSpeed!=null?this.weatherInfo.windSpeed:'-',
+            num:
+              this.weatherInfo.windSpeed != null
+                ? this.weatherInfo.windSpeed
+                : "-",
             unit: "m/s",
             name: "风速",
             pic: require("@/static/image/new2.png"),
           };
           this.list[2] = {
-            num:this.weatherInfo.windDirect!=null?this.weatherInfo.windDirect:'-',
+            num:
+              this.weatherInfo.windDirect != null
+                ? this.weatherInfo.windDirect
+                : "-",
             unit: "",
             name: "风向",
             pic: require("@/static/image/new3.png"),
           };
           this.list[3] = {
-            num: this.weatherInfo.soilTem!=null?this.weatherInfo.soilTem:'-',
+            num:
+              this.weatherInfo.soilTem != null ? this.weatherInfo.soilTem : "-",
             unit: "℃",
             name: "空气温度",
             pic: require("@/static/image/new4.png"),
           };
           this.list[4] = {
-            num: this.weatherInfo.soilHum!=null?this.weatherInfo.soilHum:'-',
+            num:
+              this.weatherInfo.soilHum != null ? this.weatherInfo.soilHum : "-",
             unit: "%RH",
             name: "空气湿度",
             pic: require("@/static/image/new5.png"),
           };
           this.list[5] = {
-            num: this.weatherInfo.pm10!=null?this.weatherInfo.pm10:'-',
+            num: this.weatherInfo.pm10 != null ? this.weatherInfo.pm10 : "-",
             unit: "ug/m3",
             name: "Pm10",
             pic: require("@/static/image/new6.png"),
           };
           this.list[6] = {
-            num: this.weatherInfo.kpa!=null?this.weatherInfo.kpa:'-',
+            num: this.weatherInfo.kpa != null ? this.weatherInfo.kpa : "-",
             unit: "kpa",
             name: "大气压",
             pic: require("@/static/image/new7.png"),
           };
           this.list[7] = {
-            num: this.weatherInfo.lux!=null?this.weatherInfo.lux:'-',
+            num: this.weatherInfo.lux != null ? this.weatherInfo.lux : "-",
             unit: "lux",
             name: "光照",
             pic: require("@/static/image/new8.png"),
           };
           this.$forceUpdate();
+          uni.setStorageSync('baseId',res.data.baseId)
+          uni.setStorageSync("deviceList", JSON.stringify(res.data.deviceList));
         })
 
         .catch((err) => {
@@ -747,21 +849,11 @@ export default {
     changeTab(val) {
       this.active2 = !this.active2;
       if (val == 1) {
-        this.info = {
-          one: 12.35,
-          two: 12.35,
-          three: 33.22,
-          four: 85.2,
-          five: 15,
-        };
+        this.farmrecordsShow = this.farmrecordsNow;
+        this.produceShow = this.produceNow;
       } else {
-        this.info = {
-          one: 11.35,
-          two: 10.35,
-          three: 53.22,
-          four: 81.2,
-          five: 20,
-        };
+        this.farmrecordsShow = this.farmrecordsAgo;
+        this.produceShow = this.produceAgo;
       }
     },
   },
@@ -783,9 +875,10 @@ export default {
     color: #626466;
     font-weight: normal !important;
     font-size: 24rpx !important;
+    margin-left: 5rpx;
   }
   .srdiv1 {
-    width: 33.33%;
+    width: 25%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -816,7 +909,7 @@ export default {
       }
     }
     .jdtlabel {
-      width: 100rpx;
+      width: 130rpx;
       text-align: right;
       margin-right: 20rpx;
     }
@@ -998,8 +1091,14 @@ export default {
     }
   }
   .graycontent {
+    .nodataspan{
+      font-size: 24rpx;
+    }
     .infotitle {
-      width: 85rpx;
+      min-width: 120rpx;
+      text-align: right;
+      position: relative;
+      top: 0rpx;
     }
     .infowrap {
       display: flex;

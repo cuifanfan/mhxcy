@@ -2,13 +2,13 @@
   <div class="wrap">
     <header-diy :backHidden="2" class="topbar" :type="2" :titleName="pageName"></header-diy>
     <div class="content">
-      <div class="index1" @click="goDetail"  v-for="(item,index) in 4" :key="index">
+      <div class="index1" @click="goDetail(item)"  v-for="(item,index) in list" :key="index">
         <div class="header flexcenter">
           <div class="header2 flexcenter">
             <!-- <div class="h1">示范田</div> -->
             <div class="t2">
-              {{index+1}}号茶园
-              <span class="t3"> (勐海县XX镇XX村) </span>
+              {{item.name}}
+              <span class="t3"> ({{item.address}}) </span>
             </div>
           </div>
 
@@ -16,17 +16,17 @@
         </div>
         <div class="con">
           <div class="c1">
-            茶园面积：<span>181.65</span>亩
+            茶园面积：<span>{{item.area}}</span>亩
           </div>
-          <div class="c1">
-            种植品类：<span>台地茶/古树茶</span>
+          <div class="c1 c2">
+            种植品类：<span>{{item.species}}</span>
           </div>
-          <div class="c1 clearb">
+          <!-- <div class="c1 clearb">
             播种日期：<span>2021.12.15</span>
           </div>
           <div class="c1 clearb">
             收货日期：<span>2021.12.15</span>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -34,12 +34,14 @@
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      list:[],
       activeone: 4,
       active: false,
       showType: false,
@@ -50,12 +52,27 @@ export default {
       typeValue: "",
     };
   },
+  onLoad(){
+    this.askList()
+  },
   methods: {
     typeSelect() {},
-    goDetail(){
+    goDetail(item){
        uni.navigateTo({
-          url: "/pages/manger/detail/index",
+          url: "/pages/manger/detail/index?id="+item.id,
         });
+    },
+    askList(type){
+      request({
+        url: "/data/teagarden/page",
+        method: "get",
+        isAuth: false,
+        data: {
+         baseId:uni.getStorageSync('baseId')
+        },
+      }).then((res) => {
+        this.list=res.data.records
+      })
     },
   },
 };
@@ -67,7 +84,8 @@ export default {
   padding: 20rpx 32rpx;
   margin-bottom: 30rpx;
   border-radius: 16rpx 16rpx 16rpx 16rpx;
-  .con{
+ 
+.con{
     flex-wrap: wrap;
     font-size: 28rpx;
     color: #626466;
@@ -82,8 +100,12 @@ export default {
     }
     display: flex;
     .c1{
-      width: 50%;
+      
        margin-bottom: 20rpx;
+       margin-right: 20rpx;
+       span{
+        margin-right: 10rpx;
+       }
     }
   }
   .header {

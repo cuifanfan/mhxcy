@@ -69,10 +69,10 @@
     }
 
     .back {
-      width: 50px;
+      width: 35px;
       position: fixed;
-      top: 30px;
-      left: 15px;
+      top: 20px;
+      left: 20px;
       z-index: 999;
     }
   </style>
@@ -82,7 +82,7 @@
     var lay;
     var onlyMapLay;
     var icon = new T.Icon({ iconUrl: '../html/icon.png', iconSize: T.Point(120, 120), iconAnchor: T.Point(100, 100) });
-    mapInit = (longtitude, latitude) => {
+    mapInit = (longtitude,latitude) => {
       var imageURL =
         "http://t0.tianditu.gov.cn/img_w/wmts?" +
         "SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" +
@@ -98,11 +98,10 @@
       map.enableScrollWheelZoom();
     }
     window.onload = () => {
-      mapInit(116.40969, 39.89945)
+      mapInit(100.49145,22.136989)
 
-      function addPoint(coo,iconNum) {
-        console.log('getgiao',iconNum)
-        let icon = new T.Icon({ iconUrl: '../html/'+iconNum+'.png', iconSize: T.Point(120, 120), iconAnchor: T.Point(100, 100) });
+      function addPoint(coo,iconGet) {
+        let icon = new T.Icon({ iconUrl: '../html/'+iconGet+'.png', iconSize: T.Point(120, 120), iconAnchor: T.Point(100, 100) });
         let marker = new T.Marker(coo, {
           icon: icon
         });
@@ -120,21 +119,6 @@
         //向地图上添加面
         map.addOverLay(polygon);
       }
-      let testpoints = [
-        {
-          lat: 39.97569, lng: 116.41136
-        },
-        {
-          lat: 39.9068, lng: 116.411794
-        },
-        {
-          lat: 39.9294, lng: 116.32969
-        },
-        {
-          lat: 39.9061, lng: 116.385438
-        },
-      ]
-      //addPolygon(testpoints)
       // addPoint({ lat: 39.89945, lng: 116.40969 })
       window.msgFromUniapp = function (arg) {
         console.log('xxxx', arg);
@@ -142,11 +126,11 @@
         // mapInit(arg.center[0],arg.center[1])
         map.centerAndZoom(new T.LngLat(arg.center[0], arg.center[1]), zoom);
         arg.pointArr.forEach(item => {
-          console.log('ccc', item.lat)
+          console.log('ccc', JSON.stringify(item))
           console.log('giao!',item.iconNum)
-          addPoint({ lat: item.lat, lng: item.lng },item.iconNum)
+          addPoint({ lat: item.lat, lng: item.lng },item.icon)
         })
-        addPolygon(arg.polygon)
+        //addPolygon(arg.polygon)
         if(arg.showInfo){
           document.getElementById('infobox').style.visibility='visible'
         }
