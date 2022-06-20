@@ -184,6 +184,7 @@ export default {
     .w3{
         color: #fff!important;
         background: #29CC96!important;
+        
     }
   }
   .datewrap {
@@ -203,6 +204,7 @@ export default {
       color: #939599;
       width: 48rpx;
     height: 48rpx;
+    font-size: 20rpx;
     display: flex;
     align-items: center;
     justify-content: center;

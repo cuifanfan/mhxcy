@@ -5,67 +5,94 @@
 </template>
 <script>
 import { getCenter } from "../../common/utils/utils";
+import request from "../../common/utils/request";
 export default {
   data() {
     return {};
   },
   onLoad() {
-    let points= [
-          {
-            lng: 100.789761,
-            lat: 22.022137,
-          },
-          {
-            lng: 100.789833,
-            lat: 22.022136,
-          },
-          {
-            lng: 100.790838,
-            lat: 22.019582,
-          },
-          {
-            lng: 100.794509,
-            lat: 22.020163,
-          },
-          {
-            lng: 100.792928,
-            lat: 22.022182,
-          },
-          {
-            lng: 100.789761,
-            lat: 22.022137,
-          },
-        ]
-    let center = getCenter(points);
-    let pointArr=[
-        {
-            lat: 22.0209, lng: 100.7921,iconNum:'icon'
-        }
-    ]
-    setTimeout(() => {
-      // #ifdef APP-PLUS
-      const _funName = "msgFromUniapp",
-        _data = {
-          center:center,
-          pointArr:pointArr,
-          polygon:points,
-          showInfo:true,
-        };
-      const currentWebview = this.$scope.$getAppWebview().children()[0];
-      currentWebview.evalJS(`${_funName}(${JSON.stringify(_data)})`);
-       console.log(88999,JSON.stringify(pointArr));
-      // #endif
-    }, 1000);
+    this.getAll();
   },
-  methods:{
-      message(msg){
-          console.log('msg',msg)
-          if(msg.detail.data[0]['msg']=='goBack'){
-              uni.navigateBack({
-		            delta:1,//返回层数，2则上上页
-	            })
+  methods: {
+    getAll() {
+      let userInfo = uni.getStorageSync("userInfo");
+      request({
+        url:
+          "/data/iotdevice/getEachDeviceLatLonByUser?userId=" + userInfo.userId,
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        let only = [];
+        let draw = [];
+        let iconSet = "";
+        res.data.list.forEach((item, index) => {
+          if (item.latitude) {
+            if (item.type == "虫情设备") {
+              iconSet = "icon3";
+            } else if (item.type == "气象设备") {
+              iconSet = "icon4";
+            } else if (item.type == "摄像头") {
+              iconSet = "icon2";
+            }
+            draw.push({
+              lat: item.latitude,
+              lng: item.longitude,
+              icon: iconSet,
+            });
+            let flag = only.find((item2) => {
+              return item2.type == item.type;
+            });
+            if (!flag) {
+              only.push({
+                type: item.type,
+                child: [
+                  {
+                    longitude: item.longitude,
+                    latitude: item.latitude,
+                  },
+                ],
+              });
+            } else {
+              flag.child.push({
+                longitude: item.longitude,
+                latitude: item.latitude,
+              });
+            }
           }
+        });
+        let set = {
+          center: [
+            only[0]["child"][0]["latitude"],
+            only[0]["child"][0]["longitude"],
+          ],
+          pointArr: draw,
+        };
+        console.log("set===", set);
+        uni.setStorageSync("mapParams", JSON.stringify(set));
+        setTimeout(() => {
+          // #ifdef APP-PLUS
+          const _funName = "msgFromUniapp",
+            _data = {
+              center: set.center,
+              pointArr: draw,
+              //olygon: points,
+              showInfo: true, 
+            };
+          const currentWebview = this.$scope.$getAppWebview().children()[0];
+          currentWebview.evalJS(`${_funName}(${JSON.stringify(_data)})`);
+          // #endif
+        }, 1000);
+      });
+    },
+    message(msg) {
+      console.log("msg", msg);
+      if (msg.detail.data[0]["msg"] == "goBack") {
+        uni.navigateBack({
+          delta: 1, //返回层数，2则上上页
+        });
       }
-  }
+    },
+  },
 };
 </script>

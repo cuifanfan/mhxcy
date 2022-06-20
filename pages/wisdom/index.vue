@@ -17,16 +17,16 @@
         <div
           @click="activeChild = index"
           :class="[activeChild == index ? 'r3' : '', 'r2']"
-          v-for="(item, index) in 3"
+          v-for="(item, index) in this.teaList"
           :key="index"
         >
-          {{ index + 1 }}号茶园
+          {{item.name}}
         </div>
       </div>
       <div>
         <div
           class="wrapcommon wrapcommonfarm"
-          v-for="(item, index) in 12"
+          v-for="(item, index) in 2"
           :key="index"
         >
           <div class="titlewrap">
@@ -68,16 +68,16 @@
         <div
           @click="activeChild = index"
           :class="[activeChild == index ? 'r3' : '', 'r2']"
-          v-for="(item, index) in 3"
+          v-for="(item, index) in teaList"
           :key="index"
         >
-          {{ index + 1 }}号茶园
+          {{item.name}}
         </div>
       </div>
       <div>
         <div
           class="wrapcommon wrapcommonfarm"
-          v-for="(item, index) in 12"
+          v-for="(item, index) in 2"
           :key="index"
         >
           <div class="titlewrap">
@@ -146,15 +146,15 @@
         <div
           @click="activeChild = index"
           :class="[activeChild == index ? 'r3' : '', 'r2']"
-          v-for="(item, index) in 3"
+          v-for="(item, index) in teaList"
           :key="index"
         >
-          {{ index + 1 }}号茶园
+         {{item.name}}
         </div>
       </div>
       <div class="look" @click="goHistroy">查看历史记录</div>
       <div class="looklist">
-        <div class="listc" v-for="(item,index) in 12 " :key="index">
+        <div class="listc" v-for="(item,index) in 2 " :key="index">
           <div class="listchild">
             <span>开始时间</span>
             <span class="one">2022.02.20  07:00:00</span>
@@ -175,12 +175,14 @@
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request"; 
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      teaList:[],
       list: [
         {
           num: 15,
@@ -252,8 +254,31 @@ export default {
       typeValue: "",
     };
   },
+  onLoad(){
+    this.askTea()
+  },
   methods: {
     typeSelect() {},
+    askTea() {
+      let userInfo = uni.getStorageSync("userInfo");
+      if (!userInfo) {
+        return;
+      }
+      request({
+        url: "/data/teagarden/getGardenOptionsByUser?userId=" + userInfo.userId,
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        console.log("xxxx", res);
+        res.data.forEach((item, index) => {
+          this.teaList.push({
+            name: item.label,
+            id: item.value,
+          });
+        });
+      });
+    },
     goHistroy(){
       uni.navigateTo({
         url: "/pages/wisdom/history/index",

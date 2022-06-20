@@ -239,7 +239,7 @@
               <div class="header2">长势监测</div>
               <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
             </div>
-            <div class="test1">
+            <div class="test1" v-if="fluoritescreenshotData">
               <div class="test5">
                 <div class="test6">
                   <div class="imgwraps" @click="goDetailGrowth">
@@ -255,6 +255,9 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div v-else>
+              暂无数据
             </div>
             <!-- <div class="header header3">
               <div class="header2">遥感报告</div>
@@ -317,38 +320,23 @@
             </div> -->
           </div>
           <div class="changechild" v-if="activeTab == 2">
-            <div class="header header3">
-              <div class="header2">2022.02.10</div>
-              <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
+            <div v-for="(item,index)  in farmList" :key="index">
+               <div class="header header3">
+              <div class="header2">{{item.createTime}}</div>
+              <!-- <image mode="widthFix" class="set" src="@/static/image/ss1.png" /> -->
             </div>
             <div class="nsdiv">
               <div class="nschild">
                 <div class="ns1">
                   <span class="nsdivspan">农事操作:</span>
-                  水肥一体
+                  {{item.place}}
                 </div>
                 <div class="ns1">
                   <span class="nsdivspan">农事内容:</span>
                   <div class="ns2">
-                    <div class="ns3">
-                      <div class="ns4">尿素:</div>
-                      3.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">二胺:</div>
-                      6.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">硫酸钾:</div>
-                      1.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">氰化钾:</div>
-                      3.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">水:</div>
-                      3.0kg;
+                    <div class="ns3" v-for="(item2,index2) in item.content" :key="index2">
+                      <div class="ns4">{{item2.split(':')[0]}}:</div>
+                      {{item2.split(':')[1]}}KG;
                     </div>
                   </div>
                 </div>
@@ -358,72 +346,9 @@
                     class="zzpic"
                     src="@/static/image/zz1.png"
                   />
-                  <image
-                    mode="widthFix"
-                    class="zzpic"
-                    src="@/static/image/zz2.png"
-                  />
-                  <image
-                    mode="widthFix"
-                    class="zzpic"
-                    src="@/static/image/zz3.png"
-                  />
                 </div>
               </div>
             </div>
-            <div class="header header3">
-              <div class="header2">2022.02.10</div>
-              <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
-            </div>
-            <div class="nsdiv">
-              <div class="nschild">
-                <div class="ns1">
-                  <span class="nsdivspan">农事操作:</span>
-                  水肥一体
-                </div>
-                <div class="ns1">
-                  <span class="nsdivspan">农事内容:</span>
-                  <div class="ns2">
-                    <div class="ns3">
-                      <div class="ns4">尿素:</div>
-                      3.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">二胺:</div>
-                      6.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">硫酸钾:</div>
-                      1.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">氰化钾:</div>
-                      3.0kg;
-                    </div>
-                    <div class="ns3">
-                      <div class="ns4">水:</div>
-                      3.0kg;
-                    </div>
-                  </div>
-                </div>
-                <div class="ns1 ns1flex">
-                  <image
-                    mode="widthFix"
-                    class="zzpic"
-                    src="@/static/image/zz1.png"
-                  />
-                  <image
-                    mode="widthFix"
-                    class="zzpic"
-                    src="@/static/image/zz2.png"
-                  />
-                  <image
-                    mode="widthFix"
-                    class="zzpic"
-                    src="@/static/image/zz3.png"
-                  />
-                </div>
-              </div>
             </div>
           </div>
           <div class="changechild" v-if="activeTab == 3">
@@ -909,7 +834,7 @@
                 <div class="basicchild">
                   <div class="bc1 bc3">
                     <div class="basictext">
-                      <span class="bold"> 125 </span>
+                      <span class="bold"> {{allOther.TotalTmpThisAndLastYear.thisYear}} </span>
                       ℃
                     </div>
                     <div>当前积温</div>
@@ -949,7 +874,7 @@
                 <div class="basicchild">
                   <div class="bc1 bc3">
                     <div class="basictext">
-                      <span class="bold"> 566 </span>
+                      <span class="bold">  {{allOther.TotalRainThisAndLastYear.thisYear}}</span>
                       mm
                     </div>
                     <div>当前积雨</div>
@@ -989,7 +914,7 @@
                 <div class="basicchild">
                   <div class="bc1 bc3">
                     <div class="basictext">
-                      <span class="bold"> 578 </span>
+                      <span class="bold"> {{allOther.TotalPhotosyntheticThisAndLastYear.thisYear}}</span>
                       MJ/㎡
                     </div>
                     <div>当前辐射总量</div>
@@ -1029,8 +954,8 @@
                 <div class="basicchild">
                   <div class="bc1 bc3">
                     <div class="basictext">
-                      <span class="bold"> 566 </span>
-                      mm
+                      <span class="bold"> -</span>
+                      <!-- mm -->
                     </div>
                     <div>当前蒸发总量</div>
                   </div>
@@ -1106,8 +1031,9 @@ export default {
   },
   data() {
     return {
-      fluoritescreenshotData:null,
-      baseUrl:BASE_URL,
+      allOther: null,
+      fluoritescreenshotData: null,
+      baseUrl: BASE_URL,
       infoGet: null,
       videoListShow: [],
       weatherCreateTime: "",
@@ -1117,7 +1043,7 @@ export default {
       latitude: "",
       markers: [],
       polyline: [],
-      chartDataTemperatureFlag:false,
+      chartDataTemperatureFlag: false,
       polygons: [],
       fertilizer: {
         categories: ["1月11", "1月12", "1月11", "1月14", "1月15"],
@@ -1550,8 +1476,17 @@ export default {
       teaId: null,
       notSetFlag: false,
       getDeviceList: null,
-      chartDataRainFlag:false,
+      chartDataRainFlag: false,
+      farmList: [],
+      current:1,
     };
+  },
+  onReachBottom() {
+    console.log("触底了");
+    if(this.activeTab==2){
+      this.current++
+      this.farmrecords()
+    }
   },
   onLoad(option) {
     this.teaId = option.id;
@@ -1569,25 +1504,65 @@ export default {
     this.getSumRainInYear(ago, 0);
     this.getSumTemInYear(now, 1);
     this.getSumTemInYear(ago, 0);
-    this.fluoritescreenshot()
+    this.fluoritescreenshot();
+    this.farmrecords();
+    this.getTotalAllThisAndLastYear();
   },
   methods: {
     typeSelect() {},
     handleMessage() {},
-    fluoritescreenshot(){
-      let find = this.getDeviceList.find((item) => {
-        return item.type == 2;
+    farmrecords() {
+      request({
+        url: "/data/farmrecords/page?gardenId="+this.teaId,
+        method: "get",
+        isAuth: false,
+        data: {
+          current: this.current,
+          descs:'time'
+        },
+      }).then((res) => {
+        this.farmList = this.farmList.concat(res.data.records)
+        this.farmList.forEach(item=>{
+          if(item.fertilizerDose){
+            let get=item.fertilizerDose.split(',')
+            this.$set(item,'content',get)
+          }else{
+            this.$set(item,'content',[])
+          }
+        })
       });
-       request({
-        url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial="+find.id,
+    },
+
+    getTotalAllThisAndLastYear() {
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 1;
+      });
+      request({
+        url:
+          "/data/meteorologicalrecords/getTotalAllThisAndLastYear?deviceId=" +
+          find.id,
         method: "get",
         isAuth: false,
         data: {},
-      })
-      .then((res) => {
-        console.log('aaaa',res)
-        this.fluoritescreenshotData=res.data.records[res.data.records.length-1]
-      })
+      }).then((res) => {
+        this.allOther = res.data;
+        console.log("ressdsdadada===", res);
+      });
+    },
+    fluoritescreenshot() {
+      let find = this.getDeviceList.find((item) => {
+        return item.type == 2;
+      });
+      request({
+        url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial=" + find.id,
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        console.log("aaaa", res);
+        this.fluoritescreenshotData =
+          res.data.records[res.data.records.length - 1];
+      });
     },
     askInfo() {
       request({
@@ -1600,9 +1575,7 @@ export default {
           this.infoGet = res.data;
           this.askVideo();
         })
-        .catch((err) => {
-         
-        });
+        .catch((err) => {});
     },
     goDetail(item) {
       if (item.url) {
@@ -1628,7 +1601,7 @@ export default {
         return item.type == 2;
       });
       uni.navigateTo({
-        url: "/pages/four2/site/index?id="+find.id,
+        url: "/pages/four2/site/index?id=" + find.id,
       });
     },
     askVideo() {
@@ -1673,25 +1646,27 @@ export default {
         },
       }).then((res) => {
         if (type == 1) {
-          let dataGet=[]
-          let year=[]
-          for(let p in res.data){
-            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
-            dataGet.push(pushVal)
-             year.push((res.data[p]['name']).split('月')[0])
+          let dataGet = [];
+          let year = [];
+          for (let p in res.data) {
+            let pushVal =
+              res.data[p]["value"] == null ? 0 : res.data[p]["value"];
+            dataGet.push(pushVal);
+            year.push(res.data[p]["name"].split("月")[0]);
           }
-          console.log(year)
-          this.chartDataRain.categories=year
-          this.chartDataRain.series[0]['data']=dataGet
+          console.log(year);
+          this.chartDataRain.categories = year;
+          this.chartDataRain.series[0]["data"] = dataGet;
         } else {
-          let dataGet=[]
-          for(let p in res.data){
-            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
-            dataGet.push(pushVal)
+          let dataGet = [];
+          for (let p in res.data) {
+            let pushVal =
+              res.data[p]["value"] == null ? 0 : res.data[p]["value"];
+            dataGet.push(pushVal);
           }
-          this.chartDataRain.series[1]['data']=dataGet
+          this.chartDataRain.series[1]["data"] = dataGet;
           setTimeout(() => {
-             this.chartDataRainFlag=true 
+            this.chartDataRainFlag = true;
           }, 500);
         }
       });
@@ -1711,24 +1686,26 @@ export default {
         },
       }).then((res) => {
         if (type == 1) {
-          let dataGet=[]
-          let year=[]
-          for(let p in res.data){
-            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
-            dataGet.push(pushVal)
-            year.push((res.data[p]['name']).split('月')[0])
+          let dataGet = [];
+          let year = [];
+          for (let p in res.data) {
+            let pushVal =
+              res.data[p]["value"] == null ? 0 : res.data[p]["value"];
+            dataGet.push(pushVal);
+            year.push(res.data[p]["name"].split("月")[0]);
           }
-          this.chartDataTemperature.categories=year
-          this.chartDataTemperature.series[0]['data']=dataGet
+          this.chartDataTemperature.categories = year;
+          this.chartDataTemperature.series[0]["data"] = dataGet;
         } else {
-          let dataGet=[]
-          for(let p in res.data){
-            let pushVal=res.data[p]['value']==null?0:res.data[p]['value']
-            dataGet.push(pushVal)
+          let dataGet = [];
+          for (let p in res.data) {
+            let pushVal =
+              res.data[p]["value"] == null ? 0 : res.data[p]["value"];
+            dataGet.push(pushVal);
           }
-          this.chartDataTemperature.series[1]['data']=dataGet
+          this.chartDataTemperature.series[1]["data"] = dataGet;
           setTimeout(() => {
-             this.chartDataTemperatureFlag=true
+            this.chartDataTemperatureFlag = true;
           }, 500);
         }
       });
@@ -1848,20 +1825,19 @@ export default {
     },
     goMap() {
       let that = this;
-      let set={
-        center:[that.infoGet.longitude,that.infoGet.latitude],
-        pointArr:[
+      let set = {
+        center: [that.infoGet.longitude, that.infoGet.latitude],
+        pointArr: [
           {
-            lat:that.infoGet.latitude, 
+            lat: that.infoGet.latitude,
             lng: that.infoGet.longitude,
-            icon:'icon'
-          }
-        ]
-      }
-      uni.setStorageSync("mapParams",JSON.stringify(set))
+            icon: "icon",
+          },
+        ],
+      };
+      uni.setStorageSync("mapParams", JSON.stringify(set));
       uni.navigateTo({
-        url:
-          "/pages/map/index"
+        url: "/pages/map/index",
       });
     },
     changeTabHandle(index) {
@@ -2079,6 +2055,8 @@ export default {
 
   .imgwraps {
     position: relative;
+    height: 356rpx;
+    overflow: hidden;
     .videopic {
       border-radius: 32rpx;
       overflow: hidden;

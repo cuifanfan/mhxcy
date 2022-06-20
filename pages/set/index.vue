@@ -323,7 +323,7 @@
         </div>
         <div class="cirbox">
           <qiun-data-charts
-            type="rose"
+            type="pie"
             canvasId="four_d"
             :chartData="chartDataPie"
             :resshow="false"
@@ -348,7 +348,7 @@
           />
         </div>
       </div>
-      <div class="index1 index11">
+      <!-- <div class="index1 index11">
         <div class="title1">
           <span>设备异常统计</span>
           <div class="border"></div>
@@ -392,7 +392,7 @@
             :chartData="chartDataTemperature"
           />
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
