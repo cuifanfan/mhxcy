@@ -26,22 +26,21 @@
         <div class="border"></div>
       </div>
     </div>
-    <div v-for="(item,index) in 2" :key="index" class="img2">
-      <div class="wzdiv">
+    <div v-for="(item,index) in list" :key="index" class="img2">
+      <div class="wzdiv" @click="goDetail(item)">
         <div class="header header7 flexcenter">
           <div class="header2">问诊内容</div>
-          <div class="date">2022.02.01 09:35:20</div>
+          <div class="date">{{item.updateTime}}</div>
         </div>
-        <div class="ns1 ns1flex">
-          <image mode="widthFix" class="zzpic" src="@/static/image/zz1.png" />
-          <image mode="widthFix" class="zzpic" src="@/static/image/zz2.png" />
-          <image mode="widthFix" class="zzpic" src="@/static/image/zz3.png" />
+        <div class="ns1 ns1flex" v-if="item.picArr.length>0">
+          <image mode="widthFix" v-for="(item2,index2) in item.picArr" :key="index2" class="zzpic" :src="baseUrl+item2" />
         </div>
         <div class="text">
-          请问专家这种病虫不打农药，一般怎么去做防治比较好。
+          {{item.content}}
         </div>
         <div class="zt">
-          状态: <span class="ztspan">专家已回复</span>
+          状态: <span class="ztspan" v-if="item.reply">专家已回复</span>
+          <span class="ztspan ztspan2" v-if="!item.reply">专家未回复</span>
         </div>
       </div>
     </div>
@@ -50,12 +49,15 @@
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
+import request  from "../../common/utils/request";
+import { BASE_URL } from "../../common/utils/config";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      baseUrl:BASE_URL,
       activeone: 4,
       active: false,
       showType: false,
@@ -64,10 +66,57 @@ export default {
       numValue: "",
       nameValue: "",
       typeValue: "",
+      current:1,
+      listOver:false,
+      list:[],
     };
+  },
+  onReachBottom() {
+    console.log("触底了");
+    if(!this.listOver){
+      this.current++;
+      this.askList();
+    }
+  },
+  onLoad(){
+    this.askList()
   },
   methods: {
     typeSelect() {},
+    goDetail(item){
+     
+      uni.setStorageSync('articleContent',JSON.stringify(item))
+      uni.navigateTo({
+        url:'/pages/expert/knowledgeDetail/index'
+      })
+    },
+    askList(){
+       request({
+        url: "/data/expertservice/page",
+        method: 'get',
+        isAuth: false,
+        data:{
+          current:this.current
+        },
+      }).then((res) => {
+        res.data.records.forEach(item=>{
+          if(item.imageUrls){
+            this.$set(item,'picArr',item.imageUrls.split(','))
+          }else{
+            this.$set(item,'picArr',[])
+          }
+        })
+        this.list=this.list.concat(res.data.records)
+        if (res.data.records.length == 0) {
+          uni.showToast({
+            title: "暂无更多文章",
+            icon: "none",
+            duration: 850,
+          });
+          this.listOver=true
+        }
+      })
+    },
     goAnswer() {
       uni.navigateTo({
         url: "/pages/expert/answer/index",
@@ -95,10 +144,21 @@ export default {
       font-weight: bold;
       margin-left: 10rpx;
     }
+    .ztspan2{
+      color: #626466!important;
+    }
   }
   .text{
-    font-size: 28rpx;
     color: #626466;
+    margin-top: 20rpx;
+    font-size: 28rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    word-break: break-all;
+    line-height: 46rpx;
   }
   .date {
     font-size: 28rpx;
@@ -113,9 +173,11 @@ export default {
   }
   .ns1flex {
     display: flex;
-    justify-content: space-between;
     margin-top: 20rpx;
     margin-bottom: 30rpx;
+    .zzpic{
+      margin-right: 20rpx;
+    }
   }
 }
 .header2 {

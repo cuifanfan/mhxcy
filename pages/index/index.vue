@@ -39,6 +39,7 @@
                 class="pic72"
                 src="@/static/image/p2.png"
               />
+              <!-- 茶园切换 -->
               <div class="text">{{ this.weatherInfo.address }}</div>
               <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
             </div>
@@ -405,6 +406,7 @@ export default {
       },
       weatherData: [],
       pageName: "茶园种植",
+      allTea:[],
       indexMenu: [
         {
           name: "农情监测",
@@ -434,10 +436,21 @@ export default {
     this.askWeather();
     this.getFarmList();
     this.askInvestment(1);
-
     this.getPutInByContent(1);
+    this.teagarden()
   },
   methods: {
+    //如果为管理员 可以切换茶园 
+    teagarden(){
+      request({
+        url: "/data/teagarden/page?baseId=1&size=-1",
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        this.allTea=res.data.records
+      })
+    },
     getPutInByContent(type) {
       let endTime =
         type == 1

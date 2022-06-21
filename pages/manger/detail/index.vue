@@ -256,7 +256,7 @@
                 </div>
               </div>
             </div>
-            <div v-else>
+            <div class="nodata" v-else>
               暂无数据
             </div>
             <!-- <div class="header header3">
@@ -322,29 +322,30 @@
           <div class="changechild" v-if="activeTab == 2">
             <div v-for="(item,index)  in farmList" :key="index">
                <div class="header header3">
-              <div class="header2">{{item.createTime}}</div>
+              <div class="header2">{{item.time}}</div>
               <!-- <image mode="widthFix" class="set" src="@/static/image/ss1.png" /> -->
             </div>
             <div class="nsdiv">
               <div class="nschild">
                 <div class="ns1">
                   <span class="nsdivspan">农事操作:</span>
-                  {{item.place}}
+                  {{item.content}}
                 </div>
                 <div class="ns1">
                   <span class="nsdivspan">农事内容:</span>
                   <div class="ns2">
-                    <div class="ns3" v-for="(item2,index2) in item.content" :key="index2">
+                    <div class="ns3" v-for="(item2,index2) in item.contentSplit" :key="index2">
                       <div class="ns4">{{item2.split(':')[0]}}:</div>
                       {{item2.split(':')[1]}}KG;
                     </div>
                   </div>
                 </div>
-                <div class="ns1 ns1flex">
+                <div class="ns1 ns1flex" v-if="item.imgArr.length>0">
                   <image
+                    v-for="(item3,index3) in item.imgArr" :key="index3"
                     mode="widthFix"
                     class="zzpic"
-                    src="@/static/image/zz1.png"
+                    :src="baseUrl+item3"
                   />
                 </div>
               </div>
@@ -843,17 +844,26 @@
               </div>
               <div class="flexcenter">
                 <div class="bc1 bc4">
-                  <div class="bc2 flexcenter">
+                  <div class="bc2 flexcenter" v-if="allOther.TotalTmpThisAndLastYear.compare">
                     <image
                       mode="widthFix"
                       class="bc2img"
                       src="@/static/image/ad5.png"
+                      v-if="allOther.TotalTmpThisAndLastYear.compare>0"
+                    />
+                    <image
+                      mode="widthFix"
+                      class="fullw"
+                      src="@/static/image/ad2.png"
+                      v-else
                     />
                     <div>
-                      <span class="red"> 25 </span>
+                      <span class="red" v-if="allOther.TotalTmpThisAndLastYear.compare>0"> 25 </span>
+                      <span class="red green" v-else> {{allOther.TotalTmpThisAndLastYear.compare}} </span>
                       <span class="redspan">℃</span>
                     </div>
                   </div>
+                  <div class="nocompare" v-else>-</div>
                   较去年同期
                 </div>
                 <u-icon color="#C4C7CC" size="20" name="arrow-right"></u-icon>
@@ -883,17 +893,26 @@
               </div>
               <div class="flexcenter">
                 <div class="bc1 bc4">
-                  <div class="bc2 flexcenter">
+                  <div class="bc2 flexcenter" v-if="allOther.TotalRainThisAndLastYear.compare">
                     <image
                       mode="widthFix"
                       class="bc2img"
                       src="@/static/image/ad5.png"
+                      v-if="allOther.TotalRainThisAndLastYear.compare>0"
+                    />
+                    <image
+                      mode="widthFix"
+                      class="fullw"
+                      src="@/static/image/ad2.png"
+                      v-else
                     />
                     <div>
-                      <span class="red"> 25 </span>
-                      <span class="redspan">mm</span>
+                      <span class="red" v-if="allOther.TotalRainThisAndLastYear.compare>0"> 25 </span>
+                      <span class="red green" v-else> {{allOther.TotalRainThisAndLastYear.compare}} </span>
+                      <span class="redspan">℃</span>
                     </div>
                   </div>
+                  <div class="nocompare" v-else>-</div>
                   较去年同期
                 </div>
                 <u-icon color="#C4C7CC" size="20" name="arrow-right"></u-icon>
@@ -923,17 +942,26 @@
               </div>
               <div class="flexcenter">
                 <div class="bc1 bc4">
-                  <div class="bc2 flexcenter">
+                  <div class="bc2 flexcenter" v-if="allOther.TotalPhotosyntheticThisAndLastYear.compare">
                     <image
                       mode="widthFix"
                       class="bc2img"
-                      src="@/static/image/ad6.png"
+                      src="@/static/image/ad5.png"
+                      v-if="allOther.TotalPhotosyntheticThisAndLastYear.compare>0"
+                    />
+                    <image
+                      mode="widthFix"
+                      class="fullw"
+                      src="@/static/image/ad2.png"
+                      v-else
                     />
                     <div>
-                      <span class="red green"> 267 </span>
-                      <span class="redspan greenspan">MJ/㎡</span>
+                      <span class="red" v-if="allOther.TotalPhotosyntheticThisAndLastYear.compare>0"> 25 </span>
+                      <span class="red green" v-else> {{allOther.TotalPhotosyntheticThisAndLastYear.compare}} </span>
+                      <span class="redspan">℃</span>
                     </div>
                   </div>
+                  <div class="nocompare" v-else>-</div>
                   较去年同期
                 </div>
                 <u-icon color="#C4C7CC" size="20" name="arrow-right"></u-icon>
@@ -964,7 +992,8 @@
               <div class="flexcenter">
                 <div class="bc1 bc4">
                   <div class="bc2 flexcenter">
-                    <image
+                    
+                    <!-- <image
                       mode="widthFix"
                       class="bc2img"
                       src="@/static/image/ad5.png"
@@ -972,8 +1001,9 @@
                     <div>
                       <span class="red"> 25 </span>
                       <span class="redspan">mm</span>
-                    </div>
+                    </div> -->
                   </div>
+                  <div class="nocompare">-</div>
                   较去年同期
                 </div>
                 <u-icon color="#C4C7CC" size="20" name="arrow-right"></u-icon>
@@ -1507,6 +1537,7 @@ export default {
     this.fluoritescreenshot();
     this.farmrecords();
     this.getTotalAllThisAndLastYear();
+    this.teagarden()
   },
   methods: {
     typeSelect() {},
@@ -1525,9 +1556,15 @@ export default {
         this.farmList.forEach(item=>{
           if(item.fertilizerDose){
             let get=item.fertilizerDose.split(',')
-            this.$set(item,'content',get)
+            this.$set(item,'contentSplit',get)
           }else{
-            this.$set(item,'content',[])
+            this.$set(item,'contentSplit',[])
+          }
+          if(item.imageUrls){
+            let get2=item.imageUrls.split(',')
+            this.$set(item,'imgArr',get2)
+          }else{
+            this.$set(item,'imgArr',[])
           }
         })
       });
@@ -1852,6 +1889,16 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.nocompare{
+  width: 120rpx;
+  display: flex;
+  justify-content: center;
+}
+.nodata{
+  font-size: 20rpx;
+  color: #939599;
+  padding: 10rpx;
+}
 .textflex {
   display: flex;
   justify-content: space-between;
@@ -1906,9 +1953,11 @@ export default {
   }
   .ns1flex {
     display: flex;
-    justify-content: space-between;
     margin-top: 25rpx;
     margin-bottom: 30rpx;
+    .zzpic{
+      margin-right: 20rpx;
+    }
   }
   .ns3 {
     display: flex;
@@ -1949,7 +1998,7 @@ export default {
   margin-top: 20rpx;
 }
 .bc4 {
-  margin-right: 30rpx;
+  margin-right: 15rpx;
   align-items: flex-end !important;
 }
 .bc2img {
@@ -1991,7 +2040,6 @@ export default {
 .bc1 {
   height: 110rpx;
   display: flex;
-
   justify-content: space-between;
   flex-direction: column;
   font-size: 24rpx;

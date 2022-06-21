@@ -21,6 +21,15 @@
         ></u-icon>
       </div>
       {{ titleName }}
+      <div class="iconwrap2" v-if="addIcon==2">
+           <u-icon
+          @click="addOne"
+          name="plus"
+          color="#fff"
+          size="20"
+        ></u-icon>   
+      </div>
+     
     </view>
   </view>
 </template>
@@ -40,6 +49,10 @@ export default {
       type: Number,
       default: 1,
     },
+    addIcon:{
+      type:Number,
+      default:1
+    }
   },
   data() {
     return {
@@ -48,9 +61,15 @@ export default {
   },
   onReady() {
     this.getPhoneHeight();
-    console.log(this.phoneHeight);
+    // console.log(this.phoneHeight);
+  },
+  onShow(){
+    console.log(3212)
   },
   methods: {
+    addOne(){
+      uni.$emit('addOneFriend','');
+    },
     goBack() {
       let currentRoutes = getCurrentPages(); 
       let currentRoute = currentRoutes[currentRoutes.length - 1].route;
@@ -93,6 +112,10 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.iconwrap2{
+  position: absolute;
+  right: 20rpx;
+}
 .nav-small-box {
   height: 200rpx !important;
 }

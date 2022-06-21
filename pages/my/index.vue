@@ -290,7 +290,7 @@ export default {
 
 <style scoped lang="scss">
 .chilid8{
-  background: rgb(255, 67, 60)!important;
+  background: #ee6666f0 !important;
   color: #fff!important;
   justify-content: center!important;
   margin-top: 60rpx!important;

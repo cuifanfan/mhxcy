@@ -26,7 +26,7 @@
       box-shadow: 0 4pt 8pt 0 rgba(0,0,0,0.25);
       width: 90%;
       border-radius: 10px;
-      justify-content: space-between;
+      /* justify-content: space-between; */
       display: flex;
       visibility: hidden;
       padding: 10px;
@@ -41,23 +41,25 @@
     .bwrap .b{
       font-weight: bold;
       font-size: 20px;
+      display: flex;
+      align-items: center;
     }
     .b2{
       font-size: 12px;
     }
-    .bwrap:nth-child(1) .b{
+    .bwrap .kk3{
       color: #08CCA5;
     }
-    .bwrap:nth-child(2) .b{
-      color: #3199F5;
+    .bwrap .kk2{
+      color: #3199F5!important;
     }
-    .bwrap:nth-child(3) .b{
-      color: #F56262;
+    .bwrap .kk3{
+      color: #F56262!important;
     }
-    .bwrap:nth-child(4) .b{
+    .bwrap .b{
       color: #FFB900;
     }
-    .bwrap:nth-child(5) .b{
+    .bwrap .b{
       color: #FFB900;
     }
 
@@ -74,6 +76,12 @@
       top: 20px;
       left: 20px;
       z-index: 999;
+    }
+    .bwrap{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 20%;
     }
   </style>
   <script>
@@ -130,6 +138,15 @@
           console.log('giao!',item.iconNum)
           addPoint({ lat: item.lat, lng: item.lng },item.icon)
         })
+        
+        if(arg.bottom){
+          let htmlBottom=''
+          arg.bottom.forEach(item=>{
+            htmlBottom+='<div class="bwrap"><div class="b '+item.icon+'"><img class="imgicon" src="./'+item.icon+'.png" alt="">'+item.total+'</div><div class="b2">'+item.type+'</div></div>'
+          })
+          console.log('dhtmladdd',htmlBottom)
+          document.getElementById("infobox").innerHTML=htmlBottom;
+        }
         //addPolygon(arg.polygon)
         if(arg.showInfo){
           document.getElementById('infobox').style.visibility='visible'
@@ -150,7 +167,8 @@
   <div id="mapDiv"></div>
   <image onclick="goBack()" class="back" src="../html/back.png" alt="">
     <div class="infobox" id="infobox">
-      <div class="bwrap">
+
+      <!-- <div class="bwrap">
         <div class="b">
           <img class="imgicon" src="./kk1.png" alt="">
           5
@@ -194,7 +212,7 @@
         <div class="b2">
           摄像监测
         </div>
-      </div>
+      </div> -->
     </div>
 </body>
 

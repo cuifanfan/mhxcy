@@ -1,8 +1,13 @@
 <template>
   <div class="wrap">
-    <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
+    <header-diy
+      class="topbar"
+      :addIcon="2"
+      :type="2"
+      :titleName="pageName"
+    ></header-diy>
     <div class="content">
-      <div >
+      <div>
         <div class="manger">
           <div class="child">
             <div class="childwrap flexcenter">
@@ -58,6 +63,60 @@
         </div>
       </div>
     </div>
+    <div>
+      <div v-if="addpopup" class="popup_content">
+        <div class="closeadd" @click="addpopup=false">
+          <u-icon
+              color="#939599"
+              size="20"
+              name="close"
+            ></u-icon>
+        </div>
+        <div class="popup_title">添加用户</div>
+        <div class="popup_textarea_item">
+          <div class="itemadd">
+            <div class="label">姓名:</div>
+            <u--input
+              placeholder="请输入姓名"
+              border="bottom"
+              clearable
+            ></u--input>
+          </div>
+          <div class="itemadd">
+            <div class="label">电话:</div>
+            <u--input
+              placeholder="请输入电话"
+              border="bottom"
+              clearable
+              type="number"
+            ></u--input>
+          </div>
+          <div class="itemadd">
+            <div class="label">角色:</div>
+            <u-radio-group
+              v-model="radiovalue1"
+              placement="row"
+              iconPlacement="left"
+            >
+              <u-radio
+                :customStyle="{ marginBottom: '8px' }"
+                v-for="(item, index) in radiolist1"
+                :key="index"
+                :label="item.name"
+                :name="item.name"
+                @change="radioChange"
+              >
+              </u-radio>
+            </u-radio-group>
+          </div>
+
+          <div @click="submitFeedback()" class="buttons">
+            <text class="popup_button">确定</text>
+          </div>
+        </div>
+      </div>
+      <div class="popup_overlay" v-if="addpopup" @click="hideDiv()"></div>
+    </div>
   </div>
 </template>
 <script>
@@ -68,6 +127,19 @@ export default {
   },
   data() {
     return {
+      radiolist1: [
+        {
+          name: "普通用户",
+          disabled: false,
+        },
+        {
+          name: "管理员",
+          disabled: false,
+        },
+      ],
+
+      radiovalue1: "普通用户",
+      addpopup: false,
       tab: [
         "茶园天气",
         "长势监测",
@@ -193,14 +265,113 @@ export default {
       typeValue: "",
     };
   },
+  onLoad() {
+    uni.$on("addOneFriend", (e) => {
+      this.addpopup=true
+    });
+  },
+  onBackPress() {
+    uni.$off("addOneFriend");
+  },
+  onUnload() {
+    uni.$off("addOneFriend");
+  },
   methods: {
     typeSelect() {},
+    radioChange(){
+      
+    },
+    hideDiv() {
+      this.addpopup = false;
+    },
+    submitFeedback() {
+      this.addpopup = false;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-.clearindex1{
-  background: transparent!important;
+.u-radio-label--left{
+  margin-bottom: 0!important;
+  margin-left: 20rpx;
+}
+.popup_overlay {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 1001;
+  -moz-opacity: 0.8;
+  opacity: 0.8;
+  filter: alpha(opacity=88);
+}
+.itemadd {
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+
+  .label {
+    color: #626466;
+    margin-right: 10rpx;
+  }
+}
+.popup_content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 480rpx;
+  height: 540rpx;
+  margin-left: -270rpx;
+  margin-top: -270rpx;
+  border: 10px solid white;
+  background-color: white;
+  z-index: 1002;
+  overflow: auto;
+  .closeadd{
+    position: absolute;
+    right: 0rpx;
+    top: 0rpx;
+  }
+}
+
+.popup_title {
+  width: 480rpx;
+  text-align: center;
+  font-size: 32rpx;
+  margin-top: 20rpx;
+}
+
+.popup_textarea_item {
+  padding-top: 5rpx;
+  height: 50rpx;
+  width: 440rpx;
+  margin-top: 20rpx;
+  margin-left: 20rpx;
+  padding-top: 25rpx;
+}
+
+.popup_textarea {
+  width: 410rpx;
+  font-size: 26rpx;
+  margin-left: 20rpx;
+}
+
+.popup_button {
+  color: #fff;
+  margin: 20rpx;
+}
+.buttons {
+  text-align: center;
+  font-size: 32rpx;
+  padding: 15rpx 0;
+  margin-top: 40rpx;
+  background-color: #29cc96;
+}
+
+.clearindex1 {
+  background: transparent !important;
 }
 .manger {
   .child {

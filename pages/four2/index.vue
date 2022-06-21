@@ -328,7 +328,7 @@
           v-for="(item, index) in videoListShow"
           :key="index"
         >
-          <div>
+          <div class="addvideowrap">
             <div class="imgwraps">
               <image
                 mode="widthFix"
@@ -598,6 +598,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.addvideowrap{
+  height: 476rpx;
+}
 .index1 {
   background: #ffffff;
   padding: 20rpx 32rpx;

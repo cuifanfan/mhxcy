@@ -26,14 +26,18 @@ export default {
         let only = [];
         let draw = [];
         let iconSet = "";
+        let iconSet2=''
         res.data.list.forEach((item, index) => {
           if (item.latitude) {
             if (item.type == "虫情设备") {
               iconSet = "icon3";
+              iconSet2='kk3'
             } else if (item.type == "气象设备") {
               iconSet = "icon4";
+              iconSet2='kk2'
             } else if (item.type == "摄像头") {
               iconSet = "icon2";
+              iconSet2='kk4'
             }
             draw.push({
               lat: item.latitude,
@@ -43,6 +47,7 @@ export default {
             let flag = only.find((item2) => {
               return item2.type == item.type;
             });
+           
             if (!flag) {
               only.push({
                 type: item.type,
@@ -52,19 +57,23 @@ export default {
                     latitude: item.latitude,
                   },
                 ],
+                total:1,
+                icon:iconSet2
               });
             } else {
               flag.child.push({
                 longitude: item.longitude,
                 latitude: item.latitude,
               });
+              flag.total+=1
             }
           }
         });
+        console.log(only)
         let set = {
           center: [
-            only[0]["child"][0]["latitude"],
             only[0]["child"][0]["longitude"],
+            only[0]["child"][0]["latitude"]
           ],
           pointArr: draw,
         };
@@ -78,6 +87,7 @@ export default {
               pointArr: draw,
               //olygon: points,
               showInfo: true, 
+              bottom:only
             };
           const currentWebview = this.$scope.$getAppWebview().children()[0];
           currentWebview.evalJS(`${_funName}(${JSON.stringify(_data)})`);

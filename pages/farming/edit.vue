@@ -49,6 +49,24 @@
         </div>
         <div class="edit">
           <div class="formchild">
+            <div class="name">人力:</div>
+            <div class="input2">
+              <div class="disablewrap disablewrap3" >
+                <u--input
+                  v-model="humanUse"
+                  disabledColor="#fafafa"
+                  placeholder="请输入人力投入"
+                  border="none"
+                  type="number"
+                  @blur="inputHuman"
+                ></u--input>
+               
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="edit">
+          <div class="formchild">
             <div class="name">操作内容:</div>
             <div class="input input2">
               <div class="disablewrap" @click="showType = true">
@@ -119,7 +137,7 @@
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
-              <div class="handle">
+              <div class="handle" v-if="resultPic.length<3">
                 <image
                   mode="widthFix"
                   class="iconpic"
@@ -152,6 +170,8 @@
       @close="show = false"
       :show="show"
       :mode="mode"
+      monthNum="13"
+      :minDate="minDate"
       @confirm="confirm"
     ></u-calendar>
     <u-action-sheet
@@ -177,22 +197,25 @@ import headerDiy from "../component/header/header.vue";
 import { getNowDate } from "../../common/utils/utils";
 import request from "../../common/utils/request";
 import moment from "moment";
+import { BASE_URL } from "../../common/utils/config";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      minDate:moment().add(-1, 'y').format("YYYY-MM-DD"),
       contentAddTextSend:'',
       contentAdd:[],
       remark: "",
+      humanUse:'',
       teaName: "",
       teaId: "",
       handleContent: "",
       teaList: [],
       showTypeTea: false,
       resultPic: [],
-      baseUrl: "http://121.36.247.77:9999",
+      baseUrl: BASE_URL,
       mode: "single",
       show: false,
       date: "",
@@ -200,7 +223,7 @@ export default {
       active: true,
       showType: false,
       showType2: false,
-      pageName: "记录/编辑农事",
+      pageName: '',
       numValue: "",
       typeList: [
         {
@@ -240,12 +263,39 @@ export default {
       nameValue: "",
       typeValue: "",
       onlyLeafFlag:false,
+      editFlag:false,
+      agoFarm:null,
     };
   },
-  onLoad() {
-    let now = getNowDate();
-    this.date = now.split(" ")[0];
+  onLoad(option) {
+    this.editFlag=option.edit?true:false
+    if(this.editFlag){
+      this.agoFarm=JSON.parse(uni.getStorageSync('editFarm'))
+      console.log(this.agoFarm)
+      this.teaName=this.agoFarm.gardenName
+      this.date=this.agoFarm.time.split(' ')[0]
+      this.handleContent=this.agoFarm.content
+      this.humanUse=this.agoFarm.humanUse
+      if(this.agoFarm.fertilizerDose){
+        let get=this.agoFarm.fertilizerDose.split(',')
+        get.forEach(item=>{
+          this.contentAdd.push({
+            name:item.split(':')[0],
+            val:item.split(':')[1]
+          })
+        })
+      }
+      if(this.agoFarm.imageUrls){
+        this.resultPic=this.agoFarm.imageUrls.split(',')
+      }
+      this.remark=this.agoFarm.comment
+    }else{
+      let now = getNowDate();
+      this.date = now.split(" ")[0];
+    }
     this.askTea();
+    this.pageName=option.edit?'编辑农事':'记录农事'
+   
   },
   computed:{
     contentAddText(){
@@ -259,16 +309,29 @@ export default {
     }
   },
   onShow(){
-    this.contentAdd=[]
-    this.contentAddTextSend=''
-    this.teaId=''
-    this.teaName=''
-    this.remark=''
-    this.handleContent=''
-    this.teaType=''
-    this.resultPic=[]
+    if(!this.editFlag){
+      this.teaName=''
+      this.contentAdd=[]
+      this.contentAddTextSend=''
+      this.teaId=''
+      this.remark=''
+      this.handleContent=''
+      this.teaType=''
+      this.resultPic=[]
+      this.humanUse=''
+    }
   },
   methods: {
+    inputHuman(){
+      if(this.humanUse%0.5!=0){
+        uni.showToast({
+          title: '请输入0.5的倍数',
+          icon:'none',
+          duration: 850
+        })
+        this.humanUse=''
+      }
+    },
     addOne(){
       console.log(this.handleContent)
       let name=this.handleContent=='采摘'?'鲜叶':''
@@ -287,9 +350,17 @@ export default {
           }
         }
       })
-      if (this.teaId == "") {
+      if (this.teaName == "") {
         uni.showToast({
           title: "请选择茶园",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+      if (this.humanUse == "") {
+        uni.showToast({
+          title: "请输入人力",
           icon: "none",
           duration: 850,
         });
@@ -312,11 +383,8 @@ export default {
         return;
       }
       let picUrl = this.resultPic.join(",");
-      request({
-        url: "/data/farmrecords",
-        method: "post",
-        isAuth: false,
-        data: {
+      let requestType=this.editFlag?'put':'post'
+      let sendData={
           comment: this.remark,
           content: this.handleContent,
           fertilizerDose: this.contentAddTextSend,
@@ -324,13 +392,30 @@ export default {
           imageUrls: this.resultPic.join(","),
           time: this.date + " 12:20:00",
           gardenName: this.teaName,
-          species:this.teaType
-        },
+          species:this.teaType,
+          humanUse:this.humanUse
+      }
+      if(this.editFlag){
+        sendData.id=this.agoFarm.id
+      }
+      request({
+        url: "/data/farmrecords",
+        method: requestType,
+        isAuth: false,
+        data:sendData,
       }).then((res) => {
         if (res.code == 200) {
-          uni.navigateTo({
-            url: "/pages/farming/index",
-          });
+          let tiptext=this.editFlag?'编辑':'新增'
+          uni.showToast({
+            title:tiptext+'农事成功',
+            icon:'none',
+            duration:850
+			    });
+          setTimeout(() => {
+            uni.navigateTo({
+              url: "/pages/farming/index",
+            });  
+          }, 1000);
           uni.setStorageSync("farmingTabindex", 1);
           this.remark = "";
           this.handleContent = "";
@@ -387,42 +472,35 @@ export default {
     deleteOne(index) {
       this.resultPic.splice(index, 1);
     },
+    toJSON(){
+      return this
+    },
     onGetImgClick: function () {
+      let that=this
       uni.chooseImage({
+        count:3,
         sizeType: ["compressed"], //original 原图，compressed 压缩图，默认二者都有
         sourceType: ["album", "camera"], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
         success: (res) => {
           //this.imageList = res.tempFilePaths[0];
           console.log("res", res);
-          console.log(this);
-          res.tempFiles.forEach((item, index) => {
+         // console.log(this);
+          res.tempFilePaths.forEach((item, index) => {
+            console.log('itemfile',item)
             uni.uploadFile({
-              url: `http://121.36.247.77:9999/admin/sys-file/upload`, //接口
-
-              //filePath: res.tempFilePaths[0],
-
-              // formData: {
-              //   name: 'token',
-              //   token: window.uni.getStorageSync("accessToken")
-              // },
+              url: `http://121.36.247.77:9999/admin/sys-file/upload`, 
               name: "file",
               header: {
                 Authorization: "Bearer " + uni.getStorageSync("token"),
               },
-              file: item,
+              filePath: item,
               success: (res) => {
                 let dataget = JSON.parse(res.data);
                 console.log("上传！！", dataget);
-                this.resultPic.push(dataget.data.url);
-                console.log(this.resultPic);
-                // this.objList = JSON.parse(res.data);
-                // if (this.objList.code == 200) {
-                //   this.newtime = this.objList.time;
-                //   this.resData = this.objList.data;
-                //   console.log(this.objList, this.newtime, this.resData, "6666");
-                //   console.log(this);
-                // }
+                that.resultPic.push(dataget.data.url);
+                
               },
+              
             });
           });
         },

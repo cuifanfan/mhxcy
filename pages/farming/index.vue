@@ -36,7 +36,7 @@
         v-for="(item, index) in farmList"
         :key="index"
       >
-        <div class="titlewrap">
+        <div class="titlewrap" @click="goEdit(item)">
           <div class="title">
             <span>{{
               item.gardenName ? item.gardenName : "暂无茶园名称"
@@ -120,6 +120,12 @@ export default {
   },
   methods: {
     typeSelect() {},
+    goEdit(item){
+      uni.setStorageSync('editFarm',JSON.stringify(item))
+      uni.navigateTo({
+            url: '/pages/farming/edit?edit=true'
+      })
+    },
     changeTabIndex(index) {
       uni.setStorageSync("farmingTabindex", index);
       this.active = !this.active;
@@ -134,9 +140,7 @@ export default {
           descs:'time'
         },
       }).then((res) => {
-        console.log("res", res);
         this.farmList = this.farmList.concat(res.data.records);
-        console.log(this.farmList);
         if (res.data.records.length == 0) {
           uni.showToast({
             title: "暂无更多数据",

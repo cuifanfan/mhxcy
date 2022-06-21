@@ -2,39 +2,78 @@
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
     <div class="article index1 index1clear" v-if="detail">
-      <div class="title">{{detail.title}}</div>
-      <div class="fb fb5">
-        <div class="fb1">发布人：<span>{{detail.author}}</span></div>
-        <div class="fb1">发布时间：{{detail.createTime}}</div>
-      </div>
-      <div class="fb">
-        <div class="fb1">所属分类：<span>{{detail.summary}}</span></div>
-      </div>
-      <div class="content3">
-        <rich-text :nodes="detail.content"></rich-text>
+      <div  class="img2">
+        <div class="wzdiv" >
+          <div class="header header7 flexcenter">
+            <div class="header2">问诊内容</div>
+            <div class="date">{{detail.createTime}}</div>
+          </div>
+          <div class="ns1 ns1flex" v-if="detail.picArr.length > 0">
+            <image
+              mode="widthFix"
+              v-for="(item2, index2) in detail.picArr"
+              :key="index2"
+              class="zzpic"
+              :src="baseUrl + item2"
+            />
+          </div>
+          <div class="text">
+            {{detail.content}}
+          </div>
+          <div class="zt">
+            状态: <span class="ztspan" v-if="detail.reply">专家已回复</span>
+            <span class="ztspan ztspan2" v-if="!detail.reply">专家未回复</span>
+          </div>
+        </div>
+        <div class="wzdiv wzdiv2" v-if="detail.reply">
+          <div class="header header7 flexcenter">
+            <div class="header2">专家回复</div>
+            <!-- <div class="date">{{detail.createTime}}</div> -->
+          </div>
+          <div class="ns1 ns1flex" v-if="detail.picArr.length > 0">
+            <image
+              mode="widthFix"
+              v-for="(item2, index2) in detail.picArr"
+              :key="index2"
+              class="zzpic"
+              :src="baseUrl + item2"
+            />
+          </div>
+          <div class="text">
+            {{detail.reply}}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import request from "../../../common/utils/request";
+import { BASE_URL } from "../../../common/utils/config";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
-      detail:null,
+      baseUrl:BASE_URL,
+      detail: null,
       pageName: "知识详情",
       numValue: "",
       nameValue: "",
       typeValue: "",
     };
   },
-  onLoad(){
-    if(uni.getStorageSync('articleContent')){
-      this.detail=JSON.parse(uni.getStorageSync('articleContent'))
-      console.log(this.detail)
+  onLoad() {
+    if (uni.getStorageSync("articleContent")) {
+      this.detail = JSON.parse(uni.getStorageSync("articleContent"));
+      if(this.detail.imageUrls){
+            this.$set(this.detail,'picArr',this.detail.imageUrls.split(','))
+          }else{
+            this.$set(this.detail,'picArr',[])
+      }
+      console.log(this.detail);
     }
   },
   methods: {
@@ -43,21 +82,74 @@ export default {
         url: "/pages/expert/knowledgeDetail/index",
       });
     },
+    askList() {},
   },
 };
 </script>
 <style lang="scss" scoped>
-.p{
-    text-indent: 60rpx;
-    margin-bottom: 20rpx;
-    line-height: 50rpx;
-}
-.content3{
+.wzdiv2{
   margin-top: 20rpx;
 }
-.fullpic{
-    width: 100%;
-    margin: 20rpx 0;
+.wzdiv {
+  background: #fff;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  font-size: 28rpx;
+  .zt{
+    color:#626466 ;
+    margin-top: 20rpx;
+    .ztspan{
+      color:#3199F5;
+      font-weight: bold;
+      margin-left: 10rpx;
+    }
+    .ztspan2{
+      color: #626466!important;
+    }
+  }
+  .text{
+    color: #626466;
+    margin-top: 20rpx;
+    font-size: 28rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    word-break: break-all;
+    line-height: 46rpx;
+  }
+  .date {
+    font-size: 28rpx;
+    color: #626466;
+  }
+  .ns1 {
+    margin-top: 14rpx;
+  }
+  .zzpic {
+    width: 186rpx;
+    height: 104rpx !important;
+  }
+  .ns1flex {
+    display: flex;
+    margin-top: 20rpx;
+    margin-bottom: 30rpx;
+    .zzpic{
+      margin-right: 20rpx;
+    }
+  }
+}
+.p {
+  text-indent: 60rpx;
+  margin-bottom: 20rpx;
+  line-height: 50rpx;
+}
+.content3 {
+  margin-top: 20rpx;
+}
+.fullpic {
+  width: 100%;
+  margin: 20rpx 0;
 }
 .fb5 {
   margin: 20rpx 0;

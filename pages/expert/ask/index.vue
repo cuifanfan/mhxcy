@@ -4,7 +4,7 @@
     <div class="content">
       <div class="index1">
         <div class="edit">
-          <div class="formchild">
+          <div class="formchild"  @click="showType = true">
             <div class="name name2">选择专家:</div>
             <div class="input input2">
               <div class="disablewrap">
@@ -18,7 +18,7 @@
                 ></u--input>
                 <u-icon
                   slot="right"
-                  @click="showType = true"
+                 
                   color="#C4C7CC"
                   size="20"
                   name="arrow-down"
@@ -32,26 +32,23 @@
           <div class="formchild">
             <div class="name">添加照片:(最多三张)</div>
             <div class="editpic">
-              <div class="picpic">
-                <image mode="widthFix" class="handlepic" src="@/static/image/i1.png" alt="" />
-                <div class="icon">
+              <div
+                class="picpic"
+                v-for="(item, index) in resultPic"
+                :key="index"
+              >
+                <image class="handlepic" :src="baseUrl + item" alt="" />
+                <div class="icon" @click="deleteOne(index)">
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
-              <div class="picpic">
-                <image mode="widthFix" class="handlepic" src="@/static/image/i2.png" alt="" />
-                <div class="icon">
-                  <u-icon color="#fff" size="14" name="close"></u-icon>
-                </div>
-              </div>
-              <div class="picpic">
-                <image mode="widthFix" class="handlepic" src="@/static/image/i3.png" alt="" />
-                <div class="icon">
-                  <u-icon color="#fff" size="14" name="close"></u-icon>
-                </div>
-              </div>
-              <div class="handle">
-                <image mode="widthFix" class="iconpic" src="@/static/image/edit.png" alt="" />
+              <div class="handle" v-if="resultPic.length<3">
+                <image
+                  mode="widthFix"
+                  class="iconpic"
+                  src="@/static/image/edit.png"
+                  @click="onGetImgClick"
+                />
               </div>
             </div>
           </div>
@@ -60,21 +57,20 @@
           <div class="formchild">
             <div class="name name2">问题描述:</div>
             <div class="input input2">
-               <textarea placeholder="请输入想咨询的相关问题" placeholder-class="palceholderclass" class="textarea"></textarea>
+               <textarea v-model="question" placeholder="请输入想咨询的相关问题" placeholder-class="palceholderclass" class="textarea"></textarea>
             </div>
            
           </div>
         </div>
       </div>
     </div>
-    <div class="btnask">
+    <div class="btnask" @click="submit">
       确认提交
     </div>
     <u-action-sheet
       :show="showType"
       :actions="typeList"
-      title="请选择商品种类"
-      description="商品种类哦"
+      title="请选择专家"
       @close="showType = false"
       @select="typeSelect"
     >
@@ -83,36 +79,153 @@
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import { BASE_URL } from "../../../common/utils/config";
+import request from "../../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      question:'',
+      resultPic: [],
+      baseUrl:BASE_URL,
       pageName: "拍照问诊",
       numValue: "",
       nameValue: "",
       typeValue: "",
       typeList: [
-        {
-          name: "种类1",
-        },
-        {
-          name: "种类2",
-        },
-        {
-          name: "保密",
-        },
+       
       ],
       showType:false,
+      sendExport:'',
     };
   },
+  onLoad(){
+    this.getUserOptions()
+  },
   methods: {
-    typeSelect() {},
+    typeSelect(e) {
+      console.log(e)
+      this.typeValue=e.name
+      this.sendExport=e.value
+    },
+    getUserOptions(){
+      request({
+        url: "/admin/user/getUserOptions?deptId=2",
+        method: 'get',
+        isAuth: false,
+        data:{}
+      }).then((res) => {
+        res.data.forEach(item=>{
+          this.typeList.push({
+            name:item.label,
+            value:item.value
+          })
+        })
+      })
+    },
+    submit(){
+      if(this.typeValue==''){
+        uni.showToast({
+            title: "请选择专家",
+            icon: "none",
+            duration: 850,
+          });
+          return;
+      }
+      if(this.question==''){
+        uni.showToast({
+            title: "请输入问题描述",
+            icon: "none",
+            duration: 850,
+          });
+          return;
+      }
+      let userInfo=uni.getStorageSync('userInfo')
+      let data={
+        "content": this.question,
+        "userId":userInfo.userId,
+        "userName": userInfo.userName
+      }
+      if(this.resultPic.length>0){
+        data.imageUrls=this.resultPic.join(',') 
+      }
+      request({
+        url: "/data/expertservice",
+        method: 'post',
+        isAuth: false,
+        data:data
+      }).then((res) => {
+          uni.showToast({
+            title:'提交成功',
+            icon:'none',
+            duration:850
+			    });
+          setTimeout(() => {
+            uni.navigateTo({
+              url: "/pages/expert/index",
+            });  
+          }, 1000);
+      })
+      
+    },
+    deleteOne(index) {
+      this.resultPic.splice(index, 1);
+    },
+    toJSON(){
+      return this
+    },
+    onGetImgClick: function () {
+      let that=this
+      uni.chooseImage({
+        count:3,
+        sizeType: ["compressed"], //original 原图，compressed 压缩图，默认二者都有
+        sourceType: ["album", "camera"], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
+        success: (res) => {
+          //this.imageList = res.tempFilePaths[0];
+          console.log("res", res);
+         // console.log(this);
+          res.tempFilePaths.forEach((item, index) => {
+            console.log('itemfile',item)
+            uni.uploadFile({
+              url: `http://121.36.247.77:9999/admin/sys-file/upload`, 
+              name: "file",
+              header: {
+                Authorization: "Bearer " + uni.getStorageSync("token"),
+              },
+              filePath: item,
+              success: (res) => {
+                let dataget = JSON.parse(res.data);
+                console.log("上传！！", dataget);
+                that.resultPic.push(dataget.data.url);
+                
+              },
+              
+            });
+          });
+        },
+      });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
+.handle {
+      background: #fafafa;
+      border-radius: 16rpx;
+      border-radius: 16rpx;
+      padding: 0 20rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 132rpx;
+}
+.handlepic {
+      width: 160rpx;
+      height: 132rpx;
+      margin-right: 20rpx;
+}
 .palceholderclass{
   color: rgba(147,149,153,0.3)!important;
   font-size: 28rpx;
@@ -170,7 +283,6 @@ export default {
 }
  .editpic {
     display: flex;
-    justify-content: space-between;
     .handlepic {
       width: 160rpx;
       height: 120rpx;

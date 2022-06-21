@@ -87,6 +87,7 @@
 
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
@@ -196,13 +197,15 @@ export default {
       ],
     };
   },
+  onLoad(){
+    this.teagarden()
+  },
   methods: {
     goDetail2() {
       uni.navigateTo({
         url: "/pages/four2/detail/index",
       });
     },
-
     indexNavGo(index) {
       if (index == 0) {
         uni.navigateTo({

@@ -34,6 +34,8 @@
       @close="dateShow = false"
       :show="dateShow"
       :mode="mode"
+       monthNum="13"
+       :minDate="minDate"
       @confirm="confirm"
     ></u-calendar>
     
@@ -43,19 +45,23 @@
 import headerDiy from "../../component/header/header.vue";
 import request from "../../../common/utils/request";
 import { BASE_URL } from "../../../common/utils/config";
+import moment from "moment";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      listOver:false,
+      current:1,
+      moment,
+      minDate:moment().add(-1, 'y').format("YYYY-MM-DD"),
       baseUrl: BASE_URL,
       list: [],
       dateInput: "请选择日期",
       mode: "range",
       dateShow: false,
       value: "",
-
       showType: false,
       showType2: false,
       pageName: "农情监测",
@@ -93,6 +99,13 @@ export default {
     this.getId=option.id
     this.fluoritescreenshot();
   },
+  onReachBottom() {
+    console.log("触底了");
+    if(!this.listOver){
+      this.current++;
+      this.fluoritescreenshot();
+    }
+  },
   methods: {
     typeSelect() {},
     preview(i) {
@@ -108,14 +121,15 @@ export default {
       this.startTime=e[0]
       this.endTime=e[e.length-1]
       this.dateInput=this.startTime+'-'+this.endTime
-      this.fluoritescreenshot()
+      this.fluoritescreenshot(true)
     },
-    fluoritescreenshot() {
-      let data={}
+    fluoritescreenshot(flag) {
+      let data={
+        current:this.current
+      }
       if(this.endTime){
         data.startTime=this.startTime
         data.endTime=this.endTime
-
       }
       request({
         url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial=" + this.getId,
@@ -123,8 +137,19 @@ export default {
         isAuth: false,
         data: data,
       }).then((res) => {
-        console.log("aaaa", res);
-        this.list = res.data.records.reverse();
+        if(flag){
+          this.list=[]
+        }
+        this.list =this.list.concat(res.data.records)
+        this.list=this.list.reverse()
+        if (res.data.records.length == 0) {
+          uni.showToast({
+            title: "暂无更多数据",
+            icon: "none",
+            duration: 850,
+          });
+          this.listOver=true
+        }
       });
     },
   },
