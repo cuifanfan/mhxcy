@@ -48,41 +48,10 @@
           </div>
         </div>
         <div class="tabnew">
-          <div class="tabcontent tabheader flexcenter">
-            <div class="c1">2121.11.02 13:12</div>
-            <div class="c1">27.5</div>
-            <div class="c1">55</div>
-            <div class="c1">4126.0</div>
-            <div class="c1">99.0</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
+          <div v-for="(item,index) in listAll" :key="index" class="tabcontent tabheader flexcenter">
+            <div v-for="(item2,index2) in item" :key="index2" class="c1">{{item2}}</div>
+           
           </div>
-          <div class="tabcontent tabheader flexcenter">
-            <div class="c1">ccc2121.11.02 13:12</div>
-            <div class="c1">27.5</div>
-            <div class="c1">55</div>
-            <div class="c1">4126.0</div>
-            <div class="c1">99.0</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-          </div>
-          <div class="tabcontent tabheader flexcenter">
-            <div class="c1">2121.11.02 13:12</div>
-            <div class="c1">27.5</div>
-            <div class="c1">55</div>
-            <div class="c1">4126.0</div>
-            <div class="c1">99.0</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-            <div class="c1">东北</div>
-          </div>
-         
-          
         </div>
       </div>
       <div v-if="showType" class="tabflexnowrap">
@@ -159,15 +128,22 @@
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import request from "../../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   onLoad(option) {
     this.urlType = option.type;
+    this.deviceId=option.id
+    if(this.urlType==2){
+      this.meteorologicalrecords()
+    }
   },
   data() {
     return {
+      listAll:[],
+      deviceId:null,
       urlType: null,
       unitSet: "单位(℃)",
       chartDataTemperature: {
@@ -205,14 +181,14 @@ export default {
         ],
         [
           "时间",
-          "温度(℃)",
-          "湿度(%)",
+          "空气温度(℃)",
+          "空气湿度(%)",
           "光照(Lux)",
-          "降雨(mm)",
+          "大气压(kpa)",
           "风向",
-          "其他一",
-          "其他二",
-          "其他三",
+          "风力",
+          "风速", 
+          "pm2"
         ],
         [
           "土壤温度(-10cm)",
@@ -256,6 +232,42 @@ export default {
     };
   },
   methods: {
+    meteorologicalrecords(){
+      request({
+        url: "/data/meteorologicalrecords/page",
+        method: "get",
+        isAuth: false,
+        data: {
+          deviceId: this.deviceId
+          // current: this.current,
+          // status:this.status
+        },
+      }).then((res) => {
+        // "时间",
+        //   "空气温度(℃)",
+        //   "空气湿度(%)",
+        //   "光照(Lux)",
+        //   "大气压(kpa)",
+        //   "风向",
+        //   "风力",
+        //   "风速", 
+        //   "pm2"
+        res.data.records.forEach(item=>{
+          this.listAll.push([
+            item.createTime,
+            item.airTem,
+            item.airHum,
+            item.lux,
+            item.kpa,
+            item.windDirect,
+            item.windGrade,
+            item.windSpeed,
+            item.pm2point5
+          ])
+        })
+      })
+    },
+    
     confirm(e) {
       this.dateShow = false;
       this.dateInput = e[0];

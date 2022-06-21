@@ -71,13 +71,13 @@ export default {
       list:[],
     };
   },
-  onReachBottom() {
-    console.log("触底了");
-    if(!this.listOver){
-      this.current++;
-      this.askList();
-    }
-  },
+  // onReachBottom() {
+  //   console.log("触底了");
+  //   if(!this.listOver){
+  //     this.current++;
+  //     this.askList();
+  //   }
+  // },
   onLoad(){
     this.askList()
   },
@@ -109,7 +109,7 @@ export default {
         this.list=this.list.concat(res.data.records)
         if (res.data.records.length == 0) {
           uni.showToast({
-            title: "暂无更多文章",
+            title: "暂无更多内容",
             icon: "none",
             duration: 850,
           });

@@ -32,7 +32,7 @@
                 <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
                 {{ item.name }}
               </div>
-              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
+              <div class="btnd flexcenter" @click="goDetail2(2,item)">查看详情</div>
             </div>
 
             <div class="d3">
@@ -88,7 +88,7 @@
                 <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
                 {{ item.name }}
               </div>
-              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
+              <div class="btnd flexcenter" @click="goDetail2(2,item)">查看详情</div>
             </div>
 
             <div class="d3">
@@ -181,7 +181,7 @@
                 <div class="d2 flexcenter">在线</div>
                 1号虫情仪
               </div>
-              <div @click="goDetail2(4)" class="btnd flexcenter">查看详情</div>
+              <div @click="goDetail2(4,item)" class="btnd flexcenter">查看详情</div>
             </div>
 
             <div class="d3">
@@ -230,7 +230,7 @@
                 <div class="d2 flexcenter">在线</div>
                 1号虫情仪
               </div>
-              <div @click="goDetail2(4)" class="btnd flexcenter">查看详情</div>
+              <div @click="goDetail2(4,item)" class="btnd flexcenter">查看详情</div>
             </div>
 
             <div class="d3">
@@ -563,9 +563,9 @@ export default {
           console.log("err", err);
         });
     },
-    goDetail2(type) {
+    goDetail2(type,item) { 
       uni.navigateTo({
-        url: "/pages/four2/detail/index?type=" + type,
+        url: "/pages/four2/detail/index?type=" + type+'&id='+item.name,
       });
     },
     goDetail(item) {
