@@ -1,359 +1,82 @@
 <template>
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
-    <div class="topwrap">
-      <div class="top">
-        <u--input
-          v-model="keyword"
-          placeholder="请输入搜索关键字"
-          border="none"
-        ></u--input>
-        <u-icon
-          slot="right"
-          @click="farminformation(true)"
-          color="#C4C7CC"
-          size="26"
-          name="search"
-        ></u-icon>
+    <div class="article index1 index1clear" v-if="detail">
+      <div class="title">{{detail.title}}</div>
+      <div class="fb fb5">
+        <div class="fb1">发布人：<span>{{detail.author}}</span></div>
+        <div class="fb1">发布时间：{{detail.createTime}}</div>
       </div>
-      <div class="search">
-        热门搜索:
-        <div class="s1">
-          <div class="s2" @click="hotGo(item)" v-for="(item,index) in hot" :key="index">{{item}}</div>
-          
-        </div>
+      <div class="fb">
+        <div class="fb1">所属分类：<span>{{detail.summary}}</span></div>
       </div>
-      <div class="tab flexcenter">
-        <div :class="[activeTabIndex==0?'tab2':'','tab1']" @click="changeTab(0)">最近更新</div>
-        <div :class="[activeTabIndex==1?'tab2':'','tab1']" @click="changeTab(1)">推荐</div>
-        <!-- <div class="tab1">
-          <div class="knowicon" @click="activeTab = !activeTab">
-            知识推荐
-            <div class="tab1icon">
-              <u-icon
-                v-if="!activeTab"
-                slot="right"
-                @click="showType = true"
-                color="#C4C7CC"
-                size="15"
-                name="arrow-down-fill"
-              ></u-icon>
-                <u-icon
-                v-else
-                slot="right"
-                @click="showType = true"
-                color="#C4C7CC"
-                size="15"
-                name="arrow-up-fill"
-              ></u-icon>
-            </div>
-          </div>
-          <div class="select" v-if="activeTab">
-            <div
-              @click="chooseOne(item)"
-              class="selectchild"
-              v-for="(item, index) in select"
-              :key="index"
-            >
-              {{ item.name }}
-            </div>
-          </div>
-        </div> -->
-        <div :class="[activeTabIndex==3?'tab2':'','tab1']" @click="changeTab(3)">我的收藏</div>
-      </div>
-    </div>
-    <div class="index1 index1clear">
-      <div v-for="(item, index) in list" :key="index" class="img2">
-        <div class="wzdiv">
-          <div class="header header7 flexcenter"  @click="goDetail(item)">
-            <image mode="widthFix" class="zzpic2" src="@/static/image/Frame.png" />
-            <div class="header2">{{item.title}}</div>
-          </div>
-          <div  @click="goDetail(item)" class="ns1 ns1flex" v-if="item.cover&&item.cover.length>0">
-            <image v-for="(item2,index2) in item.cover" :key="index2" mode="widthFix" class="zzpic" :src="baseUrl+item2" />
-           
-          </div>
-          <div class="text">
-            {{item.content}}
-          </div>
-          <div class="zt">
-            <div class="ztt1">
-              <image mode="widthFix" class="tx" src="@/static/image/man.png" />
-              <span class="name">
-                {{item.author}}
-              </span>
-              <div class="ztt2 flexcenter">
-                <image mode="widthFix" @click="addCollect(item)" v-if="!item.isCollectionByMe" class="tx2" src="@/static/image/sc.png" />
-                <image mode="widthFix" @click="removeCollect(item)" v-else class="tx2" src="@/static/image/sca.png" />
-                <image mode="widthFix" class="tx1" src="@/static/image/zf.png" />
-              </div>
-            </div>
-            <div class="ztt1">
-              {{item.createTime}}
-            </div>
-          </div>
-        </div>
+      <div class="content3">
+        <rich-text :nodes="detail.content"></rich-text>
       </div>
     </div>
   </div>
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
-import request from "../../../common/utils/request";
-import { BASE_URL } from "../../../common/utils/config";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
-      hot:['普洱','台树茶','茶叶保存'],
-      keyword:'',
-      baseUrl:BASE_URL,
-      userInfo:null,
-      list:[],
-      listOver:false,
-      activeTab: false,
-      current: 1,
-      select: [
-        {
-          name: "全部",
-          value: 0,
-        },
-        {
-          name: "待回复",
-          value: 0,
-        },
-        {
-          name: "已回复",
-          value: 0,
-        },
-      ],
-      pageName: "农业知识库",
+      detail:null,
+      pageName: "知识详情",
       numValue: "",
       nameValue: "",
       typeValue: "",
-      category:'',
-      recommend:false,
-      activeTabIndex:0,
-      collectionByMeFlag:false,
     };
   },
   onLoad(){
-    this.userInfo=uni.getStorageSync('userInfo')
-    this.farminformation()
-  },
-  onReachBottom() {
-    console.log("触底了");
-    if(!this.listOver){
-      this.current++;
-      this.farminformation();
+    if(uni.getStorageSync('articleContent')){
+      this.detail=JSON.parse(uni.getStorageSync('articleContent'))
+      console.log(this.detail)
     }
   },
   methods: {
-    hotGo(item){
-      this.keyword=item
-      this.farminformation(true)
-    },
-    goDetail(item){
-      uni.setStorageSync('articleContent',JSON.stringify(item))
+    goDetail() {
       uni.navigateTo({
-        url:'/pages/expert/article/index'
-      })
-    },
-    addCollect(item){
-      request({
-        url: "/data/usercollection",
-        method: "post",
-        isAuth: false,
-        data: {
-          informationId:item.id,
-          userId:this.userInfo.userId
-        },
-      })
-      .then((res) => { 
-        item.isCollectionByMe=true
-        uni.showToast({
-          title: "收藏成功",
-          icon: "none",
-          duration: 850,
-        });
-      })
-    },
-    changeTab(val){
-      this.activeTabIndex=val
-      this.recommend=val==1?true:false
-      this.collectionByMeFlag=val==3?true:false
-      this.farminformation(true)
-    },
-    removeCollect(item){
-      request({
-        url: "/data/usercollection/removeByUserAndInformation?informationId="+item.id+"&userId="+this.userInfo.userId,
-        method: "delete",
-        isAuth: false,
-        data: {
-        
-        },
-      })
-      .then((res) => { 
-         uni.showToast({
-          title: "取消收藏成功",
-          icon: "none",
-          duration: 850,
-        });
-        item.isCollectionByMe=false
-      })
-    },
-    farminformation(init){
-     
-      if(init){
-        
-        // if(this.keyword==''){
-        //   return 
-        // }
-        this.current=1
-        this.list=[]
-      }
-      request({
-        url:"/data/farminformation/pageFront",
-        method: "get",
-        isAuth: false,
-        data: {
-          current: this.current,
-          userId:this.userInfo.userId,
-          category:this.category,
-          keyword:this.keyword,
-          recommend:this.recommend,
-          collectionByMe:this.collectionByMeFlag
-        },
-      })
-      .then((res) => { 
-        this.list=this.list.concat(res.data.records)
-        this.list.forEach((item,index)=>{
-          let get=item.coverImage.split(',')
-          this.$set(item,'cover',get)
-        })
-        console.log(this.list)
-        if (res.data.records.length == 0) {
-          uni.showToast({
-            title: "暂无更多文章",
-            icon: "none",
-            duration: 850,
-          });
-          this.listOver=true
-        }
-      })
-    },
-    
-    chooseOne(item) {
-      this.activeTab = !this.activeTab;
+        url: "/pages/expert/knowledgeDetail/index",
+      });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.zt{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.p{
+    text-indent: 60rpx;
+    margin-bottom: 20rpx;
+    line-height: 50rpx;
 }
-.name{
-  margin: 0 40rpx 0 15rpx;  
+.content3{
+  margin-top: 20rpx;
 }
-.ztt1{
-  display: flex;
-  align-items: center;
-
-}
-.tx{
-  width: 40rpx;
-}
-.tx1{
-  width: 32rpx;
-  margin-right: 10rpx;
-}
-.tx2{
-   width: 38rpx;
-  margin-right: 10rpx;
-}
-.img2 {
-  margin-top: 30rpx !important;
-  .pic {
+.fullpic{
     width: 100%;
-  }
- 
+    margin: 20rpx 0;
 }
-.wzdiv {
-  background: #fff;
-  padding: 32rpx;
-  border-radius: 32rpx;
-  font-size: 28rpx;
-  .zt{
-    color:#626466 ;
-    margin-top: 20rpx;
-    .ztspan{
-      color:#3199F5;
-      font-weight: bold;
-      margin-left: 10rpx;
-    }
+.fb5 {
+  margin: 20rpx 0;
+}
+.article {
+  .title {
+    color: #313233;
+    font-size: 40rpx;
+    font-weight: bold;
   }
-  .text{
-    font-size: 28rpx;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    word-break: break-all;
-    line-height: 46rpx;
-  }
-  .date {
-    font-size: 28rpx;
-    color: #626466;
-  }
-  .ns1 {
-    margin-top: 14rpx;
-  }
-  .zzpic {
-    width: 186rpx;
-    height: 104rpx !important;
-  }
-  .zzpic2 {
-    width: 36rpx;
-    margin-right: 10rpx;
-  }
-  .ns1flex {
+  .fb {
     display: flex;
     justify-content: space-between;
-    margin-top: 20rpx;
-    margin-bottom: 30rpx;
+    font-size: 28rpx;
+    color: #313233;
+    span {
+      font-weight: bold;
+    }
   }
-}
-.knowicon {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.select {
-  position: absolute;
-  bottom: -180rpx;
-  background: #fff;
-  padding: 0 10rpx 10rpx 10rpx;
-  z-index: 11;
-  width: 75%;
-  border-radius: 10rpx;
-  .topicon {
-    position: absolute;
-    top: -30rpx;
-    right: 30rpx;
-  }
-  .selectchild {
-    color: #939599;
-    margin: 15rpx;
-  }
-}
-.tab1icon {
-  margin-left: 10rpx;
 }
 .index1clear {
   background: transparent !important;
@@ -369,10 +92,9 @@ export default {
   font-weight: bold;
 }
 .tab1 {
-  width: 33.33%;
+  width: 25%;
   display: flex;
   align-items: center;
-  position: relative;
   justify-content: center;
 }
 .search {
@@ -385,11 +107,10 @@ export default {
   }
   .s2 {
     color: #626466;
-    padding: 4rpx 16rpx;
+    padding: 5rpx;
     margin: 0 16rpx;
     background: #fafafa;
     font-size: 20rpx;
-    border-radius: 100px;
   }
 }
 .topwrap {
@@ -402,7 +123,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   background: #f5f5f5;
-  padding: 16rpx 32rpx;
+  padding: 12rpx;
   border-radius: 100px;
 }
 .btnask {
@@ -592,9 +313,9 @@ export default {
   margin-top: 10rpx;
 }
 .header7 {
+  margin-top: 30rpx;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   span {
     color: #939599;
     margin-left: 10rpx;
@@ -676,10 +397,9 @@ export default {
 }
 .index1 {
   .header2 {
-    overflow: hidden;
+    border-left: 2px solid #29cc96;
+    padding-left: 15rpx;
     font-size: 28rpx;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   background: #ffffff;
   padding: 20rpx 32rpx;
@@ -705,7 +425,8 @@ export default {
   }
   .header {
     font-size: 24rpx;
-    color: #626466;
+    padding-bottom: 20rpx;
+    border-bottom: 1px solid#F5F5F5;
   }
   .header2 {
     flex: 1;
@@ -798,7 +519,7 @@ export default {
 }
 .datewrap {
   background: #fff;
-  border-top: 1px solid #f1f1f1;
+  border-top: 1px solid#F1F1F1;
   padding: 20rpx 0;
   .w1 {
     flex: 1;

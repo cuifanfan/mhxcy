@@ -334,7 +334,14 @@ export default {
     },
     addOne(){
       console.log(this.handleContent)
-      let name=this.handleContent=='采摘'?'鲜叶':''
+      let name=''
+      if(this.handleContent=='采摘'){
+        name='鲜叶'
+      }else if(this.handleContent=='灌溉'){
+        name='水'
+      }else{
+        name=''
+      }
       this.contentAdd.push({
         name:name,
         val:''
@@ -449,10 +456,11 @@ export default {
     },
     typeSelect(val) {
       console.log(val);
-      if(val.name=='采摘'){
+      if(val.name=='采摘'||val.name=='灌溉'){
+        let nameSet=val.nam=='采摘'?'鲜叶':'水'
         this.onlyLeafFlag=true
         this.contentAdd.forEach(item=>{
-          item.name='鲜叶'
+          item.name=nameSet
         })
       }else{
         this.onlyLeafFlag=false

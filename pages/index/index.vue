@@ -33,14 +33,14 @@
         </div>
         <div class="index1 index7" v-if="this.weatherInfo">
           <div class="index71">
-            <div class="index72">
+            <div class="index72" @click="changeTeaFlag=true">
               <image
                 mode="widthFix"
                 class="pic72"
                 src="@/static/image/p2.png"
               />
               <!-- 茶园切换 -->
-              <div class="text">{{ this.weatherInfo.address }}</div>
+              <div class="text" v-if="this.teaSure">{{ this.teaSure.address }}</div>
               <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
             </div>
             <div class="addmap" @click="goMap">
@@ -347,6 +347,14 @@
         </div>
       </div>
     </div>
+    <u-action-sheet
+      :show="changeTeaFlag"
+      :actions="allTea"
+      title="请选择茶园"
+      @close="changeTeaFlag = false"
+      @select="changeNowTea"
+    >
+    </u-action-sheet>
   </div>
 </template>
 
@@ -362,6 +370,8 @@ export default {
   },
   data() {
     return {
+      teaSure:null,
+      changeTeaFlag:false,
       produceShow: [],
       produceNow: [],
       produceAgo: [],
@@ -440,6 +450,10 @@ export default {
     this.teagarden()
   },
   methods: {
+    changeNowTea(item){
+      this.teaSure=item
+      console.log('现在的茶园是：',this.teaSure)
+    },
     //如果为管理员 可以切换茶园 
     teagarden(){
       request({
@@ -449,6 +463,7 @@ export default {
         data: {},
       }).then((res) => {
         this.allTea=res.data.records
+        this.teaSure=this.allTea[0]
       })
     },
     getPutInByContent(type) {
@@ -662,16 +677,16 @@ export default {
       });
     },
     getFarmList() {
+      let userInfo = uni.getStorageSync("userInfo");
+      let year= moment().format("YYYY") 
       request({
-        url: "/data/farmrecords/page",
+        url: "/data/farmrecords/getFarmRecordsCountByYear?userId="+userInfo.userId+"&year="+year,
         method: "get",
         isAuth: false,
         data: {
-          current: this.current,
         },
       }).then((res) => {
-        console.log("res5464545456456", res);
-        this.farmTotal = res.data.total;
+        this.farmTotal =res.data
       });
     },
     askWeather() {

@@ -20,11 +20,37 @@
           <div class="header2">人力投入</div>
         </div>
         <div>
-          <!-- <image
-            mode="widthFix"
-            class="fullw"
-            src="@/static/image/false7.png"
-          /> -->
+          <div class="cirbox" v-if="humanResourcesFlag">
+              <qiun-data-charts
+                type="mix"
+               
+                :chartData="humanResources"
+                canvasId="one_b"
+                :opts="{
+                  legend: { position: 'top' },
+                  xAxis: {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    disableGrid: false,
+                    gridColor: 'rgba(147,149,153,0.1)',
+                    gridType: 'solid',
+                    fontColor: '#939599',
+                  },
+                  yAxis: {
+                    data: [
+                      {
+                        axisLineColor: 'rgba(147,149,153,0.1)',
+                        fontColor: '#939599',
+                        titleFontColor: '#939599',
+                        title: '单位(KG)',
+                        titleOffsetX: -5,
+                        titleOffsetY: -10,
+                       
+                      },
+                    ],
+                  },
+                }"
+              />
+            </div>
         </div>
         <div class="header header7">
           <div class="header2">灌溉投入</div>
@@ -88,12 +114,42 @@
 <script>
 import headerDiy from "../component/header/header.vue";
 import request from "../../common/utils/request";
+import moment from "moment";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+        humanResourcesFlag:false,
+        humanResources: {
+        categories: [
+        
+        ],
+        series: [
+          {
+            name: "去年",
+            data: [
+              
+              
+            ],
+            type: "column",
+            color: "#17E5A1",
+            unit: "",
+          },
+          {
+            name: "今年",
+            data: [
+              
+            ],
+            type: "column",
+            color: "#3199F5",
+            unit: "",
+          },
+        ],
+      },
+      moment,
+      userInfo:'',
       tablist: [
         {
           num: 10,
@@ -198,9 +254,91 @@ export default {
     };
   },
   onLoad(){
-    this.teagarden()
+    this.userInfo=uni.getStorageSync('userInfo')
+    let ago=moment().add(-1, 'y').format("YYYY")
+    
+    this.getAllHumanUseEachMonthByYear(ago,0)
+    //查询施肥
+    this.getAllPutInEachMonthByYear(ago,0,'施肥')
+    this.getAllPutInEachMonthByYear(ago,0,'灌溉')
+
   },
   methods: {
+    getAllPutInEachMonthByYear(year,type,val){
+       request({
+        url: "/data/farmrecords/getAllPutInEachMonthByYear",
+        method: "get",
+        isAuth: false,
+        data: {
+          content:val,
+          userId:this.userInfo.userId,
+          year:year
+        },
+      }).then((res) => {
+        //获取所有的项目
+        let all=[]
+        let now=moment().format("YYYY")
+        res.data.forEach((item,index)=>{
+          item.list.forEach((item2,index2)=>{
+            let flag=all.find(item3=>{
+              return item3.name==item2.name
+            })
+            if(!flag){
+              all.push({
+                name:item2.name,
+                val:item2.value
+              })
+            }else{
+              console.log('xxx',item2.value)
+              flag.val+=item2.value
+            }
+          })
+        })
+        console.log(val,all)
+        if(type==0){
+           this.getAllPutInEachMonthByYear(now,1,val)
+        }
+      })
+    },
+    getAllHumanUseEachMonthByYear(year,type){
+       request({
+        url: "/data/farmrecords/getAllHumanUseEachMonthByYear",
+        method: "get",
+        isAuth: false,
+        data: {
+          userId:this.userInfo.userId,
+          year:year
+        },
+      }).then((res) => {
+        if(type==0){
+          let now=moment().format("YYYY")
+          this.getAllHumanUseEachMonthByYear(now,1)
+          let dateSet=[]
+          let agoSet=[]
+          res.data.forEach(item=>{
+            dateSet.push(item.month)
+            agoSet.push({
+              value: item.humanUse?item.humanUse:0,
+              color: "#17E5A1",
+            })
+          })
+          this.humanResources.categories=dateSet
+          this.humanResources['series'][0]['data']=agoSet
+        }else{
+          let dateSet=[]
+          let agoSet=[]
+          res.data.forEach(item=>{
+            dateSet.push(item.month)
+            agoSet.push({
+              value: item.humanUse?item.humanUse:0,
+              color: "#3199F5",
+            })
+          })
+          this.humanResources['series'][1]['data']=agoSet
+          this.humanResourcesFlag=true
+        }
+      })
+    },
     goDetail2() {
       uni.navigateTo({
         url: "/pages/four2/detail/index",

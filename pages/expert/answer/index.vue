@@ -13,7 +13,7 @@
             placeholder="请输入关键字"
             border="surround"
             v-model="searchInput"
-            @change="change"
+           
           ></u--input>
           <div class="search" @click="askList(true)">
             <u-icon color="#C4C7CC" size="25" name="search"></u-icon>
@@ -87,13 +87,17 @@ export default {
       tabText:'全部',
       select:[
         {
-          name:'未回复',
-          val:0,
+          name:'全部',
+          val:'',
         },
         {
           name:'已回复',
           val:1
-        }
+        },
+        {
+          name:'未回复',
+          val:0,
+        },
       ],
       activeTab:false,
       searchInput:'',

@@ -88,7 +88,7 @@
                 <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
                 {{ item.name }}
               </div>
-              <div class="btnd flexcenter" @click="goDetail2(2,item)">查看详情</div>
+              <div class="btnd flexcenter" @click="goDetail2(3,item)">查看详情</div>
             </div>
 
             <div class="d3">
@@ -462,7 +462,7 @@ export default {
           let add = [];
           add[0] = {
             //num: item2.wind_speed!=null ? item2.wind_speed : "-",
-            num:1,
+            num: item2.wind_grade!=null?item2.wind_grade:'-',
             unit: "级",
             name: "风力",
             pic: require("@/static/image/new1.png"),

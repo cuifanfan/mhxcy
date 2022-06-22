@@ -60,8 +60,8 @@
               name="arrow-right"
             ></u-icon>
           </div>
-          <div class="child child11" @click="goNews">
-            <div class="c1">
+          <div class="child child11" >
+            <div class="c1" @click="goNews">
               <image mode="widthFix" class="pic" src="@/static/image/u2.png" />
               消息中心
               <div class="cir">
@@ -75,13 +75,12 @@
               name="arrow-right"
             ></u-icon>
           </div>
-          <div class="child child12">
-            <div class="c1">
+          <div class="child child12" @click="goCollect">
+            <div class="c1" >
               <image mode="widthFix" class="pic" src="@/static/image/u3.png" />
               我的收藏
             </div>
             <u-icon
-              @click="goNews"
               color="#939599"
               size="14"
               name="arrow-right"
@@ -93,7 +92,7 @@
               问题反馈
             </div>
             <u-icon
-              @click="goNews"
+              
               color="#939599"
               size="14"
               name="arrow-right"
@@ -204,6 +203,12 @@ export default {
     };
   },
   methods: {
+    goCollect(){
+      
+      uni.navigateTo({
+        url:"/pages/my/collect/index"
+      })
+    },
     loginOut(){
       uni.showModal({
         title: '提示',

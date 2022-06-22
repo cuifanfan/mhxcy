@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <header-diy  class="topbar" :type="2" :titleName="pageName+pageType[(urlType-1)]"></header-diy>
+    <header-diy  class="topbar" :type="2" :titleName="pageName"></header-diy>
     <!-- <div class="top">
       <div class="t1">
         <image mode="widthFix" class="datepic" src="@/static/image/xh.png" />
@@ -19,7 +19,7 @@
     <div class="content clearcontent">
       <div class="test1">
         <div class="test3 flexcenter">
-          <div @click="dateShow = true" class="inputdiy">{{ dateInput }}</div>
+          <div @click="dateShow = true" class="inputdiy">{{ dateInput }}{{dateInput2?'-':''}}{{dateInput2}}</div>
           <div class="search">
             <image
               mode="widthFix"
@@ -41,7 +41,7 @@
         <div class="tabheader flexcenter tabheader2">
           <div
             class="c1"
-            v-for="(item, index) in tabAll[urlType - 1]"
+            v-for="(item, index) in tabAll[urlType - 2]"
             :key="index"
           >
             {{ item }}
@@ -56,10 +56,10 @@
       </div>
       <div v-if="showType" class="tabflexnowrap">
         <div class="tabheader flexcenter tabheader2">
-          <div class="c1newwrap"  v-for="(item, index) in tabAll[urlType]"
+          <div class="c1newwrap" v-if="index>0&&index<8"  v-for="(item, index) in tabAll[urlType-2]"
             :key="index">
             <div
-            @click="activeChild = index"
+            @click="changeChild(index)"
             :class="[activeChild == index ? 'c1addactive' : '', 'c1add']"
            
           >
@@ -74,8 +74,10 @@
             type="mix"
             canvasId="three_b"
             :resshow="false"
+            :ontouch="true"
             :opts="{
               legend: { show: false },
+              enableScroll:true,
               yAxis: {
                 disableGrid: true,
 
@@ -98,6 +100,12 @@
                 ],
               },
               xAxis: {
+                fontSize:7,
+                rotateLabel:true,
+                scrollShow:true,
+                itemCount:10,
+                labelCount:7,
+                scrollAlign:'left',
                 axisLineColor: 'rgba(147,149,153,0.1)',
                 disableGrid: false,
                 gridColor: 'rgba(147,149,153,0.1)',
@@ -122,6 +130,8 @@
       @close="dateShow = false"
       :show="dateShow"
       :mode="mode"
+      monthNum="13"
+      :minDate="minDate"
       @confirm="confirm"
     ></u-calendar>
   </div>
@@ -129,23 +139,22 @@
 <script>
 import headerDiy from "../../component/header/header.vue";
 import request from "../../../common/utils/request";
+import moment from "moment";
 export default {
   components: {
     headerDiy,
   },
-  onLoad(option) {
-    this.urlType = option.type;
-    this.deviceId=option.id
-    if(this.urlType==2){
-      this.meteorologicalrecords()
-    }
-  },
   data() {
     return {
+      listOver:false,
+      size:20,
+      current:1,
+      moment,
+      minDate:moment().add(-1, 'y').format("YYYY-MM-DD"),
       listAll:[],
       deviceId:null,
       urlType: null,
-      unitSet: "单位(℃)",
+      unitSet: "",
       chartDataTemperature: {
         categories: ["1.15", "2.15", "3.15", "4.15", "5.15", "6.15", "7.15"],
         series: [
@@ -165,40 +174,44 @@ export default {
         ],
       },
       dateInput: "请输入查询日期",
+      dateInput2:'',
       dateShow: false,
-      mode: "single",
-      activeChild: 0,
+      mode: "range",
+      activeChild: 1,
       showType: true,
       value: "",
       tabAll: [
-        [
-          "当日灌溉量",
-          "当日灌溉次数",
-          "单位流量",
-          "可溶性盐浓度",
-          "土壤酸碱度",
-          "液位传感器",
-        ],
         [
           "时间",
           "空气温度(℃)",
           "空气湿度(%)",
           "光照(Lux)",
           "大气压(kpa)",
+          "风力",
+          "风速", 
+          "pm2",
           "风向",
+        ],
+        [ 
+          "时间",
+          "EC(us/cm)",
+          "PH",
+          '土壤温度(℃)',
+          '土壤湿度(%)',
+        ],
+      
+      ],
+      tabAllChart:[
+        [
+          "时间",
+          "空气温度(℃)",
+          "空气湿度(%)",
+          "光照(Lux)",
+          "大气压(kpa)",
           "风力",
           "风速", 
           "pm2"
         ],
-        [
-          "土壤温度(-10cm)",
-          "土壤湿度(-10cm)",
-          "土壤温度(-20cm)",
-          "土壤湿度(-20cm)",
-          "土壤温度(-30cm)",
-          "土壤湿度(-30cm)",
-        ],
-        ["红蜘蛛", "草地贪夜蛾", "蝗虫", "玉米蓟马", "黏虫"],
       ],
       showType: false,
       showType2: false,
@@ -229,56 +242,134 @@ export default {
       ],
       nameValue: "",
       typeValue: "",
+      chartAll:[],
     };
   },
+  onLoad(option) {
+    this.urlType = option.type;
+    this.deviceId=option.id
+    if(this.urlType==2){
+      this.chartAll=[[],[],[],[],[],[],[],[],[]]
+      this.meteorologicalrecords()
+      
+    }else if(this.urlType==3){
+      this.chartAll=[[],[],[],[],[]]
+      this.meteorologicalrecords()
+       
+    }
+    this.pageName=this.deviceId
+  },
+  onReachBottom() {
+    console.log("触底了");
+    if(!this.listOver){
+      this.current++;
+      //if(this.urlType==2){
+        this.meteorologicalrecords()
+      //}else if(this.urlType==3){
+        //this.moisturerecords()
+      //}
+     
+    }
+  },
   methods: {
-    meteorologicalrecords(){
+    changeChild(index){
+      this.activeChild = index
+      this.chartDataTemperature.series[0].data=this.chartAll[index]
+    },
+    meteorologicalrecords(init){
+      let data={
+          deviceId: this.deviceId,
+          current: this.current,
+          size:this.size,
+      }
+      if(this.dateInput2){
+        data.startDate=this.dateInput
+        data.endDate=this.dateInput2
+      }
+      let urlSet=this.urlType==2?'meteorologicalrecords':'moisturerecords'
       request({
-        url: "/data/meteorologicalrecords/page",
+        url: "/data/"+urlSet+"/page",
         method: "get",
         isAuth: false,
-        data: {
-          deviceId: this.deviceId
-          // current: this.current,
-          // status:this.status
-        },
+        data:data,
       }).then((res) => {
-        // "时间",
-        //   "空气温度(℃)",
-        //   "空气湿度(%)",
-        //   "光照(Lux)",
-        //   "大气压(kpa)",
-        //   "风向",
-        //   "风力",
-        //   "风速", 
-        //   "pm2"
-        res.data.records.forEach(item=>{
-          this.listAll.push([
-            item.createTime,
-            item.airTem,
-            item.airHum,
-            item.lux,
-            item.kpa,
-            item.windDirect,
-            item.windGrade,
-            item.windSpeed,
-            item.pm2point5
-          ])
+        if(init){
+          this.listAll=[]
+          if(this.urlType==2){
+            this.chartAll=[[],[],[],[],[],[],[],[],[]]
+          }else{
+            this.chartAll=[[],[],[],[],[]]
+          }
+          
+        }
+        let add=[]
+        res.data.records.reverse()
+        res.data.records.forEach((item,index)=>{
+          let addOne=[]
+          if(this.urlType==2){
+            addOne=[
+              item.createTime,
+              item.airTem,
+              item.airHum,
+              item.lux,
+              item.kpa,
+              item.windGrade,
+              item.windSpeed,
+              item.pm2point5,
+              item.windDirect,
+            ]
+          }else if(this.urlType==3){
+            addOne=[
+              item.recordTime,
+              item.ec,
+              item.ph,
+              item.temperature,
+              item.humidity
+            ]
+          }
+          add.push(addOne)
+          addOne.forEach((item3,index3)=>{
+            this.chartAll[index3].push(item3)
+          })
         })
+        
+        
+        this.listAll =this.listAll.concat(add)
+        this.chartDataTemperature.categories=this.chartAll[0]
+        this.chartDataTemperature.series[0].data=this.chartAll[1]
+        console.log('515546',this.listAll)
+        console.log('chaadddd',this.chartAll)
+        if (res.data.records.length == 0) {
+          uni.showToast({
+            title: "暂无更多数据",
+            icon: "none",
+            duration: 850,
+          });
+          this.listOver=true
+        }
       })
     },
-    
     confirm(e) {
       this.dateShow = false;
       this.dateInput = e[0];
+      this.dateInput2=e[e.length-1]
+      this.current=1
+      if(this.urlType==2){
+        this.meteorologicalrecords(true)
+      }
+      console.log(this.dateInput2)
       console.log(e);
     },
   },
 };
 </script>
 <style lang="scss" scoped>
+.cirbox{
+  background: #fff;
+}
 .tabflexnowrap {
   overflow: scroll;
+  
   .tabheader2{
     .c1{
       background: #fff;
@@ -299,6 +390,7 @@ export default {
   }
   .tabheader{
     justify-content: left!important;
+    background: #fff;
   }
   .c1{
     flex-shrink: 0;

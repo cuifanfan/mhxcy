@@ -157,6 +157,7 @@
                 type="mix"
                 canvasId="three_b"
                 :resshow="false"
+                :ontouch="true"
                 :opts="{
                   legend: { position: 'top' },
                   yAxis: {
@@ -181,6 +182,8 @@
                     ],
                   },
                   xAxis: {
+                    
+          
                     axisLineColor: 'rgba(147,149,153,0.1)',
                     disableGrid: false,
                     gridColor: 'rgba(147,149,153,0.1)',
@@ -356,119 +359,64 @@
             <div class="header header3">
               <div class="header2">气象监测</div>
             </div>
-            <div class="detailwrap">
-              <div class="d1wrap">
-                <div class="d1 flexcenter">
-                  <div class="d2 flexcenter">在线</div>
-                  1号气象站
+            <div  v-if="getEnInfo">
+              <div class="detailwrap">
+                <div class="d1wrap">
+                  <div class="d1 flexcenter">
+                    <div class="d2 flexcenter" v-if="getEnInfo.status=='online'">在线</div>
+                    {{ getEnInfo.name }}
+                  </div>
+                  <div class="btnd flexcenter" @click="goDetail2(2,getEnInfo)">查看详情</div>
                 </div>
-                <div class="btnd flexcenter">查看详情</div>
-              </div>
 
-              <div class="d3">
-                <div class="d4" flexcenter>
-                  <image
-                    mode="widthFix"
-                    class="set"
-                    src="@/static/image/adress2.png"
-                  />
-                  (鄂托克前旗三段村)
-                </div>
-                <div class="d4 flexcenter">
-                  <image
-                    mode="widthFix"
-                    class="set"
-                    src="@/static/image/time.png"
-                  />
-                  2022.02.10 16:25
-                </div>
+                <div class="d3">
+                  <div class="d4" flexcenter>
+                    <image
+                      mode="widthFix"
+                      class="set"
+                      src="@/static/image/adress2.png"
+                    />
+                    {{ getEnInfo.address ? getEnInfo.address : "-" }}
+                  </div>
+                  <div class="d4 flexcenter">
+                    <image
+                      mode="widthFix"
+                      class="set"
+                      src="@/static/image/time.png"
+                    />
+                    {{ getEnInfo.create_time }}
+                  </div>
               </div>
             </div>
-            <div class="oftenpanle">
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon1.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">27.3℃</div>
-                  温度
+          <div class="index1add index90">
+            <div
+              class="index91"
+              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
+              v-for="(getEnInfo, index) in getEnInfo.arr"
+              :key="index"
+            >
+              <image mode="widthFix" class="pic92" :src="getEnInfo.pic" />
+              <div class="index92">
+                <div class="index93">
+                  <span>{{ getEnInfo.num }}</span
+                  >{{ getEnInfo.unit }}
                 </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon2.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">27.3%</div>
-                  湿度
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon3.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">32444Lux</div>
-                  光照
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon4.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">454645mm</div>
-                  降雨
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon5.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">东偏南</div>
-                  风向
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon6.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">12.2m/s</div>
-                  风速
-                </div>
+                {{ getEnInfo.name }}
               </div>
             </div>
+          </div>
+        </div>
 
             <div class="header header3 header3Top">
               <div class="header2">墒情监测</div>
             </div>
-            <div class="detailwrap">
+            <div class="detailwrap" v-if="soilInfo">
               <div class="d1wrap">
                 <div class="d1 flexcenter">
                   <div class="d2 flexcenter">在线</div>
-                  1号墒情仪
+                   {{soilInfo.name}}
                 </div>
-                <div class="btnd flexcenter">查看详情</div>
+                <div class="btnd flexcenter" @click="goDetail2(3,soilInfo)">查看详情</div>
               </div>
 
               <div class="d3">
@@ -478,7 +426,7 @@
                     class="set"
                     src="@/static/image/adress2.png"
                   />
-                  (鄂托克前旗三段村)
+                  {{soilInfo.address?soilInfo.address:'-'}}
                 </div>
                 <div class="d4 flexcenter">
                   <image
@@ -486,7 +434,7 @@
                     class="set"
                     src="@/static/image/time.png"
                   />
-                  2022.02.10 16:25
+                  {{soilInfo.record_time}}
                 </div>
               </div>
             </div>
@@ -495,74 +443,51 @@
                 <image
                   mode="widthFix"
                   class="oftenpic"
-                  src="@/static/image/addicon1.png"
+                  src="@/static/image/k4.png"
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">27.5摄氏度</div>
-                  土壤温度(-10cm)
+                  <div class="oftenbold">{{soilInfo.ec}}uc/cm</div>
+                  土壤EC值
                 </div>
               </div>
               <div class="oftenpanlechild flexcenter">
                 <image
                   mode="widthFix"
                   class="oftenpic"
-                  src="@/static/image/addicon2.png"
+                  src="@/static/image/k5.png"
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">44.93%</div>
-                  土壤湿度(-10cm)
+                  <div class="oftenbold">{{soilInfo.ph}}</div>
+                  土壤PH值
                 </div>
               </div>
               <div class="oftenpanlechild flexcenter">
                 <image
                   mode="widthFix"
                   class="oftenpic"
-                  src="@/static/image/addicon1.png"
+                  src="@/static/image/s5.png"
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">27.5摄氏度</div>
-                  土壤温度(-10cm)
+                  <div class="oftenbold">{{soilInfo.temperature}}</div>
+                  土壤温度
                 </div>
               </div>
               <div class="oftenpanlechild flexcenter">
                 <image
                   mode="widthFix"
                   class="oftenpic"
-                  src="@/static/image/addicon2.png"
+                  src="@/static/image/s6.png"
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">44.93%</div>
-                  土壤湿度(-10cm)
+                  <div class="oftenbold">{{soilInfo.humidity}}</div>
+                  土壤湿度
                 </div>
               </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon1.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">27.5摄氏度</div>
-                  土壤温度(-10cm)
-                </div>
-              </div>
-              <div class="oftenpanlechild flexcenter">
-                <image
-                  mode="widthFix"
-                  class="oftenpic"
-                  src="@/static/image/addicon2.png"
-                  alt=""
-                />
-                <div class="oftenright">
-                  <div class="oftenbold">44.93%</div>
-                  土壤湿度(-10cm)
-                </div>
-              </div>
+              
             </div>
 
             <div class="header header3 header3Top">
@@ -1061,6 +986,7 @@ export default {
   },
   data() {
     return {
+      soilInfo:null,
       allOther: null,
       fluoritescreenshotData: null,
       baseUrl: BASE_URL,
@@ -1383,6 +1309,7 @@ export default {
             type: "line",
             addPoint: true,
             color: "#F56262",
+            textSize: 8,
           },
           {
             name: "去年",
@@ -1390,6 +1317,7 @@ export default {
             type: "line",
             addPoint: true,
             color: "#FFB900",
+            textSize: 8,
           },
         ],
         yAxis: [
@@ -1409,6 +1337,7 @@ export default {
             addPoint: true,
             color: "#29CC96",
             textColor: "#17E6A1",
+            textSize: 8,
           },
           {
             name: "去年",
@@ -1417,6 +1346,7 @@ export default {
             addPoint: true,
             color: "#3199F5",
             textColor: "#3199F5",
+            textSize: 8,
           },
         ],
         yAxis: [
@@ -1508,14 +1438,15 @@ export default {
       getDeviceList: null,
       chartDataRainFlag: false,
       farmList: [],
-      current:1,
+      current: 1,
+      getEnInfo: null,
     };
   },
   onReachBottom() {
     console.log("触底了");
-    if(this.activeTab==2){
-      this.current++
-      this.farmrecords()
+    if (this.activeTab == 2) {
+      this.current++;
+      this.farmrecords();
     }
   },
   onLoad(option) {
@@ -1537,36 +1468,51 @@ export default {
     this.fluoritescreenshot();
     this.farmrecords();
     this.getTotalAllThisAndLastYear();
-    this.teagarden()
+    this.getEnvironment();
+    this.getCurrentMoisture()
   },
   methods: {
     typeSelect() {},
     handleMessage() {},
+    
+    getCurrentMoisture(){
+      let userInfo = uni.getStorageSync("userInfo");
+       request({
+        url: "/data/moisturerecords/getCurrentMoisture?userId=" + userInfo.userId,
+        method: "get",
+        isAuth: false,
+        data: {
+          
+        },
+      }).then((res) => {
+        this.soilInfo=res.data[0]
+      })
+    },
     farmrecords() {
       request({
-        url: "/data/farmrecords/page?gardenId="+this.teaId,
+        url: "/data/farmrecords/page?gardenId=" + this.teaId,
         method: "get",
         isAuth: false,
         data: {
           current: this.current,
-          descs:'time'
+          descs: "time",
         },
       }).then((res) => {
-        this.farmList = this.farmList.concat(res.data.records)
-        this.farmList.forEach(item=>{
-          if(item.fertilizerDose){
-            let get=item.fertilizerDose.split(',')
-            this.$set(item,'contentSplit',get)
-          }else{
-            this.$set(item,'contentSplit',[])
+        this.farmList = this.farmList.concat(res.data.records);
+        this.farmList.forEach((item) => {
+          if (item.fertilizerDose) {
+            let get = item.fertilizerDose.split(",");
+            this.$set(item, "contentSplit", get);
+          } else {
+            this.$set(item, "contentSplit", []);
           }
-          if(item.imageUrls){
-            let get2=item.imageUrls.split(',')
-            this.$set(item,'imgArr',get2)
-          }else{
-            this.$set(item,'imgArr',[])
+          if (item.imageUrls) {
+            let get2 = item.imageUrls.split(",");
+            this.$set(item, "imgArr", get2);
+          } else {
+            this.$set(item, "imgArr", []);
           }
-        })
+        });
       });
     },
 
@@ -1774,6 +1720,79 @@ export default {
         uni.setStorageSync("setParams", JSON.stringify(get));
       });
     },
+    goDetail2(type,item) { 
+      uni.navigateTo({
+        url: "/pages/four2/detail/index?type=" + type+'&id='+item.name,
+      });
+    },
+    getEnvironment() {
+      let userInfo = uni.getStorageSync("userInfo");
+      request({
+        url: "/data/meteorologicalrecords/getCurrentWeather",
+        method: "get",
+        isAuth: false,
+        data: {
+          userId: userInfo.userId,
+        },
+      }).then((res) => {
+        //getEnInfo
+        console.log("???", res.data);
+        this.getEnInfo = res.data[0];
+        let item2 = res.data[0];
+        let add = [];
+        add[0] = {
+          num: item2.wind_grade!=null?item2.wind_grade:'-',
+          unit: "级",
+          name: "风力",
+          pic: require("@/static/image/new1.png"),
+        };
+        add[1] = {
+          num: item2.wind_speed != null ? item2.wind_speed : "-",
+          unit: "m/s",
+          name: "风速",
+          pic: require("@/static/image/new2.png"),
+        };
+        add[2] = {
+          num: item2.wind_direct != null ? item2.wind_direct : "-",
+          unit: "",
+          name: "风向",
+          pic: require("@/static/image/new3.png"),
+        };
+        add[3] = {
+          num: item2.air_tem != null ? item2.air_tem : "-",
+          unit: "℃",
+          name: "空气温度",
+          pic: require("@/static/image/new4.png"),
+        };
+        add[4] = {
+          num: item2.air_hum != null ? item2.air_hum : "-",
+          unit: "%RH",
+          name: "空气湿度",
+          pic: require("@/static/image/new5.png"),
+        };
+        add[5] = {
+          num: item2.pm2point5 != null ? item2.pm2point5 : "-",
+          unit: "ug/m3",
+          name: "Pm2",
+          pic: require("@/static/image/new6.png"),
+        };
+        add[6] = {
+          num: item2.kpa != null ? item2.kpa : "-",
+          unit: "kpa",
+          name: "大气压",
+          pic: require("@/static/image/new7.png"),
+        };
+        add[7] = {
+          num: item2.lux != null ? item2.lux : "-",
+          unit: "lux",
+          name: "光照",
+          pic: require("@/static/image/new8.png"),
+        };
+        this.$set(this.getEnInfo, "arr", add);
+
+        console.log("xxxscadas", this.weatherList);
+      });
+    },
     askWeatherStation() {
       let find = this.getDeviceList.find((item) => {
         return item.type == 1;
@@ -1889,12 +1908,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.nocompare{
+.index1add{
+  margin-top: 20rpx;
+}
+.nocompare {
   width: 120rpx;
   display: flex;
   justify-content: center;
 }
-.nodata{
+.nodata {
   font-size: 20rpx;
   color: #939599;
   padding: 10rpx;
@@ -1955,7 +1977,7 @@ export default {
     display: flex;
     margin-top: 25rpx;
     margin-bottom: 30rpx;
-    .zzpic{
+    .zzpic {
       margin-right: 20rpx;
     }
   }

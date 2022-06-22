@@ -214,6 +214,20 @@
 			}
 		},
 		{
+			"path": "pages/expert/article/index",
+			"style": {
+				"navigationBarTitleText": "文章详情",
+				"navigationStyle": "custom" 
+			}
+		},
+		{
+			"path": "pages/my/collect/index",
+			"style": {
+				"navigationBarTitleText": "我的收藏",
+				"navigationStyle": "custom" 
+			}
+		},
+		{
 			"path": "pages/goods/goodsList/goodsList",
 			"style": {
 				"navigationBarTitleText": "商品批次列表",

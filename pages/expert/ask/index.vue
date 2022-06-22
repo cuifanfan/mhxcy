@@ -18,7 +18,6 @@
                 ></u--input>
                 <u-icon
                   slot="right"
-                 
                   color="#C4C7CC"
                   size="20"
                   name="arrow-down"

@@ -664,7 +664,7 @@ export default {
           let add = [];
           add[0] = {
             //num: item2.wind_speed!=null ? item2.wind_speed : "-",
-            num:1,
+            num: item2.wind_grade!=null?item2.wind_grade:'-',
             unit: "级",
             name: "风力",
             pic: require("@/static/image/new1.png"),

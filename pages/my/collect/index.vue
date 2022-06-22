@@ -1,67 +1,6 @@
 <template>
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
-    <div class="topwrap">
-      <div class="top">
-        <u--input
-          v-model="keyword"
-          placeholder="请输入搜索关键字"
-          border="none"
-        ></u--input>
-        <u-icon
-          slot="right"
-          @click="farminformation(true)"
-          color="#C4C7CC"
-          size="26"
-          name="search"
-        ></u-icon>
-      </div>
-      <div class="search">
-        热门搜索:
-        <div class="s1">
-          <div class="s2" @click="hotGo(item)" v-for="(item,index) in hot" :key="index">{{item}}</div>
-          
-        </div>
-      </div>
-      <div class="tab flexcenter">
-        <div :class="[activeTabIndex==0?'tab2':'','tab1']" @click="changeTab(0)">最近更新</div>
-        <div :class="[activeTabIndex==1?'tab2':'','tab1']" @click="changeTab(1)">推荐</div>
-        <!-- <div class="tab1">
-          <div class="knowicon" @click="activeTab = !activeTab">
-            知识推荐
-            <div class="tab1icon">
-              <u-icon
-                v-if="!activeTab"
-                slot="right"
-                @click="showType = true"
-                color="#C4C7CC"
-                size="15"
-                name="arrow-down-fill"
-              ></u-icon>
-                <u-icon
-                v-else
-                slot="right"
-                @click="showType = true"
-                color="#C4C7CC"
-                size="15"
-                name="arrow-up-fill"
-              ></u-icon>
-            </div>
-          </div>
-          <div class="select" v-if="activeTab">
-            <div
-              @click="chooseOne(item)"
-              class="selectchild"
-              v-for="(item, index) in select"
-              :key="index"
-            >
-              {{ item.name }}
-            </div>
-          </div>
-        </div> -->
-        <div :class="[activeTabIndex==3?'tab2':'','tab1']" @click="changeTab(3)">我的收藏</div>
-      </div>
-    </div>
     <div class="index1 index1clear">
       <div v-for="(item, index) in list" :key="index" class="img2">
         <div class="wzdiv">
@@ -84,7 +23,7 @@
               </span>
               <div class="ztt2 flexcenter">
                 <image mode="widthFix" @click="addCollect(item)" v-if="!item.isCollectionByMe" class="tx2" src="@/static/image/sc.png" />
-                <image mode="widthFix" @click="removeCollect(item)" v-else class="tx2" src="@/static/image/sca.png" />
+                <image mode="widthFix" @click="removeCollect(item,index)" v-else class="tx2" src="@/static/image/sca.png" />
                 <image mode="widthFix" class="tx1" src="@/static/image/zf.png" />
               </div>
             </div>
@@ -129,7 +68,7 @@ export default {
           value: 0,
         },
       ],
-      pageName: "农业知识库",
+      pageName: "我的收藏",
       numValue: "",
       nameValue: "",
       typeValue: "",
@@ -186,7 +125,7 @@ export default {
       this.collectionByMeFlag=val==3?true:false
       this.farminformation(true)
     },
-    removeCollect(item){
+    removeCollect(item,index){
       request({
         url: "/data/usercollection/removeByUserAndInformation?informationId="+item.id+"&userId="+this.userInfo.userId,
         method: "delete",
@@ -196,6 +135,7 @@ export default {
         },
       })
       .then((res) => { 
+         this.list.splice(index,1)
          uni.showToast({
           title: "取消收藏成功",
           icon: "none",
@@ -207,24 +147,17 @@ export default {
     farminformation(init){
      
       if(init){
-        
-        // if(this.keyword==''){
-        //   return 
-        // }
         this.current=1
         this.list=[]
       }
+      let userInfo=uni.getStorageSync('userInfo')
       request({
-        url:"/data/farminformation/pageFront",
+
+        url:"/data/farminformation/pageFrontMyCollection?userId="+userInfo.userId,
         method: "get",
         isAuth: false,
         data: {
           current: this.current,
-          userId:this.userInfo.userId,
-          category:this.category,
-          keyword:this.keyword,
-          recommend:this.recommend,
-          collectionByMe:this.collectionByMeFlag
         },
       })
       .then((res) => { 

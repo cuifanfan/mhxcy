@@ -121,6 +121,7 @@
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import request from "../../../common/utils/request";
 export default {
   components: {
     headerDiy,
@@ -269,6 +270,7 @@ export default {
     uni.$on("addOneFriend", (e) => {
       this.addpopup=true
     });
+   
   },
   onBackPress() {
     uni.$off("addOneFriend");
@@ -278,8 +280,9 @@ export default {
   },
   methods: {
     typeSelect() {},
+    
     radioChange(){
-      
+
     },
     hideDiv() {
       this.addpopup = false;
