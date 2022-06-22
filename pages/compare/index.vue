@@ -66,11 +66,47 @@
           <div class="header2">施肥投入</div>
         </div>
         <div>
-          <!-- <image
-            mode="widthFix"
-            class="fullw"
-            src="@/static/image/false9.png"
-          /> -->
+         <div class="cirbox">
+              <qiun-data-charts
+                type="mix"
+                canvasId="three_fertilizer"
+                :reshow="false"
+                :opts="{
+                  legend: { position: 'top' },
+                  yAxis: {
+                    data: [
+                      {
+                        axisLineColor: 'rgba(147,149,153,0.1)',
+                        fontColor: '#939599',
+                        titleFontColor: '#939599',
+                        position: 'left',
+                        title: '销售额/万',
+                        // max: fertilizer ? fertilizer.yAxis[0].max : 0,
+                        // min: fertilizer ? fertilizer.yAxis[0].min : 0,
+                      },
+                      {
+                        axisLineColor: 'rgba(147,149,153,0.1)',
+                        fontColor: '#939599',
+                        titleFontColor: '#939599',
+                        position: 'right',
+                        title: '',
+                        // max: fertilizer ? fertilizer.yAxis[0].max : 0,
+                        // min: fertilizer ? fertilizer.yAxis[0].min : 0,
+                        disabled: true,
+                      },
+                    ],
+                  },
+                  xAxis: {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    disableGrid: false,
+                    gridColor: 'rgba(147,149,153,0.1)',
+                    gridType: 'solid',
+                    fontColor: '#939599',
+                  },
+                }"
+                :chartData="fertilizer"
+              />
+            </div>
         </div>
         <div class="header header7">
           <div class="header2">施药投入</div>
@@ -150,6 +186,96 @@ export default {
       },
       moment,
       userInfo:'',
+      fertilizer: {
+        categories: ["1月11", "1月12", "1月11", "1月14", "1月15"],
+        series: [
+          {
+            name: "去年硫酸钾",
+            data: [
+              {
+                value: 5,
+                color: "#17E6A1",
+              },
+              {
+                value: 3,
+                color: "#17E6A1",
+              },
+              {
+                value: 3.5,
+                color: "#17E6A1",
+              },
+              {
+                value: 10,
+                color: "#17E6A1",
+              },
+              {
+                value: 2.8,
+                color: "#17E6A1",
+              },
+            ],
+            type: "column",
+            color: "#24ABFD",
+
+            textNoShow: true,
+          },
+          {
+            name: "去年二胺",
+            data: [
+              {
+                value: 5.2,
+                color: "#3199F5",
+              },
+              {
+                value: 3,
+                color: "#3199F5",
+              },
+              {
+                value: 2.5,
+                color: "#3199F5",
+              },
+              {
+                value: 1,
+                color: "#3199F5",
+              },
+              {
+                value: 4,
+                color: "#3199F5",
+              },
+            ],
+            type: "column",
+            color: "#24ABFD",
+
+            textNoShow: true,
+          },
+          {
+            name: "硫酸钾",
+            data: [1, 4, 2, 1, 1],
+            type: "line",
+            addPoint: true,
+            color: "#17E6A1",
+
+            index: 1,
+          },
+          {
+            name: "二胺",
+            data: [2, 1, 2, 3, 2],
+            type: "line",
+            color: "#3199F5",
+
+            index: 1,
+          },
+        ],
+        yAxis: [
+          {
+            max: 20,
+            min: 0,
+          },
+          {
+            max: 200,
+            min: 0,
+          },
+        ],
+      },
       tablist: [
         {
           num: 10,
@@ -286,7 +412,8 @@ export default {
             if(!flag){
               all.push({
                 name:item2.name,
-                val:item2.value
+                val:item2.value,
+                data:[]
               })
             }else{
               console.log('xxx',item2.value)
@@ -295,6 +422,16 @@ export default {
           })
         })
         console.log(val,all)
+        all.forEach((item,index)=>{
+          res.data.forEach((item2,index2)=>{
+            let flag=item2.list.find(item3=>{
+              return item3.name==item.name
+            })
+            let addValue=flag?flag.value:0
+            item.data.push(addValue)
+          })
+        })
+         console.log(val,all)
         if(type==0){
            this.getAllPutInEachMonthByYear(now,1,val)
         }

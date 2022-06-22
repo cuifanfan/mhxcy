@@ -1,5 +1,6 @@
 import {btoa} from '../utils/utils'
 import { BASE_URL } from './config';
+let loading=false
 //const BASE_URL='http://linzhikeji-gateway.com';
 
 //  公共的请求方法
@@ -53,7 +54,8 @@ function request({
             header.token = token
         }
         // 请求前开启loading
-        if (isShowLoading) {
+        if (isShowLoading&&!loading) {
+            loading=true
             uni.showLoading({
                 title: '加载中',
                 mask: true
@@ -69,8 +71,9 @@ function request({
                     statusCode
                 } = res
                 // 请求后关闭loading
-                if (isShowLoading) {
+                if (isShowLoading&&loading) {
                     uni.hideLoading()
+                    loading=false
                 }
                 if (statusCode === 424||statusCode==428) {
                     // let currentRoutes = getCurrentPages(); // 获取当前打开过的页面路由数组
