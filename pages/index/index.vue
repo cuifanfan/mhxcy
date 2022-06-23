@@ -758,6 +758,7 @@ export default {
       })
         .then((res) => {
           this.weatherInfo = res.data;
+          uni.setStorageSync('baseInfo',JSON.stringify(res.data))
           console.log("xxx00000xxxccc", res);
           this.list[0] = {
             num:

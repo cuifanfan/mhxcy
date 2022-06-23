@@ -119,12 +119,12 @@
       </div>
       <!-- <image mode="widthFix" v-else class="fullpic" src="@/static/image/false30.png" /> -->
     </div>
-    <div class="fixedbtn">
+    <!-- <div class="fixedbtn">
       <div class="btn2 flexcenter">
         <image mode="widthFix" class="close" src="@/static/image/close1.png" />
         关闭设备
       </div>
-    </div>
+    </div> -->
     <u-calendar
       :closeOnClickOverlay="true"
       @close="dateShow = false"

@@ -3,10 +3,10 @@
     <header-diy class="topbar" :titleName="pageName"></header-diy>
     <div class="content">
       <div class="index">
-        <div class="my index1">
+        <div class="my index1" v-if="info">
           <image mode="widthFix" class="tx" src="@/static/image/tx.png" />
           <div class="name">
-            老班章茶叶种植基地
+            {{info.name}}
             <image mode="widthFix" class="pic" src="@/static/image/edit3.png" />
           </div>
           <div class="myinfo flexcenter">
@@ -14,35 +14,35 @@
               <image mode="widthFix" class="pic" src="@/static/image/n1.png" />
               <div class="c2">
                 茶园地址：
-                <div class="c3">勐海镇勐海沱茶厂附近</div>
+                <div class="c3">{{info.address}}</div>
               </div>
             </div>
             <div class="c1">
               <image mode="widthFix" class="pic" src="@/static/image/n2.png" />
               <div class="c2">
                 负责人：
-                <div class="c3">张三</div>
+                <div class="c3">{{info.principal}}</div>
               </div>
             </div>
             <div class="c1 c12">
               <image mode="widthFix" class="pic" src="@/static/image/n3.png" />
               <div class="c2">
                 联系电话：
-                <div class="c3">131 2345 6789</div>
+                <div class="c3">{{info.principalPhone}}</div>
               </div>
             </div>
             <div class="c1">
               <image mode="widthFix" class="pic" src="@/static/image/n4.png" />
               <div class="c2">
                 茶园面积:：
-                <div class="c3">1300亩</div>
+                <div class="c3">{{info.allArea}}亩</div>
               </div>
             </div>
             <div class="c1 c12">
               <image mode="widthFix" class="pic" src="@/static/image/n5.png" />
               <div class="c2">
                 种植品类：
-                <div class="c3">老班章/台树茶/老树茶</div>
+                <div class="c3" v-if="baseInfo">{{baseInfo.teaSpecies}}</div>
               </div>
             </div>
           </div>
@@ -111,12 +111,15 @@
 
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
   data() {
     return {
+      baseInfo:null,
+      info:null,
       lookType: true,
       active2: true,
       active1: true,
@@ -202,7 +205,23 @@ export default {
       ],
     };
   },
+  onLoad(){
+    this.teabase()
+    this.baseInfo=JSON.parse(uni.getStorageSync('baseInfo'))
+  },
   methods: {
+
+    teabase(){
+       let userInfo=uni.getStorageSync('userInfo')
+       request({
+        url: "/data/teabase/"+userInfo.userId,
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        this.info=res.data
+      })
+    },
     goCollect(){
       
       uni.navigateTo({

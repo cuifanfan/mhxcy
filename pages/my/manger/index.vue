@@ -9,7 +9,7 @@
     <div class="content">
       <div>
         <div class="manger">
-          <div class="child" v-for="(item,index) in list" :key="index">
+          <div class="child" v-if="item.deptId==1" v-for="(item,index) in list" :key="index">
             <div class="childwrap flexcenter">
               <div class="big">
                 {{(item.name).substring(0,1)}}
@@ -18,7 +18,7 @@
               <div class="c1">
                 <div class="c2">{{item.name}}</div>
                 <div class="c3">电话：{{item.phone}}</div>
-                <div class="c3">角色：{{item.deptName}}</div>
+                <div class="c3">角色：{{item.roleList[0]['roleName']}}</div>
               </div>
             </div>
 
@@ -199,32 +199,47 @@ export default {
         });
         return;
       }
+      let role=this.radiovalue1=='普通用户'?1539868238363492354:1536166867701334017
        request({
         url: "/admin/user",
         method: 'post',
         isAuth: false,
         data:{
-          "avatar": null,
-          "deptId": 1,
-          "email": "",
-          "name": this.userName,
-          "nickname": this.userName,
-          "password":'admin123' ,
-          "phone": this.phone,
-          "role": [
-            0
-          ],
-          "tenantId": 0,
-          "username":this.userName
+          createTime: "",
+          deptId: "1",
+          email: "",
+          lockFlag: "0",
+          name: this.userName,
+          nickname: this.userName,
+          password: "123456",
+          phone: this.phone,
+          role: ["1539868238363492354"],
+         
+          username: this.userName,
         },
       }).then((res) => {
         this.phone=''
         this.userName=''
         this.addpopup = false;
+        this.setUserBind(res.data.userId)
         this.askList()
       })
       
     },
+
+    setUserBind(userId){
+       request({
+        url: "/data/userbase",
+        method: 'post',
+        isAuth: false,
+        data:{
+          "baseId": uni.getStorageSync('baseId'),
+          "userId": userId
+        },
+      }).then((res) => {
+
+      })
+    }
   },
 };
 </script>

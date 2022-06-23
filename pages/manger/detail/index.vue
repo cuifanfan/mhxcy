@@ -1452,6 +1452,12 @@ export default {
       this.farmrecords();
     }
   },
+  onShow(){
+    if(uni.getStorageSync('updateSetFlag')){
+      this.gardenthresholdday()
+      uni.setStorageSync('updateSetFlag','')
+    }
+  },
   onLoad(option) {
     this.teaId = option.id;
     this.userInfo = uni.getStorageSync("userInfo");
@@ -1927,14 +1933,12 @@ export default {
     },
     //获取参数设置
     gardenthresholdday() {
-      console.log(848456456546456);
       request({
         url: "/data/gardenthresholdday/" + this.teaId,
         method: "get",
         isAuth: false,
         data: {},
       }).then((res) => {
-        console.log("resxxx", res);
         if (!res.data) {
           this.notSetFlag = true;
           uni.setStorageSync("setParams", null);

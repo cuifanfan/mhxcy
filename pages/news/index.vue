@@ -12,18 +12,18 @@
     <div class="content" v-if="active">
       <div
         class="wrapcommon wrapcommonfarm"
-        v-for="(item, index) in 12"
+        v-for="(item, index) in tsList"
         :key="index"
       >
         <div class="titlewrap">
           <div class="title">
-            <span>{{ index + 1 }}号茶园</span> ：古树茶
+            
           </div>
-          <div class="date">2022.02.10 10:00</div>
+          <div class="date">{{item.creatTime}}</div>
         </div>
-        <div class="farmtitle">病虫防治</div>
+        <div class="farmtitle">{{item.title}}</div>
         <div class="farmcontent">
-          5月季节性病虫增加,可增加黄板,提高物理防御措施。
+          {{item.newsInfo}}
         </div>
       </div>
     </div>
@@ -58,26 +58,27 @@
       <div class="content newscontent">
         <div
           class="wrapcommon wrapcommonfarm"
-          v-for="(item, index) in list"
+          v-for="(item, index) in gjList"
           :key="index"
         >
-          <div :class="['type'+item.type,'titlewrap']">
+          <div :class="[item.status=='气象告警'?'type3':'',item.status=='3'?'type4':'',item.status=='2'?'type1':'','titlewrap']">
             <div class="title">
-              <span v-if="item.type==4" >异常告警</span> 
-              <span v-if="item.type==3">气象告警</span> 
-              <span v-if="item.type==2" >离线告警</span> 
-              <span v-if="item.type==1" >异常告警</span> 
+              <span v-if="item.status=='气象告警'">气象告警</span> 
+              <span v-if="item.status=='离线告警'">离线告警</span> 
+             
             </div>
-            <div class="date">2022.02.10 10:00</div>
+            <div class="date">{{item.creatTime}}</div>
           </div>
           <div class="farmtitle">
               <div class="t2">
-                <image mode="widthFix" v-if="item.type==4" class="btnpic" src="@/static/image/g1.png" alt="" />
-                <image mode="widthFix" v-if="item.type==3" class="btnpic" src="@/static/image/g2.png" alt="" />
-                <image mode="widthFix" v-if="item.type==2" class="btnpic" src="@/static/image/g3.png" alt="" />
-                1号虫情仪异常，请尽快检查！
+                <image mode="widthFix" v-if="item.status=='异常告警'" class="btnpic" src="@/static/image/g1.png" alt="" />
+                <image mode="widthFix" v-if="item.status=='离线告警'" class="btnpic" src="@/static/image/g2.png" alt="" />
+                <image mode="widthFix" v-if="item.status=='气象告警'" class="btnpic" src="@/static/image/g3.png" alt="" />
+                <span v-if="item.status=='气象告警'">
+                    {{item.newsInfo.split('::')[1]}}
+                </span>
               </div>
-              <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
+              <!-- <u-icon color="#939599" size="14" name="arrow-right"></u-icon> -->
           </div>
         </div>
       </div>
@@ -86,12 +87,18 @@
 </template>
 <script>
 import headerDiy from "../component/header/header.vue";
+import request from "../../common/utils/request";
 export default {
   components: {
     headerDiy,
   },
+  
   data() {
     return {
+        tsList:[],
+        gjList:[],
+        tsCurrent:1,
+        gjCurrent:1,
         list:[
             {
                 type:4,   
@@ -119,7 +126,7 @@ export default {
             }
         ],
         activeone:4,
-      active: true,
+      active: false,
       showType: false,
       showType2: false,
       pageName: "消息通知",
@@ -185,9 +192,61 @@ export default {
       ],
       nameValue: "",
       typeValue: "",
+      listOver2:false,
+      listOver:false,
     };
   },
+  onLoad(){
+    this.askTs('推送')
+    this.askTs('告警')
+  },
+  onReachBottom() {
+    console.log("触底了");
+    if(!this.listOver&&this.active){
+      this.tsCurrent++;
+      this.askTs('推送');
+    }
+    if(!this.listOver2&&!this.active){
+      this.tsCurrent++;
+      this.askTs('告警');
+    }
+  },
   methods: {
+    askTs(val){
+      request({
+        url: "/data/forwardnews/page?recipientId="+uni.getStorageSync('tenantId'),
+        method: "get",
+        isAuth: false,
+        data: {
+         newsKind:val,
+         current:val=='推送'?this.tsCurrent:this.gjCurrent
+        },
+      }).then((res) => {
+        if(val=='推送'){
+          this.tsList=this.tsList.concat(res.data.records)
+          if (res.data.records.length == 0) {
+            uni.showToast({
+              title: "暂无更多数据",
+              icon: "none",
+              duration: 850,
+            });
+            this.listOver=true
+         }
+        }else{
+          this.gjList=this.gjList.concat(res.data.records)
+          if (res.data.records.length == 0) {
+            uni.showToast({
+              title: "暂无更多数据",
+              icon: "none",
+              duration: 850,
+            });
+            this.listOver2=true
+          }
+        }
+        
+        
+      })
+    },
     typeSelect() {},
   },
 };

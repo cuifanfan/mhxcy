@@ -161,6 +161,7 @@ export default {
       nameValue: "",
       typeValue: "",
       teaName: "",
+      handleType:1,
       
     };
   },
@@ -170,6 +171,7 @@ export default {
     //取之前的参数
     let get = uni.getStorageSync("setParams");
     if (get) {
+      this.handleType=2
       this.initParams(get);
     }
   },
@@ -236,7 +238,7 @@ export default {
       }
       request({
         url: "/data/gardenthresholdday",
-        method: "put",
+        method: this.handleType==1?'post':'put',
         isAuth: false,
         data: dataSet,
       }).then((res) => {
@@ -246,6 +248,7 @@ export default {
           duration: 850,
         })
         uni.setStorageSync("setParams", JSON.stringify(dataSet));
+        uni.setStorageSync('updateSetFlag',true)
         setTimeout(() => {
           uni.navigateBack();
         }, 1000);
