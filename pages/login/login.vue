@@ -150,9 +150,22 @@ export default {
 
 			}
 			uni.setStorageSync('userInfo',info)
-			
+			this.getUserInfo()
 		}).catch(err=>{
 			console.log('err',err)
+		})
+	  },
+	 
+	  getUserInfo(){
+		request({
+			url:'/admin/user/info',
+			method:'get',
+			isAuth:false,
+    		data:{
+				
+			},	
+		}).then(res=>{
+			uni.setStorageSync('tenantId',res.data.sysUser.tenantId)
 		})
 	  },
 	  // 选项卡

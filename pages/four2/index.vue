@@ -732,6 +732,7 @@ export default {
 .content {
   .imgwraps {
     position: relative;
+    height: 404rpx;
     .play {
       position: absolute;
       transform: translate(-50%, -50%);

@@ -355,10 +355,12 @@
       @select="changeNowTea"
     >
     </u-action-sheet>
+    <!-- <socket/> -->
   </div>
 </template>
 
 <script>
+// import socket from '../../pages/socket'
 import { weekDay } from "../../common/utils/utils";
 import headerDiy from "../component/header/header.vue";
 import request from "../../common/utils/request";
@@ -367,6 +369,7 @@ import { weatherIdToName, wind } from "../../common/utils/weather";
 export default {
   components: {
     headerDiy,
+    // socket
   },
   data() {
     return {
@@ -448,10 +451,15 @@ export default {
     this.askInvestment(1);
     this.getPutInByContent(1);
     this.teagarden()
+    if(uni.getStorageSync('nowChooseTea')){
+      this.teaSure=JSON.parse(uni.getStorageSync('nowChooseTea'))
+      console.log('现在的茶园',this.teaSure)
+    }
   },
   methods: {
     changeNowTea(item){
       this.teaSure=item
+      uni.setStorageSync('nowChooseTea',JSON.stringify(item))
       console.log('现在的茶园是：',this.teaSure)
     },
     //如果为管理员 可以切换茶园 
@@ -463,7 +471,10 @@ export default {
         data: {},
       }).then((res) => {
         this.allTea=res.data.records
-        this.teaSure=this.allTea[0]
+        if(!uni.getStorageSync('nowChooseTea')){
+          this.teaSure=this.allTea[0]
+          uni.setStorageSync('nowChooseTea',JSON.stringify(this.allTea[0]))
+        }
       })
     },
     getPutInByContent(type) {

@@ -961,7 +961,7 @@ export default {
   border-radius: 24rpx;
   margin-top: 30rpx;
   padding: 15rpx;
-  justify-content: space-between!important;
+  justify-content: flex-start;
   .text {
     color: #626466;
     font-size: 28rpx;

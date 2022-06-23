@@ -60,8 +60,8 @@
               name="arrow-right"
             ></u-icon>
           </div>
-          <div class="child child11" >
-            <div class="c1" @click="goNews">
+          <div class="child child11" @click="goNews">
+            <div class="c1">
               <image mode="widthFix" class="pic" src="@/static/image/u2.png" />
               消息中心
               <div class="cir">
@@ -69,7 +69,7 @@
               </div>
             </div>
             <u-icon
-              @click="goNews"
+            
               color="#939599"
               size="14"
               name="arrow-right"

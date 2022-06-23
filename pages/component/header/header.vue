@@ -31,10 +31,12 @@
       </div>
      
     </view>
+    <!-- <socket/> -->
   </view>
 </template>
 <script>
 //import app from "../App.vue";
+// import socket from '../../../pages/socket'
 export default {
   name: "header-diy",
   props: {
@@ -54,6 +56,9 @@ export default {
       default:1
     }
   },
+  // components: {
+  //   socket  
+  // },
   data() {
     return {
       phoneHeight: "", //这里在进行调用

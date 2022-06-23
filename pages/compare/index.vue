@@ -10,139 +10,214 @@
       <div @click="active = !active" :class="[active ? 'c1active' : '', 'c1']">
         投入统计
       </div>
-      <div @click="active = !active" :class="[!active ? 'c1active' : '', 'c1']">
+      <div @click="ccClick" :class="[!active ? 'c1active' : '', 'c1']">
         产出统计
       </div>
     </div>
     <div class="content index1 index22" v-if="active">
-      
-        <div class="header header7">
-          <div class="header2">人力投入</div>
-        </div>
-        <div>
-          <div class="cirbox" v-if="humanResourcesFlag">
-              <qiun-data-charts
-                type="mix"
-               
-                :chartData="humanResources"
-                canvasId="one_b"
-                :opts="{
-                  legend: { position: 'top' },
-                  xAxis: {
+      <div class="header header7">
+        <div class="header2">人力投入</div>
+      </div>
+      <div>
+        <div class="cirbox" v-if="humanResourcesFlag">
+          <qiun-data-charts
+            type="mix"
+            :chartData="humanResources"
+            canvasId="one_b"
+            :opts="{
+              legend: { position: 'top' },
+              xAxis: {
+                axisLineColor: 'rgba(147,149,153,0.1)',
+                disableGrid: false,
+                gridColor: 'rgba(147,149,153,0.1)',
+                gridType: 'solid',
+                fontColor: '#939599',
+              },
+              yAxis: {
+                data: [
+                  {
                     axisLineColor: 'rgba(147,149,153,0.1)',
-                    disableGrid: false,
-                    gridColor: 'rgba(147,149,153,0.1)',
-                    gridType: 'solid',
                     fontColor: '#939599',
+                    titleFontColor: '#939599',
+                    title: '单位(KG)',
+                    titleOffsetX: -5,
+                    titleOffsetY: -10,
                   },
-                  yAxis: {
-                    data: [
-                      {
-                        axisLineColor: 'rgba(147,149,153,0.1)',
-                        fontColor: '#939599',
-                        titleFontColor: '#939599',
-                        title: '单位(KG)',
-                        titleOffsetX: -5,
-                        titleOffsetY: -10,
-                       
-                      },
-                    ],
-                  },
-                }"
-              />
-            </div>
-        </div>
-        <div class="header header7">
-          <div class="header2">灌溉投入</div>
-        </div>
-        <div>
-          <!-- <image
-            mode="widthFix"
-            class="fullw"
-            src="@/static/image/false8.png"
-          /> -->
-        </div>
-        <div class="header header7">
-          <div class="header2">施肥投入</div>
-        </div>
-        <div>
-         <div class="cirbox">
-              <qiun-data-charts
-                type="mix"
-                canvasId="three_fertilizer"
-                :reshow="false"
-                :opts="{
-                  legend: { position: 'top' },
-                  yAxis: {
-                    data: [
-                      {
-                        axisLineColor: 'rgba(147,149,153,0.1)',
-                        fontColor: '#939599',
-                        titleFontColor: '#939599',
-                        position: 'left',
-                        title: '销售额/万',
-                        // max: fertilizer ? fertilizer.yAxis[0].max : 0,
-                        // min: fertilizer ? fertilizer.yAxis[0].min : 0,
-                      },
-                      {
-                        axisLineColor: 'rgba(147,149,153,0.1)',
-                        fontColor: '#939599',
-                        titleFontColor: '#939599',
-                        position: 'right',
-                        title: '',
-                        // max: fertilizer ? fertilizer.yAxis[0].max : 0,
-                        // min: fertilizer ? fertilizer.yAxis[0].min : 0,
-                        disabled: true,
-                      },
-                    ],
-                  },
-                  xAxis: {
-                    axisLineColor: 'rgba(147,149,153,0.1)',
-                    disableGrid: false,
-                    gridColor: 'rgba(147,149,153,0.1)',
-                    gridType: 'solid',
-                    fontColor: '#939599',
-                  },
-                }"
-                :chartData="fertilizer"
-              />
-            </div>
-        </div>
-        <div class="header header7">
-          <div class="header2">施药投入</div>
-        </div>
-        <div>
-          <!-- <image
-            mode="widthFix"
-            class="fullw"
-            src="@/static/image/false10.png"
-          /> -->
-        </div>
-        <div class="header header7">
-          <div class="header2">鲜叶产出</div>
-        </div>
-        <div>
-          <!-- <image
-            mode="widthFix"
-            class="fullw"
-            src="@/static/image/false11.png" 
+                ],
+              },
+            }"
           />
-          -->
         </div>
-      
+      </div>
+      <div class="header header7">
+        <div class="header2">灌溉投入</div>
+      </div>
+      <div>
+        <div class="cirbox" v-if="ggFlag">
+          <qiun-data-charts
+            type="mix"
+            canvasId="three_gg"
+            :resshow="false"
+            :opts="{
+              legend: { position: 'top' },
+              yAxis: {
+                disableGrid: true,
+
+                data: [
+                  {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    fontColor: '#939599',
+                    position: 'left',
+                    title: '单位(KG)',
+                    titleOffsetX: -10,
+                    titleOffsetY: -10,
+                    titleFontColor: '#939599',
+                  },
+                ],
+              },
+              xAxis: {
+                axisLineColor: 'rgba(147,149,153,0.1)',
+                disableGrid: false,
+                gridColor: 'rgba(147,149,153,0.1)',
+                gridType: 'solid',
+                fontColor: '#939599',
+              },
+            }"
+            :chartData="chartDataRain"
+          />
+        </div>
+      </div>
+      <div class="header header7">
+        <div class="header2">施肥投入</div>
+      </div>
+      <div>
+        <div class="cirbox" v-if="sfFlag">
+          <qiun-data-charts
+            type="mix"
+            canvasId="three_fertilizer"
+            :reshow="false"
+            :opts="{
+              legend: { position: 'top' },
+              yAxis: {
+                data: [
+                  {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    fontColor: '#939599',
+                    titleFontColor: '#939599',
+                    position: 'left',
+                    title: '销售额/万',
+                    // max: fertilizer ? fertilizer.yAxis[0].max : 0,
+                    // min: fertilizer ? fertilizer.yAxis[0].min : 0,
+                  },
+                  {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    fontColor: '#939599',
+                    titleFontColor: '#939599',
+                    position: 'right',
+                    title: '',
+                    // max: fertilizer ? fertilizer.yAxis[0].max : 0,
+                    // min: fertilizer ? fertilizer.yAxis[0].min : 0,
+                    disabled: true,
+                  },
+                ],
+              },
+              xAxis: {
+                axisLineColor: 'rgba(147,149,153,0.1)',
+                disableGrid: false,
+                gridColor: 'rgba(147,149,153,0.1)',
+                gridType: 'solid',
+                fontColor: '#939599',
+              },
+            }"
+            :chartData="fertilizer"
+          />
+        </div>
+      </div>
+      <div class="header header7">
+        <div class="header2">施药投入</div>
+      </div>
+      <div>
+        <div class="cirbox" v-if="syFlag">
+          <qiun-data-charts
+            type="mix"
+            canvasId="three_fertilizer2"
+            :reshow="false"
+            :opts="{
+              legend: { position: 'top' },
+              yAxis: {
+                data: [
+                  {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    fontColor: '#939599',
+                    titleFontColor: '#939599',
+                    position: 'left',
+                    title: '销售额/万',
+                    // max: fertilizer ? fertilizer.yAxis[0].max : 0,
+                    // min: fertilizer ? fertilizer.yAxis[0].min : 0,
+                  },
+                  {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    fontColor: '#939599',
+                    titleFontColor: '#939599',
+                    position: 'right',
+                    title: '',
+                    // max: fertilizer ? fertilizer.yAxis[0].max : 0,
+                    // min: fertilizer ? fertilizer.yAxis[0].min : 0,
+                    disabled: true,
+                  },
+                ],
+              },
+              xAxis: {
+                axisLineColor: 'rgba(147,149,153,0.1)',
+                disableGrid: false,
+                gridColor: 'rgba(147,149,153,0.1)',
+                gridType: 'solid',
+                fontColor: '#939599',
+              },
+            }"
+            :chartData="fertilizerSy"
+          />
+        </div>
+      </div>
     </div>
-    <div class="content index1 index22" v-else>
-      
-        <div class="header header7">
-          <div class="header2">鲜叶产出</div>
+    <div class="content index1 index22" v-show="!active">
+      <div class="header header7">
+        <div class="header2">鲜叶产出</div>
+      </div>
+      <div>
+        <div class="cirbox" v-if="xyFlag">
+          <qiun-data-charts
+            type="mix"
+            canvasId="three_leaf3"
+            :resshow="false"
+            :opts="{
+              legend: { position: 'top' },
+              yAxis: {
+                disableGrid: true,
+                data: [
+                  {
+                    axisLineColor: 'rgba(147,149,153,0.1)',
+                    fontColor: '#939599',
+                    position: 'left',
+                    title: '单位(KG)',
+                    titleOffsetX: -10,
+                    titleOffsetY: -10,
+                    titleFontColor: '#939599',
+                  },
+                ],
+              },
+              xAxis: {
+                axisLineColor: 'rgba(147,149,153,0.1)',
+                disableGrid: false,
+                gridColor: 'rgba(147,149,153,0.1)',
+                gridType: 'solid',
+                fontColor: '#939599',
+              },
+            }"
+            :chartData="chartDataXy"
+          />
         </div>
-        <div>
-          <!-- <image
-            mode="widthFix"
-            class="fullw"
-            src="@/static/image/false8.png"
-          /> -->
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -157,27 +232,52 @@ export default {
   },
   data() {
     return {
-        humanResourcesFlag:false,
-        humanResources: {
-        categories: [
-        
+      xyFlag: false,
+      sfFlag: false,
+      syFlag: false,
+      syChartData: {
+        categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        series: [
+          {
+            name: "今年",
+            data: [],
+            type: "line",
+            addPoint: true,
+            color: "#29CC96",
+            textColor: "#17E6A1",
+            textSize: 8,
+          },
+          {
+            name: "去年",
+            data: [],
+            type: "line",
+            addPoint: true,
+            color: "#3199F5",
+            textColor: "#3199F5",
+            textSize: 8,
+          },
         ],
+        yAxis: [
+          {
+            // "max": 60,
+            // "min": 0
+          },
+        ],
+      },
+      humanResourcesFlag: false,
+      humanResources: {
+        categories: [],
         series: [
           {
             name: "去年",
-            data: [
-              
-              
-            ],
+            data: [],
             type: "column",
             color: "#17E5A1",
             unit: "",
           },
           {
             name: "今年",
-            data: [
-              
-            ],
+            data: [],
             type: "column",
             color: "#3199F5",
             unit: "",
@@ -185,86 +285,44 @@ export default {
         ],
       },
       moment,
-      userInfo:'',
-      fertilizer: {
-        categories: ["1月11", "1月12", "1月11", "1月14", "1月15"],
+      userInfo: "",
+      chartDataXy: {
+        categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         series: [
           {
-            name: "去年硫酸钾",
-            data: [
-              {
-                value: 5,
-                color: "#17E6A1",
-              },
-              {
-                value: 3,
-                color: "#17E6A1",
-              },
-              {
-                value: 3.5,
-                color: "#17E6A1",
-              },
-              {
-                value: 10,
-                color: "#17E6A1",
-              },
-              {
-                value: 2.8,
-                color: "#17E6A1",
-              },
-            ],
+            name: "去年",
+            data: [],
             type: "column",
-            color: "#24ABFD",
-
-            textNoShow: true,
+            color: "#17E5A1",
+            unit: "",
           },
           {
-            name: "去年二胺",
-            data: [
-              {
-                value: 5.2,
-                color: "#3199F5",
-              },
-              {
-                value: 3,
-                color: "#3199F5",
-              },
-              {
-                value: 2.5,
-                color: "#3199F5",
-              },
-              {
-                value: 1,
-                color: "#3199F5",
-              },
-              {
-                value: 4,
-                color: "#3199F5",
-              },
-            ],
+            name: "今年",
+            data: [],
             type: "column",
-            color: "#24ABFD",
-
-            textNoShow: true,
-          },
-          {
-            name: "硫酸钾",
-            data: [1, 4, 2, 1, 1],
-            type: "line",
-            addPoint: true,
-            color: "#17E6A1",
-
-            index: 1,
-          },
-          {
-            name: "二胺",
-            data: [2, 1, 2, 3, 2],
-            type: "line",
             color: "#3199F5",
-
-            index: 1,
+            unit: "",
           },
         ],
+      },
+
+      fertilizer: {
+        categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        series: [],
+        yAxis: [
+          {
+            max: 20,
+            min: 0,
+          },
+          {
+            max: 200,
+            min: 0,
+          },
+        ],
+      },
+      fertilizerSy: {
+        categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        series: [],
         yAxis: [
           {
             max: 20,
@@ -297,6 +355,35 @@ export default {
       active: true,
       active2: true,
       active1: true,
+      chartDataRain: {
+        categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        series: [
+          {
+            name: "今年",
+            data: [],
+            type: "line",
+            addPoint: true,
+            color: "#29CC96",
+            textColor: "#17E6A1",
+            textSize: 8,
+          },
+          {
+            name: "去年",
+            data: [],
+            type: "line",
+            addPoint: true,
+            color: "#3199F5",
+            textColor: "#3199F5",
+            textSize: 8,
+          },
+        ],
+        yAxis: [
+          {
+            // "max": 60,
+            // "min": 0
+          },
+        ],
+      },
       list: [
         {
           num: 15,
@@ -355,6 +442,11 @@ export default {
         five: 15,
       },
       pageName: "投入产出",
+      ggFlag: false,
+      //去年的施药
+      agoSyArr: [],
+      //今年的施药
+      nowSyArr: [],
       indexMenu: [
         {
           name: "农情监测",
@@ -379,102 +471,248 @@ export default {
       ],
     };
   },
-  onLoad(){
-    this.userInfo=uni.getStorageSync('userInfo')
-    let ago=moment().add(-1, 'y').format("YYYY")
-    
-    this.getAllHumanUseEachMonthByYear(ago,0)
-    //查询施肥
-    this.getAllPutInEachMonthByYear(ago,0,'施肥')
-    this.getAllPutInEachMonthByYear(ago,0,'灌溉')
+  onLoad() {
+    this.userInfo = uni.getStorageSync("userInfo");
+    let ago = moment().add(-1, "y").format("YYYY");
 
+    this.getAllHumanUseEachMonthByYear(ago, 0);
+    //查询施肥
+    this.getAllPutInEachMonthByYear(ago, 0, "施肥");
+    this.getAllPutInEachMonthByYear(ago, 0, "灌溉");
+    //除草和病虫防治的施药
+    this.getAllPutInEachMonthByYear(ago, 0, "除草");
+    //鲜叶
+    //this.getAllPutInEachMonthByYear(ago, 0, "采摘");
   },
   methods: {
-    getAllPutInEachMonthByYear(year,type,val){
-       request({
+    ccClick() {
+      this.active = !this.active;
+      let ago = moment().add(-1, "y").format("YYYY");
+      if(!this.xyFlag){
+        this.getAllPutInEachMonthByYear(ago, 0, "采摘");
+      }
+       
+    },
+    getAllPutInEachMonthByYear(year, type, val) {
+      request({
         url: "/data/farmrecords/getAllPutInEachMonthByYear",
         method: "get",
         isAuth: false,
         data: {
-          content:val,
-          userId:this.userInfo.userId,
-          year:year
+          content: val,
+          userId: this.userInfo.userId,
+          year: year,
         },
       }).then((res) => {
         //获取所有的项目
-        let all=[]
-        let now=moment().format("YYYY")
-        res.data.forEach((item,index)=>{
-          item.list.forEach((item2,index2)=>{
-            let flag=all.find(item3=>{
-              return item3.name==item2.name
-            })
-            if(!flag){
+        let all = [];
+        let now = moment().format("YYYY");
+        res.data.forEach((item, index) => {
+          item.list.forEach((item2, index2) => {
+            let flag = all.find((item3) => {
+              return item3.name == item2.name;
+            });
+            if (!flag) {
               all.push({
-                name:item2.name,
-                val:item2.value,
-                data:[]
-              })
-            }else{
-              console.log('xxx',item2.value)
-              flag.val+=item2.value
+                name: item2.name,
+                val: item2.value,
+                data: [],
+              });
+            } else {
+              // console.log('xxx',item2.value)
+              flag.val += item2.value;
             }
-          })
-        })
-        console.log(val,all)
-        all.forEach((item,index)=>{
-          res.data.forEach((item2,index2)=>{
-            let flag=item2.list.find(item3=>{
-              return item3.name==item.name
-            })
-            let addValue=flag?flag.value:0
-            item.data.push(addValue)
-          })
-        })
-         console.log(val,all)
-        if(type==0){
-           this.getAllPutInEachMonthByYear(now,1,val)
+          });
+        });
+
+        all.forEach((item, index) => {
+          res.data.forEach((item2, index2) => {
+            let flag = item2.list.find((item3) => {
+              return item3.name == item.name;
+            });
+            let addValue = flag ? flag.value : 0;
+            item.data.push(addValue);
+          });
+        });
+        console.log(val, all);
+        if (type == 0) {
+          this.getAllPutInEachMonthByYear(now, 1, val);
         }
-      })
+        if (val == "灌溉" && type == 0) {
+          let water = all.find((item) => {
+            return item.name == "水";
+          });
+          if (water) {
+            this.chartDataRain.series[1]["data"] = water.data;
+          }
+        }
+        if (val == "灌溉" && type == 1) {
+          let water = all.find((item) => {
+            return item.name == "水";
+          });
+          if (water) {
+            this.chartDataRain.series[0]["data"] = water.data;
+          }
+          this.ggFlag = true;
+        }
+        if (val == "除草" && type == 0) {
+          this.agoSyArr = this.agoSyArr.concat(all);
+        }
+        if (val == "病虫防治" && type == 0) {
+          this.agoSyArr = this.agoSyArr.concat(all);
+        }
+        if (val == "除草" && type == 1) {
+          this.nowSyArr = this.nowSyArr.concat(all);
+          let ago = moment().add(-1, "y").format("YYYY");
+          this.getAllPutInEachMonthByYear(ago, 0, "病虫防治");
+        }
+        if (val == "采摘" && type == 0) {
+          all.forEach((item) => {
+            if (item.name == "鲜叶") {
+             this.chartDataXy["series"][0]["data"] = item.data;
+             console.log('鲜叶',item.data)
+            }
+          });
+        }
+        if (val == "采摘" && type == 1) {
+          all.forEach((item) => {
+            if (item.name == "鲜叶") {
+              this.chartDataXy["series"][1]["data"] = item.data;
+              console.log('鲜叶now',item.data)
+            }
+            
+          });
+          this.xyFlag = true;  
+        }
+        if (val == "施肥" && type == 0) {
+          all.forEach((item) => {
+            this.fertilizer.series.push({
+              name: "去年" + item.name,
+              data: item.data,
+              type: "line",
+              addPoint: true,
+              color: `#${Math.floor(Math.random() * 0xffffff)
+                .toString(16)
+                .padEnd(6, "0")}`,
+              index: 1,
+            });
+          });
+        }
+        if (val == "施肥" && type == 1) {
+          all.forEach((item) => {
+            this.fertilizer.series.push({
+              name: item.name,
+              data: item.data,
+              type: "line",
+              addPoint: true,
+              color: `#${Math.floor(Math.random() * 0xffffff)
+                .toString(16)
+                .padEnd(6, "0")}`,
+              index: 1,
+            });
+          });
+
+          this.sfFlag = true;
+        }
+        if (val == "病虫防治" && type == 1) {
+          this.nowSyArr = this.nowSyArr.concat(all);
+          
+          //合并同类项目
+          let getOnlyAgo = this.combin(this.agoSyArr);
+          let getOnlyNow = this.combin(this.nowSyArr);
+          
+         
+          getOnlyAgo.forEach((item) => {
+            this.fertilizerSy.series.push({
+              name: "去年" + item.name,
+              data: item.data,
+              type: "line",
+              addPoint: true,
+              color: `#${Math.floor(Math.random() * 0xffffff)
+                .toString(16)
+                .padEnd(6, "0")}`,
+              index: 1,
+            });
+          });
+          getOnlyNow.forEach((item) => {
+            this.fertilizerSy.series.push({
+              name: item.name,
+              data: item.data,
+              type: "line",
+              addPoint: true,
+              color: `#${Math.floor(Math.random() * 0xffffff)
+                .toString(16)
+                .padEnd(6, "0")}`,
+              index: 1,
+            });
+          });
+          this.syFlag = true;
+        }
+      });
     },
-    getAllHumanUseEachMonthByYear(year,type){
-       request({
+    //合并施药
+    combin(arr) {
+      let only = [];
+      arr.forEach((item) => {
+        let flag = only.find((item2) => {
+          return item2.name == item.name;
+        });
+        if (!flag) {
+          only.push(item);
+        } else {
+          flag.data = this.sumItem(flag.data, item.data);
+        }
+      });
+      return only;
+    },
+    sumItem(arr1, arr2) {
+      if (arr2.length == 0) {
+        return arr1;
+      } else {
+        arr1.map(function (value, index) {
+          arr2[index] += value;
+        });
+      }
+      return arr2;
+    },
+    getAllHumanUseEachMonthByYear(year, type) {
+      request({
         url: "/data/farmrecords/getAllHumanUseEachMonthByYear",
         method: "get",
         isAuth: false,
         data: {
-          userId:this.userInfo.userId,
-          year:year
+          userId: this.userInfo.userId,
+          year: year,
         },
       }).then((res) => {
-        if(type==0){
-          let now=moment().format("YYYY")
-          this.getAllHumanUseEachMonthByYear(now,1)
-          let dateSet=[]
-          let agoSet=[]
-          res.data.forEach(item=>{
-            dateSet.push(item.month)
+        if (type == 0) {
+          let now = moment().format("YYYY");
+          this.getAllHumanUseEachMonthByYear(now, 1);
+          let dateSet = [];
+          let agoSet = [];
+          res.data.forEach((item) => {
+            dateSet.push(item.month);
             agoSet.push({
-              value: item.humanUse?item.humanUse:0,
+              value: item.humanUse ? item.humanUse : 0,
               color: "#17E5A1",
-            })
-          })
-          this.humanResources.categories=dateSet
-          this.humanResources['series'][0]['data']=agoSet
-        }else{
-          let dateSet=[]
-          let agoSet=[]
-          res.data.forEach(item=>{
-            dateSet.push(item.month)
+            });
+          });
+          this.humanResources.categories = dateSet;
+          this.humanResources["series"][0]["data"] = agoSet;
+        } else {
+          let dateSet = [];
+          let agoSet = [];
+          res.data.forEach((item) => {
+            dateSet.push(item.month);
             agoSet.push({
-              value: item.humanUse?item.humanUse:0,
+              value: item.humanUse ? item.humanUse : 0,
               color: "#3199F5",
-            })
-          })
-          this.humanResources['series'][1]['data']=agoSet
-          this.humanResourcesFlag=true
+            });
+          });
+          this.humanResources["series"][1]["data"] = agoSet;
+          this.humanResourcesFlag = true;
         }
-      })
+      });
     },
     goDetail2() {
       uni.navigateTo({
@@ -533,8 +771,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.index22{
-    margin-top: 30rpx!important;
+.index22 {
+  margin-top: 30rpx !important;
 }
 .index11 {
   background: transparent !important;
@@ -571,13 +809,13 @@ export default {
   justify-content: space-between;
   font-size: 24rpx;
   padding-bottom: 20rpx;
-  border-bottom: 1px solid #F5F5F5;
+  border-bottom: 1px solid #f5f5f5;
   align-items: center;
   .header3 {
     color: #29cc96;
   }
   .header2 {
-    border-left: 2px solid  #29cc96;
+    border-left: 2px solid #29cc96;
     padding-left: 15rpx;
     font-size: 28rpx;
     font-weight: bold;
@@ -805,7 +1043,7 @@ export default {
     .index73 {
       font-size: 24rpx;
       padding-bottom: 20rpx;
-      border-bottom: 1px solid #F5F5F5;
+      border-bottom: 1px solid #f5f5f5;
       .index75 {
         color: #29cc96;
         font-size: 40rpx;
@@ -912,13 +1150,13 @@ export default {
         display: flex;
       }
       .gray2 {
-        border-bottom: 2px solid #FAFAFA;
+        border-bottom: 2px solid #fafafa;
         color: #d8d8d8;
         padding: 10rpx 0;
         margin-right: 20rpx;
       }
       .gray4 {
-        border-bottom: 2px solid #29CC96 !important;
+        border-bottom: 2px solid #29cc96 !important;
         color: #000 !important;
       }
       .gray3 {

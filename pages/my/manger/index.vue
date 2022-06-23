@@ -9,57 +9,27 @@
     <div class="content">
       <div>
         <div class="manger">
-          <div class="child">
+          <div class="child" v-for="(item,index) in list" :key="index">
             <div class="childwrap flexcenter">
-              <image mode="widthFix" class="pic" src="@/static/image/man.png" />
+              <div class="big">
+                {{(item.name).substring(0,1)}}
+              </div>
+              
               <div class="c1">
-                <div class="c2">张三</div>
-                <div class="c3">电话：15101234567</div>
-                <div class="c3">角色：普通用户</div>
+                <div class="c2">{{item.name}}</div>
+                <div class="c3">电话：{{item.phone}}</div>
+                <div class="c3">角色：{{item.deptName}}</div>
               </div>
             </div>
 
-            <u-icon
+            <!-- <u-icon
               @click="goNews"
               color="#939599"
               size="20"
               name="arrow-right"
-            ></u-icon>
+            ></u-icon> -->
           </div>
-          <div class="child">
-            <div class="childwrap flexcenter">
-              <image mode="widthFix" class="pic" src="@/static/image/man.png" />
-              <div class="c1">
-                <div class="c2">张三</div>
-                <div class="c3">电话：15101234567</div>
-                <div class="c3">角色：普通用户</div>
-              </div>
-            </div>
-
-            <u-icon
-              @click="goNews"
-              color="#939599"
-              size="20"
-              name="arrow-right"
-            ></u-icon>
-          </div>
-          <div class="child">
-            <div class="childwrap flexcenter">
-              <image mode="widthFix" class="pic" src="@/static/image/man.png" />
-              <div class="c1">
-                <div class="c2">张三</div>
-                <div class="c3">电话：15101234567</div>
-                <div class="c3">角色：普通用户</div>
-              </div>
-            </div>
-
-            <u-icon
-              @click="goNews"
-              color="#939599"
-              size="20"
-              name="arrow-right"
-            ></u-icon>
-          </div>
+         
         </div>
       </div>
     </div>
@@ -77,6 +47,7 @@
           <div class="itemadd">
             <div class="label">姓名:</div>
             <u--input
+              v-model="userName"
               placeholder="请输入姓名"
               border="bottom"
               clearable
@@ -88,6 +59,7 @@
               placeholder="请输入电话"
               border="bottom"
               clearable
+              v-model="phone"
               type="number"
             ></u--input>
           </div>
@@ -128,6 +100,8 @@ export default {
   },
   data() {
     return {
+      userName:'',
+      phone:'',
       radiolist1: [
         {
           name: "普通用户",
@@ -151,110 +125,8 @@ export default {
       ],
       activeTab: 0,
       list: [
-        {
-          num: 15,
-          unit: "mm",
-          name: "降雨量",
-          pic: require("@/static/image/s1.png"),
-        },
-        {
-          num: 44.9,
-          unit: "%",
-          name: "相对湿度",
-          pic: require("@/static/image/s2.png"),
-        },
-        {
-          num: "西北风",
-          unit: "",
-          name: "风向",
-          pic: require("@/static/image/s3.png"),
-        },
-        {
-          num: 3,
-          unit: "m/s",
-          name: "风速",
-          pic: require("@/static/image/s4.png"),
-        },
-        {
-          num: 23,
-          unit: "℃",
-          name: "土壤温度",
-          pic: require("@/static/image/s5.png"),
-        },
-        {
-          num: 23,
-          unit: "%",
-          name: "土壤湿度",
-          pic: require("@/static/image/s6.png"),
-        },
-        {
-          num: 0.35,
-          unit: "us/cm",
-          name: "土壤EC值",
-          pic: require("@/static/image/s7.png"),
-        },
-        {
-          num: 6.5,
-          unit: "",
-          name: "土壤PH值",
-          pic: require("@/static/image/s8.png"),
-        },
-      ],
-      list2: [
-        {
-          num: 0.0,
-          unit: "mm",
-          name: "雨量",
-          pic: require("@/static/image/f1.png"),
-        },
-        {
-          num: 14.9,
-          unit: "%",
-          name: "雨量累计",
-          pic: require("@/static/image/f2.png"),
-        },
-        {
-          num: "27.4",
-          unit: "℃",
-          name: "大气温度",
-          pic: require("@/static/image/f3.png"),
-        },
-        {
-          num: 897.2,
-          unit: "Pa",
-          name: "气压",
-          pic: require("@/static/image/f4.png"),
-        },
-        {
-          num: 23,
-          unit: "mm",
-          name: "TQB总辐射",
-          pic: require("@/static/image/f5.png"),
-        },
-        {
-          num: 23,
-          unit: "%",
-          name: "光照",
-          pic: require("@/static/image/f6.png"),
-        },
-        {
-          num: 0.35,
-          unit: "m/s",
-          name: "风速",
-          pic: require("@/static/image/f7.png"),
-        },
-        {
-          num: 6.5,
-          unit: "PPM",
-          name: "二氧化碳",
-          pic: require("@/static/image/f8.png"),
-        },
-        {
-          num: 234.2,
-          unit: "W/㎡",
-          name: "光合",
-          pic: require("@/static/image/f9.png"),
-        },
+        
+       
       ],
       activeone: 4,
       active: false,
@@ -270,6 +142,7 @@ export default {
     uni.$on("addOneFriend", (e) => {
       this.addpopup=true
     });
+    this.askList()
    
   },
   onBackPress() {
@@ -281,6 +154,18 @@ export default {
   methods: {
     typeSelect() {},
     
+    askList(){
+       request({
+        url: "/admin/user/page",
+        method: 'get',
+        isAuth: false,
+        data:{
+          
+        },
+      }).then((res) => {
+        this.list=res.data.records
+      })
+    },
     radioChange(){
 
     },
@@ -288,12 +173,75 @@ export default {
       this.addpopup = false;
     },
     submitFeedback() {
-      this.addpopup = false;
+      console.log(this.radiovalue1)
+      var regExp = new RegExp("^1[3578]\\d{9}$");
+      if (this.userName=='') {
+        uni.showToast({
+          title: "请输入用户名",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+      if (this.phone=='') {
+        uni.showToast({
+          title: "请输入手机号",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+      if (!regExp.test(this.phone)) {
+        uni.showToast({
+          title: "请输入正确的手机号",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+       request({
+        url: "/admin/user",
+        method: 'post',
+        isAuth: false,
+        data:{
+          "avatar": null,
+          "deptId": 1,
+          "email": "",
+          "name": this.userName,
+          "nickname": this.userName,
+          "password":'admin123' ,
+          "phone": this.phone,
+          "role": [
+            0
+          ],
+          "tenantId": 0,
+          "username":this.userName
+        },
+      }).then((res) => {
+        this.phone=''
+        this.userName=''
+        this.addpopup = false;
+        this.askList()
+      })
+      
     },
   },
 };
 </script>
 <style lang="scss" scoped>
+.big{
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #29CC96;
+  width: 100rpx;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 300px;
+  background: rgba(216, 213, 213, 0.972);
+  margin-right: 20rpx;
+}
 .u-radio-label--left{
   margin-bottom: 0!important;
   margin-left: 20rpx;

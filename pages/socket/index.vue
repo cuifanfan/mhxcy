@@ -1,18 +1,8 @@
+<template>
 
+</template>
 <script>
-var that={
-      webSocket: null, // webSocket实例
-      lockReconnect: false, // 重连锁，避免多次重连
-      maxReconnect: 6,  // 最大重连次数， -1 标识无限重连
-      reconnectTime: 2, // 重连尝试次数
-      heartbeat: {
-        interval: 30 * 1000, // 心跳间隔时间
-        timeout: 10 * 1000, // 响应超时时间
-        pingTimeoutObj: null, // 延时发送心跳的定时器
-        pongTimeoutObj: null, // 接收心跳响应的定时器
-        pingMessage: JSON.stringify({type: 'ping'}) // 心跳请求信息
-      }
-    }
+
 
 export default {
   props: {
@@ -45,10 +35,9 @@ export default {
   },
   created() {
     this.initWebSocket()
-	console.log('xxxx',this)
   },
   destroyed: function () {
-    that.webSocket.close()
+    this.webSocket.close()
     this.clearTimeoutObj(this.heartbeat)
   },
   methods: {
@@ -60,15 +49,15 @@ export default {
       let host = window.location.host;
       let wsUri = `ws://121.36.247.77:9999/data/ws/info?access_token=${this.token}&TENANT-ID=${this.tenant}`
       // 建立连接
-      that.webSocket = new WebSocket(wsUri)
+      this.webSocket = new WebSocket(wsUri)
       // 连接成功
-      that.webSocket.onopen = this.onOpen
+      this.webSocket.onopen = this.onOpen
       // 连接错误
-      that.webSocket.onerror = this.onError
+      this.webSocket.onerror = this.onError
       // 接收信息
-      that.webSocket.onmessage = this.onMessage
+      this.webSocket.onmessage = this.onMessage
       // 连接关闭
-      that.webSocket.onclose = this.onClose
+      this.webSocket.onclose = this.onClose
     },
     /**
      * 重新连接
@@ -77,15 +66,15 @@ export default {
       if (!this.token) {
         return
       }
-      if (that.lockReconnect || (that.maxReconnect !== -1 && that.reconnectTime > that.maxReconnect)) {
+      if (this.lockReconnect || (this.maxReconnect !== -1 && this.reconnectTime > this.maxReconnect)) {
         return
       }
-      that.lockReconnect = true
+      this.lockReconnect = true
       setTimeout(() => {
-        that.reconnectTime++
+        this.reconnectTime++
         // 建立新连接
         this.initWebSocket()
-        that.lockReconnect = false
+        this.lockReconnect = false
       }, 5000)
     },
     /**
@@ -99,8 +88,8 @@ export default {
      * 开启心跳
      */
     startHeartbeat() {
-      const webSocket = that.webSocket
-      const heartbeat = that.heartbeat
+      const webSocket = this.webSocket
+      const heartbeat = this.heartbeat
       // 清空定时器
       this.clearTimeoutObj(heartbeat)
       // 延时发送下一次心跳
@@ -126,7 +115,7 @@ export default {
       console.log('socket链接成功')
       //开启心跳
       this.startHeartbeat()
-      that.reconnectTime = 0
+      this.reconnectTime = 0
     },
     /**
      * 连接失败事件
@@ -170,17 +159,9 @@ export default {
      */
     send(msg) {
       //数据发送
-      that.webSocket.send(msg)
+      this.webSocket.send(msg)
     }
   }
 }
 
 </script>
-<style lang="scss">
-	@import "@/uni_modules/uview-ui/index.scss";
-	@import './common/common.scss';
-	/*每个页面公共css */
-	page{
-		background: #F5F5F5;
-	}
-</style>

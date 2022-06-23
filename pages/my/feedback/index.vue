@@ -5,8 +5,8 @@
       <div class="index1">
         <div class="edit">
           <div class="formchild">
-            <div class="name name2">问题类型:</div>
-            <div class="input input2">
+            <div class="name name2">问题内容:</div>
+            <!-- <div class="input input2">
               <div class="disablewrap">
                 <u--input
                   v-model="typeValue"
@@ -23,8 +23,8 @@
                   name="arrow-down"
                 ></u-icon>
               </div>
-            </div>
-            <textarea class="textarea"></textarea>
+            </div> -->
+            <textarea v-model="questionContent" class="textarea"></textarea>
           </div>
         </div>
         <div class="edit">
@@ -41,7 +41,7 @@
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
-              <div class="handle" v-if="resultPic.length<3">
+              <div class="handle" v-if="resultPic.length < 3">
                 <image
                   mode="widthFix"
                   class="iconpic"
@@ -52,30 +52,26 @@
             </div>
           </div>
         </div>
-         <div class="edit">
+        <div class="edit">
           <div class="formchild">
             <div class="name name2">联系方式:</div>
             <div class="input input2">
               <div class="disablewrap">
                 <u--input
-                  v-model="typeValue"
-                 
-                 
+                  v-model="phone"
                   placeholder="请输入联系方式"
                   border="none"
                 ></u--input>
-               
               </div>
             </div>
-           
           </div>
         </div>
       </div>
+      <div @click="submieSure" class="btnsumit btn3">确认提交</div>
     </div>
   </div>
 </template>
 <script>
-
 import headerDiy from "../../component/header/header.vue";
 import { BASE_URL } from "../../../common/utils/config";
 import request from "../../../common/utils/request";
@@ -86,43 +82,136 @@ export default {
   data() {
     return {
       resultPic: [],
-      baseUrl:BASE_URL,
+      resultPic: [],
+      baseUrl: BASE_URL,
       pageName: "问题反馈",
       numValue: "",
       nameValue: "",
       typeValue: "",
-      
+      questionContent: "",
+      phone: "",
     };
   },
   methods: {
+    submieSure() {
+      if (this.questionContent == "") {
+        uni.showToast({
+          title: "请输入内容",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+      if (this.phone == "") {
+        uni.showToast({
+          title: "请输入联系方式",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+      var regExp = new RegExp("^1[3578]\\d{9}$");
+      if (!regExp.test(this.phone)) {
+        uni.showToast({
+          title: "请输入正确的手机号",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
+
+      request({
+        url: "/data/problemfeedback",
+        method: "post",
+        isAuth: false,
+        data: {
+          contact: this.phone,
+          content: this.questionContent,
+          images: this.resultPic.join(","),
+        },
+      }).then((res) => {
+        uni.showToast({
+          title: "提交成功",
+          icon: "none",
+          duration: 850,
+        });
+        setTimeout(() => {
+          uni.navigateBack({
+            delta: 1, //返回层数，2则上上页
+          });
+        }, 1000);
+      });
+    },
     typeSelect() {},
+    deleteOne(index) {
+      this.resultPic.splice(index, 1);
+    },
+    toJSON() {
+      return this;
+    },
+    onGetImgClick: function () {
+      let that = this;
+      uni.chooseImage({
+        count: 3,
+        sizeType: ["compressed"], //original 原图，compressed 压缩图，默认二者都有
+        sourceType: ["album", "camera"], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
+        success: (res) => {
+          //this.imageList = res.tempFilePaths[0];
+          console.log("res", res);
+          // console.log(this);
+          res.tempFilePaths.forEach((item, index) => {
+            console.log("itemfile", item);
+            uni.uploadFile({
+              url: `http://121.36.247.77:9999/admin/sys-file/upload`,
+              name: "file",
+              header: {
+                Authorization: "Bearer " + uni.getStorageSync("token"),
+              },
+              filePath: item,
+              success: (res) => {
+                let dataget = JSON.parse(res.data);
+                console.log("上传！！", dataget);
+                that.resultPic.push(dataget.data.url);
+              },
+            });
+          });
+        },
+      });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
+.btn3 {
+  position: fixed;
+  bottom: 40rpx;
+  width: calc(100% - 70rpx);
+  box-sizing: border-box;
+  left: 35rpx;
+}
 .handle {
-      background: #fafafa;
-      border-radius: 16rpx;
-      border-radius: 16rpx;
-      padding: 0 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 132rpx;
+  background: #fafafa;
+  border-radius: 16rpx;
+  border-radius: 16rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 132rpx;
 }
 .handlepic {
-      width: 160rpx;
-      height: 132rpx;
-      margin-right: 20rpx;
+  width: 160rpx;
+  height: 132rpx;
+  margin-right: 20rpx;
 }
-.palceholderclass{
-  color: rgba(147,149,153,0.3)!important;
+.palceholderclass {
+  color: rgba(147, 149, 153, 0.3) !important;
   font-size: 28rpx;
 }
-.btnask{
+.btnask {
   position: fixed;
   color: #fff;
-  background: #29CC96;
+  background: #29cc96;
   border-radius: 100px;
   bottom: 30rpx;
   width: 90%;
@@ -132,26 +221,26 @@ export default {
   padding: 12rpx;
   box-sizing: border-box;
 }
-.name2{
-  color: #939599!important;
-  font-weight: normal!important;
+.name2 {
+  color: #939599 !important;
+  font-weight: normal !important;
 }
 .disablewrap {
-    display: flex;
-    padding: 12rpx 18rpx;
-    justify-content: space-between;
-    width: 100%;
-    border-radius: 12rpx;
-    background: #FAFAFA;
-  }
+  display: flex;
+  padding: 12rpx 18rpx;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 12rpx;
+  background: #fafafa;
+}
 .input2 {
-    display: flex;
-  }
+  display: flex;
+}
 .edit {
   font-size: 28rpx;
   color: #939599;
-  .textarea{
-    background: #fafafa!important;
+  .textarea {
+    background: #fafafa !important;
     border-radius: 16rpx;
     height: 200rpx;
     width: 100%;
@@ -159,7 +248,7 @@ export default {
     color: #000;
     padding: 16rpx;
   }
-  .name{
+  .name {
     color: #626466;
     font-size: 28rpx;
     font-weight: bold;
@@ -170,37 +259,37 @@ export default {
     justify-content: space-between;
   }
 }
- .editpic {
-    display: flex;
-    .handlepic {
-      width: 160rpx;
-      height: 120rpx;
-    }
-    .iconpic {
-      width: 48rpx;
-    }
-    .picpic {
-      position: relative;
-      .icon {
-        position: absolute;
-        top: 10rpx;
-        right: 10rpx;
-        background: #c4c4c4;
-        border-radius: 100rpx;
-        overflow: hidden;
-        padding: 5rpx;
-      }
-    }
-    .handle {
-      background: #fafafa;
-      border-radius: 16rpx;
-      border-radius: 16rpx;
-      padding: 0 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+.editpic {
+  display: flex;
+  .handlepic {
+    width: 160rpx;
+    height: 120rpx;
+  }
+  .iconpic {
+    width: 48rpx;
+  }
+  .picpic {
+    position: relative;
+    .icon {
+      position: absolute;
+      top: 10rpx;
+      right: 10rpx;
+      background: #c4c4c4;
+      border-radius: 100rpx;
+      overflow: hidden;
+      padding: 5rpx;
     }
   }
+  .handle {
+    background: #fafafa;
+    border-radius: 16rpx;
+    border-radius: 16rpx;
+    padding: 0 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 .clearindex1 {
   background: transparent !important;
 }
@@ -642,32 +731,32 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-.name2{
-  color: #939599!important;
-  font-weight: normal!important;
+.name2 {
+  color: #939599 !important;
+  font-weight: normal !important;
 }
 .disablewrap {
-    display: flex;
-    padding: 12rpx 18rpx;
-    justify-content: space-between;
-    width: 100%;
-    border-radius: 12rpx;
-    background: #FAFAFA;
-  }
+  display: flex;
+  padding: 12rpx 18rpx;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 12rpx;
+  background: #fafafa;
+}
 .input2 {
-    display: flex;
-  }
+  display: flex;
+}
 .edit {
   font-size: 28rpx;
   color: #939599;
-  .textarea{
-    background: #fafafa!important;
+  .textarea {
+    background: #fafafa !important;
     border-radius: 16rpx;
     height: 200rpx;
     width: 100%;
     margin-top: 20rpx;
   }
-  .name{
+  .name {
     color: #626466;
     font-size: 28rpx;
     font-weight: bold;
@@ -678,38 +767,37 @@ export default {
     justify-content: space-between;
   }
 }
- .editpic {
-    display: flex;
-    justify-content: space-between;
-    .handlepic {
-      width: 160rpx;
-      height: 120rpx;
-    }
-    .iconpic {
-      width: 48rpx;
-    }
-    .picpic {
-      position: relative;
-      .icon {
-        position: absolute;
-        top: 10rpx;
-        right: 10rpx;
-        background: #c4c4c4;
-        border-radius: 100rpx;
-        overflow: hidden;
-        padding: 5rpx;
-      }
-    }
-    .handle {
-      background: #fafafa;
-      border-radius: 16rpx;
-      border-radius: 16rpx;
-      padding: 0 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+.editpic {
+  display: flex;
+  .handlepic {
+    width: 160rpx;
+    height: 120rpx;
+  }
+  .iconpic {
+    width: 48rpx;
+  }
+  .picpic {
+    position: relative;
+    .icon {
+      position: absolute;
+      top: 10rpx;
+      right: 10rpx;
+      background: #c4c4c4;
+      border-radius: 100rpx;
+      overflow: hidden;
+      padding: 5rpx;
     }
   }
+  .handle {
+    background: #fafafa;
+    border-radius: 16rpx;
+    border-radius: 16rpx;
+    padding: 0 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 .clearindex1 {
   background: transparent !important;
 }
@@ -1035,7 +1123,7 @@ export default {
     margin: 10rpx 0;
     background: #f5f5f5;
     color: #939599;
-   width: 48rpx;
+    width: 48rpx;
     height: 48rpx;
     display: flex;
     align-items: center;
