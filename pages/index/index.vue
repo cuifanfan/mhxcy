@@ -21,14 +21,13 @@
           </div>
         </div>
         <div class="indexinfor flexcenter index1" @click="goNews">
-          <image
-            mode="widthFix"
-            class="pic picindex1"
-            src="@/static/image/lb.png"
-          />
-          <div class="slh">
+          <u-icon v-if="newsArr.length==0" color="#000" size="20" name="volume"></u-icon>
+         
+          <u-notice-bar v-if="newsArr.length>0" direction="column" color="#000" :text="newsArr"></u-notice-bar>
+          <div class="nonews" v-else>暂无消息!</div>
+          <!-- <div class="slh">
             监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为
-          </div>
+          </div> -->
           <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
         </div>
         <div class="index1 index7" v-if="this.weatherInfo">
@@ -73,9 +72,10 @@
           <div class="index81" v-if="this.weatherData.length > 0">
             <div class="index83">
               <div class="index82">
-                {{
+                <!-- {{
                   (this.weatherData[1]["max"] + this.weatherData[1]["min"]) / 2
-                }}
+                }} -->
+                {{this.list[3]['num']}}
               </div>
               <div class="index85">℃</div>
             </div>
@@ -337,12 +337,12 @@
                 {{ lookType ? "查看同期数据对比" : "查看茶叶价格动态" }}
               </div>
             </div> -->
-            <!-- <div v-if="!active1" class="graytip flexcenter">
+            <div v-if="!active1" @click="goPrice" class="graytip flexcenter">
               <div class="left">
-                依照当前市场合理价格， 预计您本季收入可达：350000元
+                查看价格
               </div>
               
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -373,6 +373,7 @@ export default {
   },
   data() {
     return {
+     
       teaSure:null,
       changeTeaFlag:false,
       produceShow: [],
@@ -442,7 +443,28 @@ export default {
           pic: require("@/static/image/p10.png"),
         },
       ],
+      newsArr:[
+        
+      ]
     };
+  },
+  onShow(){
+    let newsList=uni.getStorageSync('newsList')
+    if(newsList){
+      this.newsArr=JSON.parse(newsList)
+    }else{
+      this.newsArr=[]
+      console.log('this.newsArr',this.newsArr)
+    }
+    uni.$off("newCome");
+    uni.$on("newCome", (data)=>{
+      let newsList=uni.getStorageSync('newsList')
+      if(newsList){
+        this.newsArr=JSON.parse(newsList)
+      }else{
+        this.newsArr=[]
+      }
+    });
   },
   onLoad() {
     this.getEnvironment();
@@ -457,6 +479,7 @@ export default {
     }
   },
   methods: {
+    
     changeNowTea(item){
       this.teaSure=item
       uni.setStorageSync('nowChooseTea',JSON.stringify(item))
@@ -829,15 +852,11 @@ export default {
         });
     },
     goPrice() {
-      if (this.lookType) {
-        uni.navigateTo({
-          url: "/pages/compare/index",
-        });
-      } else {
-        uni.navigateTo({
+     
+      uni.navigateTo({
           url: "/pages/price/index",
-        });
-      }
+      });
+      
     },
     goCompare() {
       uni.navigateTo({
@@ -901,6 +920,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.nonews{
+  flex: 1;
+  margin-left: 10rpx;
+}
+.u-notice-bar{
+  background: #fff!important;
+  padding: 10rpx!important;
+}
 .srdiv {
   display: flex;
   flex-wrap: wrap;
@@ -1087,8 +1114,19 @@ export default {
     font-size: 28rpx;
     color: #313233;
     margin-top: 30rpx;
+   
+   
+      display: flex;
+    
+      display: flex;
+      justify-content: flex-end;
     .left {
       font-weight: bold;
+       background-color: #29cc96;
+      color: #fff;
+      padding: 10rpx 20rpx;
+      border-radius: 16rpx;
+      font-size: 20rpx;
     }
     .right {
       background-color: #29cc96;

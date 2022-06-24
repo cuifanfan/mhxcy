@@ -17,43 +17,48 @@
       >
         <div class="titlewrap">
           <div class="title">
-            
+            {{ item.title }}
           </div>
-          <div class="date">{{item.creatTime}}</div>
+          
         </div>
-        <div class="farmtitle">{{item.title}}</div>
+        <div class="datetitle">{{ item.createTime }}</div>
         <div class="farmcontent">
-          {{item.newsInfo}}
+          {{ item.newsInfo }}
         </div>
       </div>
     </div>
     <div class="content contentclear3" v-else>
-      <div class="datewrap flexcenter">
-        <div :class="[activeone==index?'w1active':'','w1']" v-for="(item, index) in date" :key="index">
-          <div class="w2">
-           {{ item.week }}
+      <div class="scrolldiv">
+        <div class="datewrap flexcenter">
+          <div
+            :class="[activeone == index ? 'w1active' : '', 'w1']"
+            v-for="(item, index) in date"
+            :key="index"
+          >
+            <div class="w2">
+              {{ weekBig[item.weeks]}}
+            </div>
+            <div class="w3" @click="changeGj(item,index)">
+              {{ item.dates.split('-')[2] }}
+            </div>
+            <div class="slide" v-if="parseInt(item.counts)>0 "></div>
           </div>
-          <div class="w3" @click="activeone=index">
-             {{ item.day }}
-          </div>
-          <div class="slide" v-if="item.slide"></div>
         </div>
       </div>
+
       <div class="panel flexcenter index1">
-          <div class="p1">
-              <span>12</span>
-              <div class="text">异常告警</div> 
-          </div>
-           <div class="p1">
-              <span>2</span>
-              <div class="text">离线告警</div>
-              
-          </div>
-           <div class="p1">
-              <span>1</span>
-               <div class="text">气象告警</div>
-              
-          </div>
+        <!-- <div class="p1">
+          <span>12</span>
+          <div class="text">异常告警</div>
+        </div> -->
+        <div class="p1">
+          <span>{{outLineNum}}</span>
+          <div class="text">离线告警</div>
+        </div>
+        <div class="p1">
+          <span>{{enNum}}</span>
+          <div class="text">气象告警</div>
+        </div>
       </div>
       <div class="content newscontent">
         <div
@@ -61,24 +66,51 @@
           v-for="(item, index) in gjList"
           :key="index"
         >
-          <div :class="[item.status=='气象告警'?'type3':'',item.status=='3'?'type4':'',item.status=='2'?'type1':'','titlewrap']">
+          <div
+            :class="[
+              item.status == '气象告警' ? 'type3' : '',
+              item.status == '3' ? 'type4' : '',
+              item.status == '2' ? 'type1' : '',
+              'titlewrap',
+            ]"
+          >
             <div class="title">
-              <span v-if="item.status=='气象告警'">气象告警</span> 
-              <span v-if="item.status=='离线告警'">离线告警</span> 
-             
+              <span v-if="item.status == '气象告警'">气象告警</span>
+              <span v-if="item.status == '离线告警'">离线告警</span>
             </div>
-            <div class="date">{{item.creatTime}}</div>
+            <div class="date">{{ item.createTime }}</div>
           </div>
           <div class="farmtitle">
-              <div class="t2">
-                <image mode="widthFix" v-if="item.status=='异常告警'" class="btnpic" src="@/static/image/g1.png" alt="" />
-                <image mode="widthFix" v-if="item.status=='离线告警'" class="btnpic" src="@/static/image/g2.png" alt="" />
-                <image mode="widthFix" v-if="item.status=='气象告警'" class="btnpic" src="@/static/image/g3.png" alt="" />
-                <span v-if="item.status=='气象告警'">
-                    {{item.newsInfo.split('::')[1]}}
-                </span>
-              </div>
-              <!-- <u-icon color="#939599" size="14" name="arrow-right"></u-icon> -->
+            <div class="t2">
+              <image
+                mode="widthFix"
+                v-if="item.status == '异常告警'"
+                class="btnpic"
+                src="@/static/image/g1.png"
+                alt=""
+              />
+              <image
+                mode="widthFix"
+                v-if="item.status == '离线告警'"
+                class="btnpic"
+                src="@/static/image/g2.png"
+                alt=""
+              />
+              <image
+                mode="widthFix"
+                v-if="item.status == '气象告警'"
+                class="btnpic"
+                src="@/static/image/g3.png"
+                alt=""
+              />
+              <span v-if="item.status == '气象告警'">
+                {{item.newsInfo.split("::")[0]}}({{ item.newsInfo.split("::")[1] }}):{{item.newsInfo.split("::")[2]}} {{item.newsInfo.split("::")[4]}}
+              </span>
+              <span v-if="item.status == '离线告警'">
+                {{item.newsInfo}}
+              </span>
+            </div>
+            <!-- <u-icon color="#939599" size="14" name="arrow-right"></u-icon> -->
           </div>
         </div>
       </div>
@@ -88,86 +120,55 @@
 <script>
 import headerDiy from "../component/header/header.vue";
 import request from "../../common/utils/request";
+import moment from "moment";
 export default {
   components: {
     headerDiy,
   },
-  
+
   data() {
     return {
-        tsList:[],
-        gjList:[],
-        tsCurrent:1,
-        gjCurrent:1,
-        list:[
-            {
-                type:4,   
-            },
-            {
-                type:3,   
-            },
-            {
-                type:2,   
-            },
-            {
-                type:1,   
-            },
-            {
-                type:1,   
-            },
-            {
-                type:1,   
-            },
-            {
-                type:1,   
-            },
-            {
-                type:1,   
-            }
-        ],
-        activeone:4,
+      moment,
+      outLineNum:'-',
+      enNum:'-',
+      weekBig: ["一", "二", "三", "四", "五", "六", "日"],
+      tsList: [],
+      gjList: [],
+      tsCurrent: 1,
+      gjCurrent: 1,
+      list: [
+        {
+          type: 4,
+        },
+        {
+          type: 3,
+        },
+        {
+          type: 2,
+        },
+        {
+          type: 1,
+        },
+        {
+          type: 1,
+        },
+        {
+          type: 1,
+        },
+        {
+          type: 1,
+        },
+        {
+          type: 1,
+        },
+      ],
+      activeone: 0,
       active: false,
       showType: false,
       showType2: false,
       pageName: "消息通知",
       numValue: "",
-      date: [
-        {
-          day: 22,
-          week: "六",
-          slide: false,
-        },
-        {
-          day: 23,
-          week: "日",
-          slide: false,
-        },
-        {
-          day: 24,
-          week: "一",
-          slide: true,
-        },
-        {
-          day: 25,
-          week: "二",
-          slide: true,
-        },
-        {
-          day: 26,
-          week: "三",
-          slide: true,
-        },
-        {
-          day: 27,
-          week: "四",
-          slide: false,
-        },
-        {
-          day: 28,
-          week: "五",
-          slide: false,
-        },
-      ],
+      date: [],
       typeList: [
         {
           name: "种类1",
@@ -192,160 +193,270 @@ export default {
       ],
       nameValue: "",
       typeValue: "",
-      listOver2:false,
-      listOver:false,
+      listOver2: false,
+      listOver: false,
     };
   },
-  onLoad(){
-    this.askTs('推送')
-    this.askTs('告警')
+  onLoad() {
+    this.askTs("推送");
+    this.askTs("告警");
+    this.getTotal()
+    this.getRl()
+  },
+  onShow(){
+    uni.setStorageSync('newsList','')
+    uni.$off("newCome");
+    uni.$on("newCome", (data)=>{
+      console.log('来消息了！',data)
+      let get =JSON.parse(data)
+      if(get.newsKind=='告警'){
+        if(get.status=='气象告警'){
+          this.enNum+=1
+        }else if(get.status=='离线告警'){
+          this.outLineNum+=1
+        }
+        if(this.activeone==0){
+          this.gjList.unshift({
+            createTime: moment(get.pushTime).format('YYYY-MM-DD HH:mm:ss') ,
+            id: get.id,
+            newsInfo: get.newsInfo,
+            newsKind: get.newsKind,
+            pushTime: moment(get.pushTime).format('YYYY-MM-DD HH:mm:ss'),
+            recipientId:get.recipientId,
+            status: get.status,
+            title: get.title,
+          })
+        }
+        
+      }
+      if(get.newsKind=='推送'){
+        this.tsList.unshift({
+          createTime: moment(get.pushTime).format('YYYY-MM-DD HH:mm:ss'),
+          id: "1539894116800360449",
+          newsInfo: get.newsInfo,
+          newsKind: "推送",
+          pushTime: moment(get.pushTime).format('YYYY-MM-DD HH:mm:ss'),
+          recipientId: get.recipientId,
+          status: "农事建议",
+          title: get.title
+        })
+        
+      }
+    });
+  
   },
   onReachBottom() {
     console.log("触底了");
-    if(!this.listOver&&this.active){
+    if (!this.listOver && this.active) {
       this.tsCurrent++;
-      this.askTs('推送');
+      this.askTs("推送");
     }
-    if(!this.listOver2&&!this.active){
-      this.tsCurrent++;
-      this.askTs('告警');
+    if (!this.listOver2 && !this.active) {
+      this.gjCurrent++;
+      this.askTs("告警");
     }
+    
   },
   methods: {
-    askTs(val){
+    changeGj(item,index){
+      this.activeone = index
+      console.log(item)
+      if(item.counts=='0'){
+        uni.showToast({
+          icon: 'none',
+          title: '当日无告警信息',
+          duration:850
+        })
+        return 
+      }
+      this.gjCurrent=1
+      this.gjList=[]
+      this.askTs("告警",item.dates);
+    },
+    getTotal(){
+      let userInfo=uni.getStorageSync('userInfo')
       request({
-        url: "/data/forwardnews/page?recipientId="+uni.getStorageSync('tenantId'),
+        url:"/data/forwardnews/getEachWarnType?userId="+userInfo.userId ,
         method: "get",
         isAuth: false,
         data: {
-         newsKind:val,
-         current:val=='推送'?this.tsCurrent:this.gjCurrent
+         
         },
       }).then((res) => {
-        if(val=='推送'){
-          this.tsList=this.tsList.concat(res.data.records)
+        this.outLineNum=parseInt(res.data.offLineWarn)
+        this.enNum=parseInt(res.data.weatherWarn)
+      })
+    },
+    getRl(){
+      let now = moment().format("YYYY-MM-DD");
+      let userInfo=uni.getStorageSync('userInfo')
+       request({
+        url:
+          "/data/forwardnews/getEveryDayNewsCountInMonth?today="+now+"&userId="+userInfo.userId ,
+        method: "get",
+        isAuth: false,
+        data: {
+         
+        },
+      }).then((res) => {
+        res.data.reverse()
+        this.date=res.data
+      })
+    },
+   
+    askTs(val,year) {
+       let askDate=moment().format("YYYY-MM-DD ");
+       if(year&&val=='告警'){
+        askDate=year
+       }
+       if(val=='推送'){
+        askDate=''
+       }
+      request({
+        url:
+          "/data/forwardnews/page?recipientId=" +
+          uni.getStorageSync("tenantId"),
+        method: "get",
+        isAuth: false,
+        data: {
+          newsKind: val,
+          current: val == "推送" ? this.tsCurrent : this.gjCurrent,
+          descs:'create_time',
+          date:askDate
+        },
+      }).then((res) => {
+        if (val == "推送") {
+          this.tsList = this.tsList.concat(res.data.records);
           if (res.data.records.length == 0) {
             uni.showToast({
               title: "暂无更多数据",
               icon: "none",
               duration: 850,
             });
-            this.listOver=true
-         }
-        }else{
-          this.gjList=this.gjList.concat(res.data.records)
+            this.listOver = true;
+          }
+        } else {
+          this.gjList = this.gjList.concat(res.data.records);
           if (res.data.records.length == 0) {
             uni.showToast({
               title: "暂无更多数据",
               icon: "none",
               duration: 850,
             });
-            this.listOver2=true
+            this.listOver2 = true;
           }
         }
-        
-        
-      })
+      });
     },
     typeSelect() {},
   },
 };
 </script>
 <style lang="scss" scoped>
-// <span v-if="index==0" style="color:#F56262">异常告警</span> 
-//               <span v-if="index==1" style="color:#3199F5">气象告警</span> 
-//               <span v-if="index==2" style="color:#626466">离线告警</span> 
-//               <span v-if="index>2" style="color:#939599">异常告警</span> 
-.newscontent{
-    .type4{
-        .title{
-             border-left: 2px solid #F56262!important;
-        }
-        span{
-            color:#F56262!important;
-        }
+.newscontent {
+  .type4 {
+    .title {
+      border-left: 2px solid #f56262 !important;
     }
-    .type3{
-        .title{
-             border-left: 2px solid #3199F5!important;
-        }
-        span{
-            color:#3199F5!important;
-        }
+    span {
+      color: #f56262 !important;
     }
-    .type2{
-        .title{
-             border-left: 2px solid #626466!important;
-        }
-        span{
-            color:#626466!important;
-        }
+  }
+  .type3 {
+    .title {
+      border-left: 2px solid #3199f5 !important;
     }
-    .type1{
-        .title{
-             border-left: 2px solid #939599!important;
-        }
-        span{
-            color:#939599!important;
-        }
+    span {
+      color: #3199f5 !important;
     }
+  }
+  .type2 {
+    .title {
+      border-left: 2px solid #626466 !important;
+    }
+    span {
+      color: #626466 !important;
+    }
+  }
+  .type1 {
+    .title {
+      border-left: 2px solid #939599 !important;
+    }
+    span {
+      color: #939599 !important;
+    }
+  }
 }
 .panel {
-    background: #fff;
-    padding: 40rpx;
-    margin: 25rpx;
-    border-radius: 16rpx;
-    .text{
-        color: #626466;
+  background: #fff;
+  padding: 40rpx;
+  margin: 25rpx;
+  border-radius: 16rpx;
+  .text {
+    color: #626466;
+  }
+  .p1:nth-child(1) {
+    color: #f56262;
+  }
+  .p1:nth-child(2) {
+    color: #626466;
+  }
+  .p1:nth-child(3) {
+    color: #3199f5;
+  }
+  .p1 {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    font-size: 28rpx;
+    align-items: center;
+    justify-content: center;
+    span {
+      margin-bottom: 12rpx;
+      font-size: 44rpx;
+      font-weight: bold;
     }
-    .p1:nth-child(1){
-        color: #F56262;
-    }
-     .p1:nth-child(2){
-        color: #626466;
-    }
-    .p1:nth-child(3){
-        color: #3199F5;
-    }
-    .p1{
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        font-size: 28rpx;
-        align-items: center;
-        justify-content: center;
-        span{
-            margin-bottom: 12rpx;
-            font-size: 64rpx;
-        font-weight: bold;
-        }
-        
-    }
+  }
 }
 .contentclear3 {
   margin: 0 !important;
 }
-.w1active{
-    .slide{
-        background: #29CC96!important;
-    }
-    .w3{
-        color: #fff!important;
-        background: #29CC96!important;
-    }
+.w1active {
+  .slide {
+    background: #29cc96 !important;
+  }
+  .w3 {
+    color: #fff !important;
+    background: #29cc96 !important;
+    font-size: 20rpx;
+  }
+}
+.scrolldiv{
+   overflow-x: scroll;
+   background: #fff;
+  
 }
 .datewrap {
   background: #fff;
-  border-top: 1px solid #F1F1F1;
-  padding:20rpx 0;
+  border-top: 1px solid #f1f1f1;
+  padding: 20rpx 0;
+  width: 100%;
+  justify-content: left !important;
+ 
   .w1 {
-    flex: 1;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
+    padding-bottom: 20rpx;
+    margin: 0 20rpx;
+    width: 5%;
+    flex-shrink: 0;
   }
   .w3 {
+    font-size: 20rpx;
     margin: 10rpx 0;
     background: #f5f5f5;
     color: #939599;
@@ -362,6 +473,8 @@ export default {
     height: 8rpx;
     background: #c4c7cc;
     border-radius: 100rpx;
+    position: absolute;
+    bottom: 5px;
   }
 }
 .wrapcommonfarm {
@@ -396,11 +509,11 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .btnpic{
-        width: 32rpx;
-        margin-right: 16rpx;
-        position: relative;
-        top: 5rpx;
+    .btnpic {
+      width: 32rpx;
+      margin-right: 16rpx;
+      position: relative;
+      top: 5rpx;
     }
   }
   .farmcontent {
@@ -450,6 +563,11 @@ export default {
       font-weight: bold;
       border: none;
     }
+  }
+  .datetitle{
+    color: #626466;
+      font-size: 24rpx;
+      margin-bottom: 20rpx;
   }
   .titlewrap {
     border-bottom: 1px solid #f5f5f5;

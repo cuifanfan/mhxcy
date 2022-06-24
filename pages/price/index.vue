@@ -6,13 +6,42 @@
       class="topbar"
       :titleName="pageName"
     ></header-diy>
-    <div>
-        <!-- <image
-            mode="widthFix"
-            class="fullw"
-            src="@/static/image/false44.png"
-          /> -->
+    <div class="date" @click="showType=true">
+      <div class="year">2022</div>
+      <u-icon name="arrow-down" color="#000" size="14"></u-icon>
     </div>
+    <div class="title">
+       <div class="t1">
+          地区
+       </div>
+       <div class="t1">
+          品种
+       </div>
+        <div class="t1">
+          价格(元/公斤)
+       </div>
+      
+    </div>
+    <div class="title title2" v-for="(item,index) in list" :key="index">
+       <div class="t1">
+          {{item.name}}
+       </div>
+       <div class="t1">
+          {{item.type}}
+       </div>
+        <div class="t1">
+          {{item.price}}
+       </div>
+      
+    </div>
+    <u-action-sheet
+      :show="showType"
+      :actions="typeList"
+      title="请选择时间"
+      @close="showType = false"
+      
+    ></u-action-sheet>
+
   </div>
 </template>
 
@@ -24,69 +53,361 @@ export default {
   },
   data() {
     return {
+      typeList:[
+        {
+          name:2022
+        }
+      ],
+      showType:false,
       pageName: "茶叶价格动态",
-     
+      list:[
+        {
+          name:'临沧茶区',
+          type:'冰岛南迫古树茶',
+          price:'4800-6000'
+        },
+        {
+          name:'临沧茶区',
+          type:'冰岛南迫大树茶',
+          price:'2400-3500'
+        },
+        {
+          name:'临沧茶区',
+          type:'冰岛南迫小树茶',
+          price:'1000-2000'
+        },
+        {
+          name:'临沧茶区',
+          type:'冰岛地界古树茶',
+          price:'3200-6000'
+        },
+        {
+          name:'临沧茶区',
+          type:'冰岛地界大树茶',
+          price:'1500-2500'
+        },
+        {
+          name:'临沧茶区',
+          type:'冰岛地界小树茶',
+          price:'1000-1500'
+        },
+        {
+          name:'临沧茶区',
+          type:'大中山古树茶',
+          price:'3000—4000'
+        },
+        {
+          name:'临沧茶区',
+          type:'坝糯古树茶',
+          price:'900-1600'
+        },
+        {
+          name:'临沧茶区',
+          type:'坝糯中小树混采',
+          price:'700-900'
+        },
+        {
+          name:'临沧茶区',
+          type:'那焦藤条古树茶',
+          price:'900-1300'
+        },
+        {
+          name:'临沧茶区',
+          type:'那焦藤条中树茶',
+          price:'500-800'
+        },
+
+         {
+          name:'临沧茶区',
+          type:'那赛藤条古树茶',
+          price:'600-1000'
+        },
+         {
+          name:'临沧茶区',
+          type:'正气塘古树茶',
+          price:'1300-1800'
+        },
+         {
+          name:'临沧茶区',
+          type:'坝卡古树茶',
+          price:'500-700'
+        },
+         {
+          name:'临沧茶区',
+          type:'坝卡大中树茶',
+          price:'300'
+        },
+
+
+        {
+          name:'临沧茶区',
+          type:'邦东古树茶',
+          price:'900-1300'
+        },
+        {
+          name:'临沧茶区',
+          type:'邦东小树茶',
+          price:'200-400'
+        },
+        {
+          name:'临沧茶区',
+          type:'邦东大雪山古树茶',
+          price:'1300—1800'
+        },
+        {
+          name:'临沧茶区',
+          type:'邦旭古树茶',
+          price:'800-1000'
+        },
+
+        {
+          name:'临沧茶区',
+          type:'邦旭小树茶',
+          price:'200-250'
+        },
+        {
+          name:'临沧茶区',
+          type:'葫芦谷古树茶',
+          price:'6000—9000'
+        },
+        {
+          name:'临沧茶区',
+          type:'曼岗古树茶',
+          price:'800-1500'
+        },
+        {
+          name:'临沧茶区',
+          type:'那罕古树',
+          price:'1500-2000'
+        },
+        {
+          name:'临沧茶区',
+          type:'那罕大树',
+          price:'500-800'
+        },
+        {
+          name:'临沧茶区',
+          type:'那罕小树',
+          price:'130-200'
+        },
+        {
+          name:'临沧茶区',
+          type:'忙肺古树茶',
+          price:'900-1600'
+        },
+
+
+        {
+          name:'临沧茶区',
+          type:'马鞍山古树茶',
+          price:'400-700'
+        },
+         {
+          name:'临沧茶区',
+          type:'大寨龙潭古树茶',
+          price:'350-500'
+        },
+         {
+          name:'临沧茶区',
+          type:'锅底塘古树茶',
+          price:'900-1700'
+        },
+         {
+          name:'临沧茶区',
+          type:'黄草林古树茶',
+          price:'800-1300'
+        },
+         {
+          name:'临沧茶区',
+          type:'凤庆诗礼古墨古树茶',
+          price:'900-1500'
+        },
+
+        {
+          name:'普洱茶区',
+          type:'芒景古树茶',
+          price:'1200-1800'
+        },
+        {
+          name:'普洱茶区',
+          type:'混采毛茶',
+          price:'600-800'
+        },
+        {
+          name:'普洱茶区',
+          type:'邦崴古树茶',
+          price:'1500-2000'
+        },
+        {
+          name:'普洱茶区',
+          type:'千家寨古树茶',
+          price:'800-2000'
+        },
+        {
+          name:'普洱茶区',
+          type:'白竹山古树茶',
+          price:'400-800'
+        },
+
+        {
+          name:'普洱茶区',
+          type:'无量山古树茶',
+          price:'400-600'
+        },
+        {
+          name:'普洱茶区',
+          type:'苦竹山古树茶',
+          price:'1000-1300'
+        },
+        {
+          name:'普洱茶区',
+          type:'江城古树茶',
+          price:'800-1200'
+        },
+
+
+
+        {
+          name:'普洱茶区',
+          type:'老乌山古树茶',
+          price:'800-1000'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'广别老寨古树茶',
+          price:'3500-6000'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'广别老寨大树茶',
+          price:'1800-2800'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'广别老寨大树小树混采',
+          price:'1200-1800'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'南糯山丫口老寨古树茶',
+          price:'900-1800'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'石头寨古树茶',
+          price:'1000-1800'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'半坡古树茶',
+          price:'1000-2000'
+        },
+
+
+        {
+          name:'西双版纳勐海茶区',
+          type:'半坡中小树',
+          price:'600-1000'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'帕真古树茶',
+          price:'700-1000'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'帕真大树小树混采',
+          price:'400-700'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'曼糯古树茶',
+          price:'1500-2000'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'巴达贺松',
+          price:'1000-1800'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'贺建古树茶',
+          price:'600-1500'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'曼夕老寨古树茶',
+          price:'1500-2000'
+        },
+        {
+          name:'西双版纳勐海茶区',
+          type:'布朗山曼囡',
+          price:'1000-1500'
+        },
+        
+
+
+        {
+          name:'西双版纳勐腊茶区',
+          type:'百花潭古树茶',
+          price:'4500-6000'
+        },
+        {
+          name:'西双版纳勐腊茶区',
+          type:'百花潭小树茶',
+          price:'1500-2000'
+        },
+        {
+          name:'西双版纳勐腊茶区',
+          type:'瓦龙古树茶',
+          price:'800-1500'
+        },
+        {
+          name:'西双版纳勐腊茶区',
+          type:'莽枝古树茶',
+          price:'1500-1800'
+        },
+        {
+          name:'西双版纳勐腊茶区',
+          type:'莽枝小树茶',
+          price:'250-500'
+        },
+        
+      ],
     };
   },
   methods: {
-    goDetail2() {
-      uni.navigateTo({
-        url: "/pages/four2/detail/index",
-      });
-    },
-
-    indexNavGo(index) {
-      if (index == 0) {
-        uni.navigateTo({
-          url: "/pages/four2/index",
-        });
-      }
-      if (index == 1) {
-        uni.navigateTo({
-          url: "/pages/wisdom/index",
-        });
-      }
-    },
-    goNews() {
-      uni.navigateTo({
-        url: "/pages/news/index",
-      });
-    },
-    goFarm() {
-      uni.navigateTo({
-        url: "/pages/farming/index",
-      });
-    },
-    goEdit() {
-      uni.navigateTo({
-        url: "/pages/farming/edit",
-      });
-    },
-    changeTab(val) {
-      this.active2 = !this.active2;
-      if (val == 1) {
-        this.info = {
-          one: 12.35,
-          two: 12.35,
-          three: 33.22,
-          four: 85.2,
-          five: 15,
-        };
-      } else {
-        this.info = {
-          one: 11.35,
-          two: 10.35,
-          three: 53.22,
-          four: 81.2,
-          five: 20,
-        };
-      }
-    },
+    
   },
 };
 </script>
 
 <style scoped lang="scss">
+.date{
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0;
+  .year{
+    margin-right: 20rpx;
+  }
+}
+.title2{
+  background: transparent!important;
+}
+.title{
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  padding: 15rpx 0;
+  .t1{
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    font-size: 20rpx;
+  }
+}
 .index22{
     margin-top: 30rpx!important;
 }

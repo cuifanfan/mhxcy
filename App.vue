@@ -161,8 +161,37 @@ export default {
       if (text.indexOf('pong') > 0) {
         return
       }
-
+//  {"id":1540177645312499714,
+//  "newsInfo":"陈升茶厂::40204067::当前ph值低于最低阈值::土壤ph值最高阈值:22::当前土壤ph值为7.0",
+//  "newsKind":"告警","pushTime":"2022-06-24T11:39:00.416",
+//  "recipientId":1,"status":"气象告警",
+//  "title":"你猜怎么着？"}
       console.log('收到服务器消息',text)
+	  let get=JSON.parse(text)
+	  let addText=''
+	  if(get.newsKind=='告警'){
+		if(get.status=='气象告警'){
+			addText=get.status+": "+(get.newsInfo.split("::"))[1]+(get.newsInfo.split("::"))[2]
+		}else if(get.status=='离线告警'){
+			addText=get.newsInfo
+		}
+		
+	  }else if(get.newsKind=='推送'){
+		addText=get.newsInfo
+	  }
+	 //console.log('tttttjjj',addText)
+	  let getNewsList=uni.getStorageSync('newsList')
+	  if(!getNewsList){
+		let arr=[]
+		arr.unshift(addText)
+		uni.setStorageSync('newsList',JSON.stringify(arr))
+	  }else{
+		let getArr=JSON.parse(uni.getStorageSync('newsList'))
+		getArr.unshift(addText)
+		uni.setStorageSync('newsList',JSON.stringify(getArr))
+	  }
+	  //console.log('jfhdshjfhjksdfhjsf',uni.getStorageSync('newsList'))
+	   uni.$emit("newCome", text)
     },
     /**
      * 数据发送

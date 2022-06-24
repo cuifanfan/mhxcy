@@ -3,6 +3,11 @@
     :class="[type == 2 ? 'nav-small-box' : '', 'nav-box']"
     :style="phoneHeight"
   >
+    <u-popup :show="showNews" mode="top" round="10"  :safeAreaInsetTop="true" :overlay="false">
+        <view class="newsdiv">
+            <text>人生若只如初见，何事秋风悲画扇</text>
+        </view>
+	  </u-popup>
     <image mode="widthFix" v-if="type == 1" src="@/static/image/headerbg.png" class="navbg" />
     <image
      mode="widthFix"
@@ -61,6 +66,8 @@ export default {
   // },
   data() {
     return {
+      clear:null,
+      showNews:false,
       phoneHeight: "", //这里在进行调用
     };
   },
@@ -69,8 +76,28 @@ export default {
     // console.log(this.phoneHeight);
   },
   onShow(){
-    console.log(3212)
+   
   },
+  mounted(){
+    console.log('header go!!!')
+    // uni.$off("newCome");
+    // uni.$on("newCome", (data)=>{
+    //     this.showNews=true
+    //     if(this.clear==null){
+    //       this.clear=setTimeout(()=>{
+    //         this.showNews=false
+    //         this.clear=null
+    //       },3000)
+    //     }else{
+    //       clearTimeout(this.clear)
+    //       this.clear=setTimeout(()=>{
+    //         this.showNews=false
+    //         this.clear=null
+    //       },3000)
+    //     }
+    // });
+  },
+
   methods: {
     addOne(){
       uni.$emit('addOneFriend','');
@@ -117,6 +144,11 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.newsdiv{
+  border-radius: 10rpx;
+  padding: 20rpx;
+
+}
 .iconwrap2{
   position: absolute;
   right: 20rpx;

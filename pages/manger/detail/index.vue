@@ -1330,9 +1330,9 @@ export default {
           pic: require("@/static/image/new6.png"),
         },
         {
-          num: "西北风",
-          unit: "PPM",
-          name: "二氧化碳",
+          num: "",
+          unit: "m/s",
+          name: "风力",
           val: ["", ""],
           pic: require("@/static/image/f8.png"),
         },
@@ -1947,7 +1947,7 @@ export default {
         let get = res.data;
         this.list[0]["val"] = [get.airTemMin, get.airTemMax];
         this.list[1]["val"] = [get.airHumMin, get.airHumMax];
-        this.list[2]["val"] = [get.ppmMin, get.ppmMax];
+        this.list[2]["val"] = [get.windSpeedMin, get.windSpeedMax];
         this.list[3]["val"] = [get.luxMin, get.luxMax];
         this.list[4]["val"] = [get.soilTemMin, get.soilTemMax];
         this.list[5]["val"] = [get.soilHumMin, get.soilHumMax];

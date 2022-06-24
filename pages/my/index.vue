@@ -54,7 +54,7 @@
               人员管理
             </div>
             <u-icon
-              @click="goNews"
+             
               color="#939599"
               size="14"
               name="arrow-right"
@@ -64,8 +64,8 @@
             <div class="c1">
               <image mode="widthFix" class="pic" src="@/static/image/u2.png" />
               消息中心
-              <div class="cir">
-                2
+              <div class="cir" v-if="newsNum>0">
+                {{newsNum}}
               </div>
             </div>
             <u-icon
@@ -118,6 +118,7 @@ export default {
   },
   data() {
     return {
+      newsNum:0,
       baseInfo:null,
       info:null,
       lookType: true,
@@ -208,6 +209,16 @@ export default {
   onLoad(){
     this.teabase()
     this.baseInfo=JSON.parse(uni.getStorageSync('baseInfo'))
+  },
+  onShow(){
+    let newsList=uni.getStorageSync('newsList')
+    if(newsList){
+      let num=JSON.parse(newsList)
+      this.newsNum=num.length
+    }else{
+      this.newsNum=0
+    }
+    
   },
   methods: {
 

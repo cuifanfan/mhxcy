@@ -60,8 +60,8 @@ export default {
           val: ["", ""],
         },
         {
-          name: "二氧化碳",
-          unit: "PPM",
+          name: "风速",
+          unit: "m/s",
           val: ["", ""],
         },
         {
@@ -182,7 +182,7 @@ export default {
       console.log('get',get)
       this.$set(this.list[0],'val', [get.airTemMin, get.airTemMax])
       this.$set(this.list[1],'val', [get.airHumMin, get.airHumMax])
-      this.$set(this.list[2],'val', [get.ppmMin, get.ppmMax])
+      this.$set(this.list[2],'val', [get.windSpeedMin, get.windSpeedMax])
       this.$set(this.list[3],'val', [get.luxMin, get.luxMax])
       this.$set(this.list[4],'val', [get.soilTemMin, get.soilTemMax])
       this.$set(this.list[5],'val', [get.soilHumMin, get.soilHumMax])
@@ -223,8 +223,8 @@ export default {
           airTemMax:this.list[0]['val'][1], 
           airHumMin:this.list[1]['val'][0], 
           airHumMax:this.list[1]['val'][1], 
-          ppmMin:this.list[2]['val'][0], 
-          ppmMax:this.list[2]['val'][1], 
+          windSpeedMin:this.list[2]['val'][0],  
+          windSpeedMax:this.list[2]['val'][1], 
           luxMin:this.list[3]['val'][0], 
           luxMax:this.list[3]['val'][1], 
           soilTemMin:this.list[4]['val'][0], 
