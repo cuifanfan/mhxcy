@@ -150,6 +150,7 @@ export default {
 
 			}
 			uni.setStorageSync('userInfo',info)
+			uni.setStorageSync('relogin',true)
 			this.getUserInfo()
 		}).catch(err=>{
 			console.log('err',err)

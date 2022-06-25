@@ -465,6 +465,21 @@ export default {
         this.newsArr=[]
       }
     });
+    //如果重新登录
+    let reLgoin=uni.getStorageSync('relogin')
+    if(reLgoin){
+      this.getEnvironment();
+      this.askWeather();
+      this.getFarmList();
+      this.askInvestment(1);
+      this.getPutInByContent(1);
+      this.teagarden()
+      if(uni.getStorageSync('nowChooseTea')){
+        this.teaSure=JSON.parse(uni.getStorageSync('nowChooseTea'))
+        console.log('现在的茶园',this.teaSure)
+      }
+      uni.setStorageSync('relogin','')
+    }
   },
   onLoad() {
     this.getEnvironment();
