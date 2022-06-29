@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
-    <header-diy class="topbar" :titleName="pageName"></header-diy>
-    <div class="content">
+    <header-diy class="topbar" :tabFlag="2" :titleName="pageName"></header-diy>
+    <div class="content contentindexadd">
       <div class="index">
         <div>
           <div class="info3">
@@ -21,9 +21,19 @@
           </div>
         </div>
         <div class="indexinfor flexcenter index1" @click="goNews">
-          <u-icon v-if="newsArr.length==0" color="#000" size="20" name="volume"></u-icon>
-         
-          <u-notice-bar v-if="newsArr.length>0" direction="column" color="#000" :text="newsArr"></u-notice-bar>
+          <u-icon
+            v-if="newsArr.length == 0"
+            color="#939599"
+            size="18"
+            name="volume"
+          ></u-icon>
+
+          <u-notice-bar
+            v-if="newsArr.length > 0"
+            direction="column"
+            color="#939599"
+            :text="newsArr"
+          ></u-notice-bar>
           <div class="nonews" v-else>暂无消息!</div>
           <!-- <div class="slh">
             监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为监测告警：2号虫情数量过高，当前为
@@ -32,15 +42,22 @@
         </div>
         <div class="index1 index7" v-if="this.weatherInfo">
           <div class="index71">
-            <div class="index72" @click="changeTeaFlag=true">
+            <div class="index72" @click="changeTeaHandle">
               <image
                 mode="widthFix"
                 class="pic72"
                 src="@/static/image/p2.png"
               />
               <!-- 茶园切换 -->
-              <div class="text" v-if="this.teaSure">{{ this.teaSure.address }}</div>
-              <u-icon color="#939599" size="14" name="arrow-right"></u-icon>
+              <div class="text" v-if="this.nowUserBaseInfo">
+                {{ this.nowUserBaseInfo.baseName }}
+              </div>
+              <u-icon
+                v-if="this.userBaseInfos.length > 1"
+                color="#939599"
+                size="14"
+                name="arrow-right"
+              ></u-icon>
             </div>
             <div class="addmap" @click="goMap">
               <image
@@ -53,18 +70,32 @@
           </div>
           <div class="index73 flexcenter">
             <div class="index74">
-              <div class="index75">{{ this.weatherInfo.gardenArea }}</div>
+              <div class="index75">
+                {{
+                  this.weatherInfo.gardenArea
+                    ? this.weatherInfo.gardenArea
+                    : "-"
+                }}
+              </div>
               茶园面积
             </div>
             <div class="index74">
               <div class="index75 index79">
-                {{ this.weatherInfo.gardenCount }}
+                {{
+                  this.weatherInfo.gardenCount
+                    ? this.weatherInfo.gardenCount
+                    : "-"
+                }}
               </div>
               茶园数量
             </div>
             <div class="index74">
               <div class="index75 index80">
-                {{ this.weatherInfo.teaSpecies }}
+                {{
+                  this.weatherInfo.teaSpecies
+                    ? this.weatherInfo.teaSpecies
+                    : "-"
+                }}
               </div>
               种植品类
             </div>
@@ -75,7 +106,7 @@
                 <!-- {{
                   (this.weatherData[1]["max"] + this.weatherData[1]["min"]) / 2
                 }} -->
-                {{this.list[3]['num']}}
+                {{ this.list[3]["num"] }}
               </div>
               <div class="index85">℃</div>
             </div>
@@ -180,14 +211,13 @@
                 </div>
                 <div class="gray5" v-if="!lookType">
                   <div class="lookcir flexcenter">
-                   
                     <div class="circhild flexcenter">
                       <div class="fk"></div>
-                       {{ active1 ? "上季度" : "去年" }}
+                      {{ active1 ? "上季度" : "去年" }}
                     </div>
-                     <div class="circhild flexcenter">
+                    <div class="circhild flexcenter">
                       <div class="fk fk2"></div>
-                       {{ active1 ? "本季度" : "本年" }}
+                      {{ active1 ? "本季度" : "本年" }}
                     </div>
                   </div>
                 </div>
@@ -293,40 +323,44 @@
                 src="@/static/image/false26.png"
               /> -->
               <div v-if="lookType && active1" class="grayinfo">
-                  <div
-                    class="grayinfo1"
-                    v-for="(item, index) in farmrecordsShow"
-                    :key="index"
-                  >
-                    <div class="infotitle">{{ item.name }}:</div>
-                    <div class="infowrap">
-                      <div
-                        class="grayinfo2"
-                        v-for="(item2, index2) in item.value"
-                        :key="index2"
-                      >
-                        <div class="numoften clearmagin">{{ item2.name }}</div>
-                        <div class="numbold">{{ item2.value }}</div> KG
-                      </div>
+                <div
+                  class="grayinfo1"
+                  v-for="(item, index) in farmrecordsShow"
+                  :key="index"
+                >
+                  <div class="infotitle">{{ item.name }}:</div>
+                  <div class="infowrap">
+                    <div
+                      class="grayinfo2"
+                      v-for="(item2, index2) in item.value"
+                      :key="index2"
+                    >
+                      <div class="numoften clearmagin">{{ item2.name }}</div>
+                      <div class="numbold">{{ item2.value }}</div>
+                      KG
                     </div>
                   </div>
-               
-               <div class="nodataspan" v-if="farmrecordsShow.length == 0">暂无数据</div>
+                </div>
+
+                <div class="nodataspan" v-if="farmrecordsShow.length == 0">
+                  暂无数据
+                </div>
               </div>
               <div class="srdiv" v-if="lookType && !active1">
-               
-                  <div
-                    class="srdiv1"
-                    v-for="(item, index) in produceShow"
-                    :key="index"
-                  >
-                    <div class="srdiv2">{{ item.name }}</div>
-                    <div class="srdiv3">
-                      {{ item.total }} <span class="srdiv4">KG</span>
-                    </div>
+                <div
+                  class="srdiv1"
+                  v-for="(item, index) in produceShow"
+                  :key="index"
+                >
+                  <div class="srdiv2">{{ item.name }}</div>
+                  <div class="srdiv3">
+                    {{ item.total }} <span class="srdiv4">KG</span>
                   </div>
-            
-                <div class="nodataspan" v-if="produceShow.length == 0">暂无数据</div>
+                </div>
+
+                <div class="nodataspan" v-if="produceShow.length == 0">
+                  暂无数据
+                </div>
               </div>
             </div>
             <!-- <div v-if="active1" class="graytip flexcenter">
@@ -338,10 +372,7 @@
               </div>
             </div> -->
             <div v-if="!active1" @click="goPrice" class="graytip flexcenter">
-              <div class="left">
-                查看价格
-              </div>
-              
+              <div class="left">查看价格</div>
             </div>
           </div>
         </div>
@@ -373,9 +404,7 @@ export default {
   },
   data() {
     return {
-     
-      teaSure:null,
-      changeTeaFlag:false,
+      changeTeaFlag: false,
       produceShow: [],
       produceNow: [],
       produceAgo: [],
@@ -410,7 +439,7 @@ export default {
       active2: true,
       active1: true,
       list: [],
-      incomeArrProduct:[],
+      incomeArrProduct: [],
       info: {
         one: 12.35,
         two: 12.35,
@@ -420,7 +449,7 @@ export default {
       },
       weatherData: [],
       pageName: "茶园种植",
-      allTea:[],
+      allTea: [],
       indexMenu: [
         {
           name: "农情监测",
@@ -443,93 +472,98 @@ export default {
           pic: require("@/static/image/p10.png"),
         },
       ],
-      newsArr:[
-        
-      ]
+      nowUserBaseInfo: [],
+      userBaseInfos: [],
+
+      newsArr: [],
     };
   },
-  onShow(){
-    let newsList=uni.getStorageSync('newsList')
-    if(newsList){
-      this.newsArr=JSON.parse(newsList)
-    }else{
-      this.newsArr=[]
-      console.log('this.newsArr',this.newsArr)
+  onShow() {
+    let newsList = uni.getStorageSync("newsList");
+    if (newsList) {
+      this.newsArr = JSON.parse(newsList);
+    } else {
+      this.newsArr = [];
+      console.log("this.newsArr", this.newsArr);
     }
     uni.$off("newCome");
-    uni.$on("newCome", (data)=>{
-      let newsList=uni.getStorageSync('newsList')
-      if(newsList){
-        this.newsArr=JSON.parse(newsList)
-      }else{
-        this.newsArr=[]
+    uni.$on("newCome", (data) => {
+      let newsList = uni.getStorageSync("newsList");
+      if (newsList) {
+        this.newsArr = JSON.parse(newsList);
+      } else {
+        this.newsArr = [];
       }
     });
     //如果重新登录
-    let reLgoin=uni.getStorageSync('relogin')
-    if(reLgoin){
+    let reLgoin = uni.getStorageSync("relogin");
+    if (reLgoin) {
+      this.getBaseInfo();
       this.getEnvironment();
       this.askWeather();
       this.getFarmList();
       this.askInvestment(1);
       this.getPutInByContent(1);
-      this.teagarden()
-      if(uni.getStorageSync('nowChooseTea')){
-        this.teaSure=JSON.parse(uni.getStorageSync('nowChooseTea'))
-        console.log('现在的茶园',this.teaSure)
-      }
-      uni.setStorageSync('relogin','')
+      uni.setStorageSync("relogin", "");
     }
   },
   onLoad() {
+    this.getBaseInfo();
     this.getEnvironment();
     this.askWeather();
     this.getFarmList();
     this.askInvestment(1);
     this.getPutInByContent(1);
-    this.teagarden()
-    if(uni.getStorageSync('nowChooseTea')){
-      this.teaSure=JSON.parse(uni.getStorageSync('nowChooseTea'))
-      console.log('现在的茶园',this.teaSure)
-    }
   },
   methods: {
-    
-    changeNowTea(item){
-      this.teaSure=item
-      uni.setStorageSync('nowChooseTea',JSON.stringify(item))
-      console.log('现在的茶园是：',this.teaSure)
+    getBaseInfo() {
+      this.nowUserBaseInfo = uni.getStorageSync("nowUserBaseInfo");
+      this.userBaseInfos = uni.getStorageSync("userBaseInfos");
+      this.allTea = JSON.parse(JSON.stringify(this.userBaseInfos));
+      this.allTea.forEach((item) => {
+        item.name = item.baseName;
+      });
     },
-    //如果为管理员 可以切换茶园 
-    teagarden(){
-      request({
-        url: "/data/teagarden/page?baseId=1&size=-1",
-        method: "get",
-        isAuth: false,
-        data: {},
-      }).then((res) => {
-        this.allTea=res.data.records
-        if(!uni.getStorageSync('nowChooseTea')){
-          this.teaSure=this.allTea[0]
-          uni.setStorageSync('nowChooseTea',JSON.stringify(this.allTea[0]))
-        }
-      })
+    changeTeaHandle() {
+      if (this.userBaseInfos.length > 1) {
+        this.changeTeaFlag = true;
+      }
+    },
+    changeNowTea(item) {
+      let getAgoBaseid = uni.getStorageSync("baseId");
+      if (item.baseId == getAgoBaseid) {
+        return;
+      }
+      uni.setStorageSync("nowUserBaseInfo", item);
+      uni.setStorageSync("baseId", item.baseId);
+      uni.setStorageSync("deviceList", item.deviceList);
+      uni.$emit("changeTeaSure", item.baseId);
+      this.getBaseInfo();
+      this.getEnvironment();
+      this.askWeather();
+      this.getFarmList();
+      this.askInvestment(1);
+      this.getPutInByContent(1);
     },
     getPutInByContent(type) {
       let endTime =
         type == 1
-          ? moment() .year(moment().year() ) .startOf("year") .format("YYYY")
-          : moment() .year(moment().year() - 1) .startOf("year") .format("YYYY")
-      
+          ? moment().year(moment().year()).startOf("year").format("YYYY")
+          : moment()
+              .year(moment().year() - 1)
+              .startOf("year")
+              .format("YYYY");
+
       let userInfo = uni.getStorageSync("userInfo");
       request({
         url: "/data/farmrecords/getHistoryInputByContentInYear",
         method: "get",
         isAuth: false,
         data: {
-          year:endTime,
-          userId: userInfo.userId,
+          year: endTime,
+         
           content: "采摘",
+          baseId: uni.getStorageSync("baseId"),
         },
       }).then((res) => {
         let get = res.data.filter((item) => {
@@ -548,58 +582,54 @@ export default {
           this.getPutInByContent(2);
         } else {
           this.produceAgo = get;
-          this.incomeArrProduct=[]
-          console.log('111',this.produceAgo)
-          console.log('000',this.produceNow)
+          this.incomeArrProduct = [];
+          console.log("111", this.produceAgo);
+          console.log("000", this.produceNow);
           let nowGet = [];
           let agoGet = [];
           this.produceNow.forEach((item) => {
-            
-              nowGet.push({
-                name: item.name,
-                total: item.total,
-              });
-           
+            nowGet.push({
+              name: item.name,
+              total: item.total,
+            });
           });
           this.produceAgo.forEach((item) => {
-           
-              agoGet.push({
-                name: item.name,
-                total: item.total,
-              });
-            
+            agoGet.push({
+              name: item.name,
+              total: item.total,
+            });
           });
           //取所有键
-          let keyVal=[]
-          let allArr=nowGet.concat(agoGet)
-          allArr.forEach(item=>{
-            let flag=keyVal.find(item2=>{
-              return item2==item.name
-            })
-            if(!flag){
-              keyVal.push(item.name)
+          let keyVal = [];
+          let allArr = nowGet.concat(agoGet);
+          allArr.forEach((item) => {
+            let flag = keyVal.find((item2) => {
+              return item2 == item.name;
+            });
+            if (!flag) {
+              keyVal.push(item.name);
             }
-          })
-          console.log('xxx',keyVal)
-          keyVal.forEach(item=>{
-            let flag1=nowGet.find(item2=>{
-              return item2.name==item
-            })
-            let flag2=agoGet.find(item2=>{
-              return item2.name==item
-            })
-            let val1=flag1?flag1.total:0
-            let val2=flag2?flag2.total:0
+          });
+          console.log("xxx", keyVal);
+          keyVal.forEach((item) => {
+            let flag1 = nowGet.find((item2) => {
+              return item2.name == item;
+            });
+            let flag2 = agoGet.find((item2) => {
+              return item2.name == item;
+            });
+            let val1 = flag1 ? flag1.total : 0;
+            let val2 = flag2 ? flag2.total : 0;
             this.incomeArrProduct.push({
-              name:item,
-              val:[val1,val2],
-              sort:item.split('月')[0]
-            })
-          })
-          console.log(this.incomeArrProduct)
-          this.incomeArrProduct.sort(function(x,y){
-            return x.sort - y.sort
-          })
+              name: item,
+              val: [val1, val2],
+              sort: item.split("月")[0],
+            });
+          });
+          console.log(this.incomeArrProduct);
+          this.incomeArrProduct.sort(function (x, y) {
+            return x.sort - y.sort;
+          });
         }
       });
     },
@@ -627,8 +657,6 @@ export default {
                 .valueOf()
             ).format("YYYY-MM-DD");
       let userInfo = uni.getStorageSync("userInfo");
-      console.log("endtime", type, endTime);
-      console.log("star", type, startTime);
       request({
         url: "/data/farmrecords/getAllPutIn",
         method: "get",
@@ -636,7 +664,8 @@ export default {
         data: {
           startTime: endTime,
           endTime: startTime,
-          userId: userInfo.userId,
+          
+          baseId: uni.getStorageSync("baseId"),
         },
       }).then((res) => {
         let get = res.data.filter((item) => {
@@ -668,74 +697,78 @@ export default {
             });
           });
           //合并同类项
-          let mergeNow=[]
-          let mergeAgo=[]
-          nowGet.forEach(item=>{
-            let flag=mergeNow.find(item2=>{
-              return item2.name==item.name
-            })
-            if(!flag){
+          let mergeNow = [];
+          let mergeAgo = [];
+          nowGet.forEach((item) => {
+            let flag = mergeNow.find((item2) => {
+              return item2.name == item.name;
+            });
+            if (!flag) {
               mergeNow.push({
-                name:item.name,
-                val:item.val
-              })
-            }else{
-              flag.val+=item.val
+                name: item.name,
+                val: item.val,
+              });
+            } else {
+              flag.val += item.val;
             }
-          })
-          agoGet.forEach(item=>{
-            let flag=mergeAgo.find(item2=>{
-              return item2.name==item.name
-            })
-            if(!flag){
+          });
+          agoGet.forEach((item) => {
+            let flag = mergeAgo.find((item2) => {
+              return item2.name == item.name;
+            });
+            if (!flag) {
               mergeAgo.push({
-                name:item.name,
-                val:item.val
-              })
-            }else{
-              flag.val+=item.val
+                name: item.name,
+                val: item.val,
+              });
+            } else {
+              flag.val += item.val;
             }
-          })
-          console.log('mernow',mergeNow)
+          });
+          console.log("mernow", mergeNow);
           //取所有键
-          let keyVal=[]
-          let allArr=mergeNow.concat(mergeAgo)
-          allArr.forEach(item=>{
-            let flag=keyVal.find(item2=>{
-              return item2==item.name
-            })
-            if(!flag){
-              keyVal.push(item.name)
+          let keyVal = [];
+          let allArr = mergeNow.concat(mergeAgo);
+          allArr.forEach((item) => {
+            let flag = keyVal.find((item2) => {
+              return item2 == item.name;
+            });
+            if (!flag) {
+              keyVal.push(item.name);
             }
-          })
-          keyVal.forEach(item=>{
-            let flag1=mergeNow.find(item2=>{
-              return item2.name==item
-            })
-            let flag2=mergeAgo.find(item2=>{
-              return item2.name==item
-            })
-            let val1=flag1?flag1.val:0
-            let val2=flag2?flag2.val:0
+          });
+          keyVal.forEach((item) => {
+            let flag1 = mergeNow.find((item2) => {
+              return item2.name == item;
+            });
+            let flag2 = mergeAgo.find((item2) => {
+              return item2.name == item;
+            });
+            let val1 = flag1 ? flag1.val : 0;
+            let val2 = flag2 ? flag2.val : 0;
             this.incomeArr2.push({
-              name:item,
-              val:[val1,val2],
-            })
-          })
+              name: item,
+              val: [val1, val2],
+            });
+          });
         }
       });
     },
     getFarmList() {
       let userInfo = uni.getStorageSync("userInfo");
-      let year= moment().format("YYYY") 
+      let year = moment().format("YYYY");
       request({
-        url: "/data/farmrecords/getFarmRecordsCountByYear?userId="+userInfo.userId+"&year="+year,
+        url:
+          "/data/farmrecords/getFarmRecordsCountByYear?" +
+          "?year=" +
+          year +
+          "&baseId=" +
+          uni.getStorageSync("baseId"),
         method: "get",
         isAuth: false,
-        data: {
-        },
+        data: {},
       }).then((res) => {
-        this.farmTotal =res.data
+        this.farmTotal = res.data;
       });
     },
     askWeather() {
@@ -751,127 +784,101 @@ export default {
         },
       }).then((res) => {
         console.log("xxx", res);
-        res.data.daily.forEach((item, index) => {
-          let date = item.predict_date.split("-");
-          let date2 = date[1] + "/" + date[2];
+        if (res.data) {
+          res.data.daily.forEach((item, index) => {
+            let date = item.predict_date.split("-");
+            let date2 = date[1] + "/" + date[2];
 
-          //wind_dir_id
-          let week = "";
-          if (index == 0) {
-            week = "昨天";
-          } else if (index == 1) {
-            week = "今天";
-          } else {
-            week = weekDay(item.predict_date);
-          }
+            //wind_dir_id
+            let week = "";
+            if (index == 0) {
+              week = "昨天";
+            } else if (index == 1) {
+              week = "今天";
+            } else {
+              week = weekDay(item.predict_date);
+            }
 
-          let weatherList = weatherIdToName();
-          let windList = wind();
-          this.weatherData.push({
-            dayLabel: date2,
-            weatherLabel: weatherList[item.weather_id_day][2],
-            weatherIcon: require("@/static/image/weather/W" +
-              weatherList[item.weather_id_day][0] +
-              ".png"),
-            max: item.temp_high,
-            min: item.temp_low,
-            level: item.wind_level_night,
-            wind: windList[item.wind_dir_day],
+            let weatherList = weatherIdToName();
+            let windList = wind();
+            this.weatherData.push({
+              dayLabel: date2,
+              weatherLabel: weatherList[item.weather_id_day][2],
+              weatherIcon: require("@/static/image/weather/W" +
+                weatherList[item.weather_id_day][0] +
+                ".png"),
+              max: item.temp_high,
+              min: item.temp_low,
+              level: item.wind_level_night,
+              wind: windList[item.wind_dir_day],
+            });
           });
-        });
-        uni.setStorageSync("MJweather", this.weatherData);
+          uni.setStorageSync("MJweather", this.weatherData);
+        }
       });
     },
     getEnvironment() {
-      let userInfo = uni.getStorageSync("userInfo");
-      if (!userInfo) {
-        return;
-      }
-      //传设备的id
-      request({
-        url: "/data/teabase/getBaseInfo?userId=" + userInfo.userId,
-        method: "get",
-        isAuth: false,
-        data: {},
-      })
-        .then((res) => {
-          this.weatherInfo = res.data;
-          uni.setStorageSync('baseInfo',JSON.stringify(res.data))
-          console.log("xxx00000xxxccc", res);
-          this.list[0] = {
-            num:
-              this.weatherInfo.windGrade != null
-                ? this.weatherInfo.windGrade
-                : "-",
-            unit: "级",
-            name: "风力",
-            pic: require("@/static/image/new1.png"),
-          };
-          this.list[1] = {
-            num:
-              this.weatherInfo.windSpeed != null
-                ? this.weatherInfo.windSpeed
-                : "-",
-            unit: "m/s",
-            name: "风速",
-            pic: require("@/static/image/new2.png"),
-          };
-          this.list[2] = {
-            num:
-              this.weatherInfo.windDirect != null
-                ? this.weatherInfo.windDirect
-                : "-",
-            unit: "",
-            name: "风向",
-            pic: require("@/static/image/new3.png"),
-          };
-          this.list[3] = {
-            num:
-              this.weatherInfo.soilTem != null ? this.weatherInfo.soilTem : "-",
-            unit: "℃",
-            name: "空气温度",
-            pic: require("@/static/image/new4.png"),
-          };
-          this.list[4] = {
-            num:
-              this.weatherInfo.soilHum != null ? this.weatherInfo.soilHum : "-",
-            unit: "%RH",
-            name: "空气湿度",
-            pic: require("@/static/image/new5.png"),
-          };
-          this.list[5] = {
-            num: this.weatherInfo.pm10 != null ? this.weatherInfo.pm10 : "-",
-            unit: "ug/m3",
-            name: "Pm10",
-            pic: require("@/static/image/new6.png"),
-          };
-          this.list[6] = {
-            num: this.weatherInfo.kpa != null ? this.weatherInfo.kpa : "-",
-            unit: "kpa",
-            name: "大气压",
-            pic: require("@/static/image/new7.png"),
-          };
-          this.list[7] = {
-            num: this.weatherInfo.lux != null ? this.weatherInfo.lux : "-",
-            unit: "lux",
-            name: "光照",
-            pic: require("@/static/image/new8.png"),
-          };
-          this.$forceUpdate();
-          uni.setStorageSync('baseId',res.data.baseId)
-          uni.setStorageSync("deviceList", JSON.stringify(res.data.deviceList));
-        })
-
-        .catch((err) => {
-          console.log("err", err);
-        });
+      this.weatherInfo = this.nowUserBaseInfo;
+      this.list[0] = {
+        num:
+          this.weatherInfo.windGrade != null ? this.weatherInfo.windGrade : "-",
+        unit: "级",
+        name: "风力",
+        pic: require("@/static/image/new1.png"),
+      };
+      this.list[1] = {
+        num:
+          this.weatherInfo.windSpeed != null ? this.weatherInfo.windSpeed : "-",
+        unit: "m/s",
+        name: "风速",
+        pic: require("@/static/image/new2.png"),
+      };
+      this.list[2] = {
+        num:
+          this.weatherInfo.windDirect != null
+            ? this.weatherInfo.windDirect
+            : "-",
+        unit: "",
+        name: "风向",
+        pic: require("@/static/image/new3.png"),
+      };
+      this.list[3] = {
+        num: this.weatherInfo.soilTem != null ? this.weatherInfo.soilTem : "-",
+        unit: "℃",
+        name: "空气温度",
+        pic: require("@/static/image/new5.png"),
+      };
+      this.list[4] = {
+        num: this.weatherInfo.soilHum != null ? this.weatherInfo.soilHum : "-",
+        unit: "%RH",
+        name: "空气湿度",
+        pic: require("@/static/image/new6.png"),
+      };
+      this.list[5] = {
+        num:
+          this.weatherInfo.pm2point5 != null ? this.weatherInfo.pm2point5 : "-",
+        unit: "ug/m3",
+        name: "Pm2.5",
+        pic: require("@/static/image/new4.png"),
+      };
+      this.list[6] = {
+        num: this.weatherInfo.kpa != null ? this.weatherInfo.kpa : "-",
+        unit: "kpa",
+        name: "大气压",
+        pic: require("@/static/image/new7.png"),
+      };
+      this.list[7] = {
+        num: this.weatherInfo.lux != null ? this.weatherInfo.lux : "-",
+        unit: "lux",
+        name: "光照",
+        pic: require("@/static/image/new8.png"),
+      };
+      this.$forceUpdate();
     },
     goPrice() {
-     
       uni.navigateTo({
-          url: "/pages/price/index",
+        url: "/pages/price/index",
       });
-      
     },
     goCompare() {
       uni.navigateTo({
@@ -935,13 +942,18 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.nonews{
+.contentindexadd {
+  margin-top: -225rpx;
+}
+.nonews {
   flex: 1;
   margin-left: 10rpx;
+  color: #939599;
+  font-size: 26rpx;
 }
-.u-notice-bar{
-  background: #fff!important;
-  padding: 10rpx!important;
+.u-notice-bar {
+  background: #fff !important;
+  padding: 10rpx !important;
 }
 .srdiv {
   display: flex;
@@ -1051,6 +1063,7 @@ export default {
             font-weight: bold;
             color: #000;
             font-size: 32rpx !important;
+            margin-right: 8rpx;
           }
         }
       }
@@ -1129,15 +1142,14 @@ export default {
     font-size: 28rpx;
     color: #313233;
     margin-top: 30rpx;
-   
-   
-      display: flex;
-    
-      display: flex;
-      justify-content: flex-end;
+
+    display: flex;
+
+    display: flex;
+    justify-content: flex-end;
     .left {
       font-weight: bold;
-       background-color: #29cc96;
+      background-color: #29cc96;
       color: #fff;
       padding: 10rpx 20rpx;
       border-radius: 16rpx;
@@ -1184,7 +1196,7 @@ export default {
     }
   }
   .graycontent {
-    .nodataspan{
+    .nodataspan {
       font-size: 24rpx;
     }
     .infotitle {

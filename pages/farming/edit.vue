@@ -440,7 +440,7 @@ export default {
         return;
       }
       request({
-        url: "/data/teagarden/getGardenOptionsByUser?userId=" + userInfo.userId,
+        url: "/data/teagarden/getGardenOptionsByBase?"+'baseId='+uni.getStorageSync('baseId'),
         method: "get",
         isAuth: false,
         data: {},

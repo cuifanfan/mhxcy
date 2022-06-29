@@ -5,7 +5,7 @@
       <div @click="active = !active" :class="[active ? 'c1active' : '', 'c1']">
         推送消息
       </div>
-      <div @click="active = !active" :class="[!active ? 'c1active' : '', 'c1']">
+      <div @click="changeTab" :class="[!active ? 'c1active' : '', 'c1']">
         告警消息
       </div>
     </div>
@@ -28,7 +28,8 @@
       </div>
     </div>
     <div class="content contentclear3" v-else>
-      <div class="scrolldiv">
+      <div class="scrolldivwrap">
+        <div class="scrolldiv" ref="scrollRef">
         <div class="datewrap flexcenter">
           <div
             :class="[activeone == index ? 'w1active' : '', 'w1']"
@@ -42,9 +43,14 @@
               {{ item.dates.split('-')[2] }}
             </div>
             <div class="slide" v-if="parseInt(item.counts)>0 "></div>
+            
           </div>
+          
         </div>
+        
       </div>
+      </div>
+      
 
       <div class="panel flexcenter index1">
         <!-- <div class="p1">
@@ -163,7 +169,7 @@ export default {
         },
       ],
       activeone: 0,
-      active: false,
+      active:true,
       showType: false,
       showType2: false,
       pageName: "消息通知",
@@ -258,6 +264,12 @@ export default {
     
   },
   methods: {
+    changeTab(){
+      this.active=!this.active
+      this.$nextTick(()=>{
+        this.$refs.scrollRef.scrollTo(999999,0)
+      })
+    },
     changeGj(item,index){
       this.activeone = index
       console.log(item)
@@ -299,8 +311,9 @@ export default {
          
         },
       }).then((res) => {
-        res.data.reverse()
+        // res.data.reverse()
         this.date=res.data
+        this.activeone=res.data.length-1
       })
     },
    
@@ -353,6 +366,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
 .newscontent {
   .type4 {
     .title {
@@ -420,6 +434,7 @@ export default {
 }
 .contentclear3 {
   margin: 0 !important;
+  
 }
 .w1active {
   .slide {
@@ -431,10 +446,13 @@ export default {
     font-size: 20rpx;
   }
 }
+.scrolldivwrap{
+  background: #fff;
+}
 .scrolldiv{
    overflow-x: scroll;
    background: #fff;
-  
+   margin:0 15rpx;
 }
 .datewrap {
   background: #fff;
@@ -454,6 +472,9 @@ export default {
     margin: 0 20rpx;
     width: 5%;
     flex-shrink: 0;
+  }
+  .w1:first-child{
+    margin-left: 10rpx!important;
   }
   .w3 {
     font-size: 20rpx;
@@ -503,6 +524,7 @@ export default {
 }
 .content {
   margin: 32rpx;
+  padding-top: 0!important;
   .farmtitle {
     font-weight: bold;
     margin-bottom: 10rpx;

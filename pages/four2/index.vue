@@ -439,6 +439,7 @@ export default {
     this.userInfo=userInfo
     this.getEnvironment();
     this.getCurrentMoisture()
+    this.getIotdevice()
   },
   onShow() {
     if (uni.getStorageSync("four2TabIndex")) {
@@ -448,13 +449,25 @@ export default {
     }
   },
   methods: {
+    getIotdevice(){
+      request({
+        url: "/data/iotdevice/page?type=6",
+        method: "get",
+        isAuth: false,
+        data: {
+          baseId:uni.getStorageSync('baseId')
+        },
+      }).then((res) => {
+
+      })
+    },
     getEnvironment() {
       request({
         url: "/data/meteorologicalrecords/getCurrentWeather",
         method: "get",
         isAuth: false,
         data: {
-          userId:this.userInfo.userId
+          baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
         this.weatherList = res.data;
@@ -479,23 +492,24 @@ export default {
             name: "风向",
             pic: require("@/static/image/new3.png"),
           };
+          
           add[3] = {
             num: item2.air_tem!=null ? item2.air_tem : "-",
             unit: "℃",
             name: "空气温度",
-            pic: require("@/static/image/new4.png"),
+            pic: require("@/static/image/new5.png"),
           };
           add[4] = {
             num: item2.air_hum!=null ? item2.air_hum : "-",
             unit: "%RH",
             name: "空气湿度",
-            pic: require("@/static/image/new5.png"),
+            pic: require("@/static/image/new6.png"),
           };
           add[5] = {
             num: item2.pm2point5!=null ? item2.pm2point5 : "-",
             unit: "ug/m3",
             name: "Pm2",
-            pic: require("@/static/image/new6.png"),
+            pic: require("@/static/image/new4.png"),
           };
           add[6] = {
             num: item2.kpa!=null ? item2.kpa : "-",
@@ -520,7 +534,7 @@ export default {
         method: "get",
         isAuth: false,
         data: {
-          userId:this.userInfo.userId
+          baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
         this.soilList=res.data
@@ -548,7 +562,7 @@ export default {
     askVideo() {
       let userInfo=uni.getStorageSync('userInfo')
       request({
-        url: "/data-thirdpart/fluorite/getVideoList/"+userInfo.userId+"?type=2",
+        url: "/data-thirdpart/fluorite/getVideoList/"+uni.getStorageSync('baseId'),
         method: "get",
         isAuth: false,
         data: {},
@@ -598,6 +612,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.content{
+   padding-top: 0!important;
+}
 .addvideowrap{
   height: 476rpx;
 }
@@ -625,6 +642,7 @@ export default {
         font-weight: bold;
         color: #000;
         font-size: 32rpx !important;
+        margin-right: 8rpx;
       }
     }
   }

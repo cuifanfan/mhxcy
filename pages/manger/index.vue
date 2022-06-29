@@ -29,6 +29,15 @@
           </div> -->
         </div>
       </div>
+      <div class="nodatadiv" v-if="nodataFlag">
+        <image
+                  mode="widthFix"
+                  
+                  class="nodatapic"
+                  src="@/static/image/nodata.png"
+                />
+      </div>
+      
     </div>
   </div>
 </template>
@@ -41,6 +50,7 @@ export default {
   },
   data() {
     return {
+      nodataFlag:false,
       list:[],
       activeone: 4,
       active: false,
@@ -54,6 +64,9 @@ export default {
   },
   onLoad(){
     this.askList()
+    uni.$on("changeTeaSure", (data)=>{
+      this.askList()
+    })
   },
   methods: {
     typeSelect() {},
@@ -71,6 +84,11 @@ export default {
          baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
+        if(res.data.records.length==0){
+          this.nodataFlag=true
+        }else{
+          this.nodataFlag=false
+        }
         this.list=res.data.records
       })
     },
@@ -78,7 +96,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-
 .index1 {
   background: #ffffff;
   padding: 20rpx 32rpx;

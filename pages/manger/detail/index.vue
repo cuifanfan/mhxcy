@@ -1355,14 +1355,14 @@ export default {
           unit: "%",
           name: "土壤湿度",
           val: ["", ""],
-          pic: require("@/static/image/k4.png"),
+          pic: require("@/static/image/s6.png"),
         },
         {
           num: 0.35,
           unit: "us/cm",
           name: "土壤EC值",
           val: ["", ""],
-          pic: require("@/static/image/k5.png"),
+          pic: require("@/static/image/k4.png"),
         },
         {
           num: 6.5,
@@ -1463,7 +1463,7 @@ export default {
     this.userInfo = uni.getStorageSync("userInfo");
     let getDeviceList = uni.getStorageSync("deviceList");
     if (getDeviceList) {
-      this.getDeviceList = JSON.parse(getDeviceList);
+      this.getDeviceList = getDeviceList
     }
     this.askWeather();
     this.askWeatherStation();
@@ -1501,6 +1501,7 @@ export default {
           userId: this.userInfo.userId,
           year: year,
           gardenId: this.teaId,
+          baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
         if (type == 0) {
@@ -1539,9 +1540,10 @@ export default {
         isAuth: false,
         data: {
           content: val,
-          userId: this.userInfo.userId,
+         
           year: year,
           gardenId: this.teaId,
+          baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
         //获取所有的项目
@@ -1718,7 +1720,7 @@ export default {
       let userInfo = uni.getStorageSync("userInfo");
       request({
         url:
-          "/data/moisturerecords/getCurrentMoisture?userId=" + userInfo.userId,
+          "/data/moisturerecords/getCurrentMoisture?" +'baseId='+uni.getStorageSync('baseId'),
         method: "get",
         isAuth: false,
         data: {},
@@ -1754,10 +1756,13 @@ export default {
       });
     },
 
-    getTotalAllThisAndLastYear() {
+    getTotalAllThisAndLastYear() {  
       let find = this.getDeviceList.find((item) => {
         return item.type == 1;
       });
+      if(!find){
+        return 
+      }
       request({
         url:
           "/data/meteorologicalrecords/getTotalAllThisAndLastYear?deviceId=" +
@@ -1767,13 +1772,16 @@ export default {
         data: {},
       }).then((res) => {
         this.allOther = res.data;
-        console.log("ressdsdadada===", res);
+        
       });
     },
-    fluoritescreenshot() {
+    fluoritescreenshot() {  
       let find = this.getDeviceList.find((item) => {
         return item.type == 2;
       });
+      if(!find){
+        return 
+      }
       request({
         url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial=" + find.id,
         method: "get",
@@ -1821,6 +1829,9 @@ export default {
       let find = this.getDeviceList.find((item) => {
         return item.type == 2;
       });
+      if(!find){
+        return 
+      }
       uni.navigateTo({
         url: "/pages/four2/site/index?id=" + find.id,
       });
@@ -1829,6 +1840,9 @@ export default {
       let find = this.getDeviceList.find((item) => {
         return item.type == 2;
       });
+      if(!find){
+        return 
+      }
       if (find) {
         request({
           url: "/data-thirdpart/fluorite/getVideoDevice/" + find.id,
@@ -1857,6 +1871,9 @@ export default {
       let find = this.getDeviceList.find((item) => {
         return item.type == 1;
       });
+      if(!find){
+        return 
+      }
       request({
         url: "/data/meteorologicalrecords/getSumRainInYear",
         method: "get",
@@ -1897,6 +1914,9 @@ export default {
       let find = this.getDeviceList.find((item) => {
         return item.type == 1;
       });
+      if(!find){
+        return 
+      }
       request({
         url: "/data/meteorologicalrecords/getSumTemInYear",
         method: "get",
@@ -1968,7 +1988,7 @@ export default {
         method: "get",
         isAuth: false,
         data: {
-          userId: userInfo.userId,
+           baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
         //getEnInfo
@@ -1998,19 +2018,19 @@ export default {
           num: item2.air_tem != null ? item2.air_tem : "-",
           unit: "℃",
           name: "空气温度",
-          pic: require("@/static/image/new4.png"),
+          pic: require("@/static/image/new5.png"),
         };
         add[4] = {
           num: item2.air_hum != null ? item2.air_hum : "-",
           unit: "%RH",
           name: "空气湿度",
-          pic: require("@/static/image/new5.png"),
+          pic: require("@/static/image/new6.png"),
         };
         add[5] = {
           num: item2.pm2point5 != null ? item2.pm2point5 : "-",
           unit: "ug/m3",
-          name: "Pm2",
-          pic: require("@/static/image/new6.png"),
+          name: "Pm2.5",
+          pic: require("@/static/image/new4.png"),
         };
         add[6] = {
           num: item2.kpa != null ? item2.kpa : "-",
@@ -2025,20 +2045,23 @@ export default {
           pic: require("@/static/image/new8.png"),
         };
         this.$set(this.getEnInfo, "arr", add);
-
-        console.log("xxxscadas", this.weatherList);
       });
     },
     askWeatherStation() {
       let find = this.getDeviceList.find((item) => {
         return item.type == 1;
       });
+      if(!find){
+        return 
+      }
       if (find) {
         request({
           url: "/data/meteorologicalrecords/getCurrentWeather/" + find.id,
           method: "get",
           isAuth: false,
-          data: {},
+          data: {
+            baseId:uni.getStorageSync('baseId')
+          },
         })
           .then((res) => {
             console.log("xxx", res);
@@ -2066,27 +2089,20 @@ export default {
               num: dataGet[7]["alarmMsg"],
               unit: "℃",
               name: "空气温度",
-              pic: require("@/static/image/new4.png"),
+              pic: require("@/static/image/new5.png"),
             };
             this.list2[4] = {
               num: dataGet[8]["alarmMsg"],
               unit: "%RH",
               name: "空气湿度",
-              pic: require("@/static/image/new5.png"),
-            };
-            this.list2[5] = {
-              num: dataGet[9]["alarmMsg"],
-              unit: "ug/m3",
-              name: "Pm10",
               pic: require("@/static/image/new6.png"),
             };
-            // this.list2[6]={
-            //   num: dataGet[5][1]['alarmMsg'],
-            //   unit: "ug/m3",
-            //   name: "Pm2.5",
-            //   pic: require("@/static/image/new.png"),
-            // }
-
+            this.list2[5] = {
+              num: dataGet[10]["alarmMsg"],
+              unit: "ug/m3",
+              name: "Pm2.5",
+              pic: require("@/static/image/new4.png"),
+            };
             this.list2[6] = {
               num: dataGet[11]["alarmMsg"],
               unit: "kpa",
@@ -2511,7 +2527,7 @@ export default {
         font-weight: bold;
         color: #000;
         font-size: 32rpx !important;
-        margin-right: 4rpx;
+        margin-right: 8rpx;
       }
     }
   }

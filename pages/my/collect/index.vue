@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
-    <div class="index1 index1clear">
+    <div class="index1 index1clear indexadd3">
       <div v-for="(item, index) in list" :key="index" class="img2">
         <div class="wzdiv">
           <div class="header header7 flexcenter"  @click="goDetail(item)">
@@ -185,6 +185,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.indexadd3{
+  padding-top: 30rpx!important;
+}
 .zt{
   display: flex;
   align-items: center;
@@ -209,8 +212,11 @@ export default {
    width: 38rpx;
   margin-right: 10rpx;
 }
+.img2:last-child{
+  margin-bottom: 0;
+}
 .img2 {
-  margin-top: 30rpx !important;
+  margin-bottom: 30rpx;
   .pic {
     width: 100%;
   }

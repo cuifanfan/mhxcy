@@ -24,6 +24,15 @@
             mode="widthFix"
             class="videopic"
             :src="baseUrl + item.url"
+            v-if="!type"
+          />
+          
+          <image
+            @click="preview(index)"
+            mode="widthFix"
+            class="videopic"
+            :src="item.imagesUrl"
+            v-else
           />
           <div class="text">{{ item.createTime }}</div>
         </div>
@@ -52,6 +61,7 @@ export default {
   },
   data() {
     return {
+      type:null,
       listOver:false,
       current:1,
       moment,
@@ -97,6 +107,7 @@ export default {
   },
   onLoad(option) {
     this.getId=option.id
+    this.type=option.type
     this.fluoritescreenshot();
   },
   onReachBottom() {
@@ -109,11 +120,12 @@ export default {
   methods: {
     typeSelect() {},
     preview(i) {
+
       uni.previewImage({
         // 预览时，默认显示图片的索引
         current: i,
         // 所有图片 url 路径的数组  //这里直接把图片列表的数组放入即可
-        urls: this.list.map((item) => this.baseUrl+item.url),
+        urls:this.type?this.list.map((item) => item.imagesUrl): this.list.map((item) => this.baseUrl+item.url),
       });
     },
     confirm(e) {
@@ -124,6 +136,7 @@ export default {
       this.fluoritescreenshot(true)
     },
     fluoritescreenshot(flag) {
+      let url=this.type?'/data/wormdistinguishdata/page?deviceAddr=':'/data-thirdpart/fluoritescreenshot/page?deviceSerial='
       let data={
         current:this.current
       }
@@ -132,7 +145,7 @@ export default {
         data.endTime=this.endTime
       }
       request({
-        url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial=" + this.getId,
+        url:url +  '406220002', // this.getId,
         method: "get",
         isAuth: false,
         data: data,
@@ -140,8 +153,10 @@ export default {
         if(flag){
           this.list=[]
         }
+        if(!this.type){
+          res.data.records.reverse()
+        }
         this.list =this.list.concat(res.data.records)
-        this.list=this.list.reverse()
         if (res.data.records.length == 0) {
           uni.showToast({
             title: "暂无更多数据",
@@ -184,11 +199,14 @@ export default {
     height: 264rpx;
     .videopic {
       width: 100%;
+      height: 210rpx!important;
     }
     .text {
-      padding: 15rpx;
-      font-size: 28rpx;
-      color: #626466;
+        font-size: 15px;
+        color: #626466;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
   }
   .test1 {
@@ -197,7 +215,6 @@ export default {
   }
   .test3 {
     position: relative;
-    margin-top: 20rpx;
     background: #fff;
     border-radius: 200rpx;
     overflow: hidden;

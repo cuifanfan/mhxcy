@@ -233,7 +233,15 @@
 				"navigationBarTitleText": "商品批次列表",
 				"navigationStyle": "custom" 
 			}
+		},
+		{
+			"path": "pages/my/investment/index",
+			"style": {
+				"navigationBarTitleText": "投入品管理",
+				"navigationStyle": "custom" 
+			}
 		}
+		
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -266,8 +274,8 @@
 			},
 			{
 				"pagePath": "pages/my/index",
-				"iconPath": "static/image/my.png",
-				"selectedIconPath": "static/image/mya.png",
+				"iconPath": "static/image/my2.png",
+				"selectedIconPath": "static/image/mya2.png",
 				"text": "我的"
 			}
 		]

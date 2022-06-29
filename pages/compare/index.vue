@@ -500,8 +500,8 @@ export default {
         isAuth: false,
         data: {
           content: val,
-          userId: this.userInfo.userId,
           year: year,
+          baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
         //获取所有的项目
@@ -681,8 +681,8 @@ export default {
         method: "get",
         isAuth: false,
         data: {
-          userId: this.userInfo.userId,
           year: year,
+          baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
         if (type == 0) {

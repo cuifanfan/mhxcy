@@ -1,43 +1,57 @@
 <template>
-  <view
-    :class="[type == 2 ? 'nav-small-box' : '', 'nav-box']"
-    :style="phoneHeight"
-  >
-    <u-popup :show="showNews" mode="top" round="10"  :safeAreaInsetTop="true" :overlay="false">
-        <view class="newsdiv">
-            <text>人生若只如初见，何事秋风悲画扇</text>
-        </view>
-	  </u-popup>
-    <image mode="widthFix" v-if="type == 1" src="@/static/image/headerbg.png" class="navbg" />
-    <image
-     mode="widthFix"
-      v-if="type == 2||type==3"
-      src="@/static/image/header2.png"
-      class="navbg navbg2"
-    />
-    <view class="navtitle" :style="{ top: type == 2 ? '32rpx' : '' }">
-      <div class="iconwrap">
-        <u-icon
-          @click="goBack"
-          name="arrow-left"
-          color="#fff"
-          size="20"
-          v-if="type == 2&&backHidden==1"
-        ></u-icon>
-      </div>
-      {{ titleName }}
-      <div class="iconwrap2" v-if="addIcon==2">
-           <u-icon
-          @click="addOne"
-          name="plus"
-          color="#fff"
-          size="20"
-        ></u-icon>   
-      </div>
+  <div>
+    <view
+      :class="[
+        type == 2 ? 'nav-small-box' : '',
+        tabFlag == 2 ? 'clearFixed' : '',
+        'nav-box',
+      ]"
      
+    >
+     <!-- :style="phoneHeight" -->
+      <u-popup
+        :show="showNews"
+        mode="top"
+        round="10"
+        :safeAreaInsetTop="true"
+        :overlay="false"
+      >
+        <view class="newsdiv">
+          <text>人生若只如初见，何事秋风悲画扇</text>
+        </view>
+      </u-popup>
+      <image
+        mode="widthFix"
+        v-if="type == 1"
+        src="@/static/image/headerbg.png"
+        class="navbg"
+      />
+      <image
+        mode="widthFix"
+        v-if="type == 2 || type == 3"
+        src="@/static/image/header2.png"
+        class="navbg navbg2"
+      />
+      <view class="navtitle" :style="{ top: type == 2 ? '32rpx' : '' }">
+        <div class="iconwrap">
+          <u-icon
+            @click="goBack"
+            name="arrow-left"
+            color="#fff"
+            size="20"
+            v-if="type == 2 && backHidden == 1"
+          ></u-icon>
+        </div>
+        {{ titleName }}
+        <div class="iconwrap2" v-if="addIcon == 2">
+          <u-icon @click="addOne" name="plus" color="#fff" size="20"></u-icon>
+        </div>
+      </view>
+      <!-- <socket/> -->
+      
     </view>
-    <!-- <socket/> -->
-  </view>
+    <div class="headerHidden"></div>
+  </div>
 </template>
 <script>
 //import app from "../App.vue";
@@ -56,18 +70,22 @@ export default {
       type: Number,
       default: 1,
     },
-    addIcon:{
-      type:Number,
-      default:1
-    }
+    addIcon: {
+      type: Number,
+      default: 1,
+    },
+    tabFlag: {
+      type: Number,
+      default: 1,
+    },
   },
   // components: {
-  //   socket  
+  //   socket
   // },
   data() {
     return {
-      clear:null,
-      showNews:false,
+      clear: null,
+      showNews: false,
       phoneHeight: "", //这里在进行调用
     };
   },
@@ -75,11 +93,9 @@ export default {
     this.getPhoneHeight();
     // console.log(this.phoneHeight);
   },
-  onShow(){
-   
-  },
-  mounted(){
-    console.log('header go!!!')
+  onShow() {},
+  mounted() {
+    console.log("header go!!!");
     // uni.$off("newCome");
     // uni.$on("newCome", (data)=>{
     //     this.showNews=true
@@ -99,23 +115,22 @@ export default {
   },
 
   methods: {
-    addOne(){
-      uni.$emit('addOneFriend','');
+    addOne() {
+      uni.$emit("addOneFriend", "");
     },
     goBack() {
-      let currentRoutes = getCurrentPages(); 
+      let currentRoutes = getCurrentPages();
       let currentRoute = currentRoutes[currentRoutes.length - 1].route;
-      console.log('currentRoute',currentRoute)
+      console.log("currentRoute", currentRoute);
       // if(currentRoute=='pages/farming/index'||currentRoute=='pages/farming/edit'||currentRoute=='pages/four2/index'){
       //   uni.switchTab({
       //     url: "/pages/index/index",
       //   });
       // }else{
-        uni.navigateBack({
-		      delta:1,
-	      })
+      uni.navigateBack({
+        delta: 1,
+      });
       //}
-      
     },
     getPhoneHeight() {
       //获取高度
@@ -144,25 +159,35 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.newsdiv{
+.headerHidden {
+  width: 100%;
+  background: red;
+  margin-top: 200rpx;
+}
+.newsdiv {
   border-radius: 10rpx;
   padding: 20rpx;
-
 }
-.iconwrap2{
+.iconwrap2 {
   position: absolute;
   right: 20rpx;
 }
 .nav-small-box {
   height: 200rpx !important;
 }
+.clearFixed {
+  position: relative !important;
+  z-index: 0 !important;
+}
 .nav-box {
-  position: relative;
+  position: fixed;
   width: 100%;
   height: 235rpx;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 88;
+  top: 0;
 }
 .navbg {
   width: 100%;

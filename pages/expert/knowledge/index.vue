@@ -19,16 +19,32 @@
       <div class="search">
         热门搜索:
         <div class="s1">
-          <div class="s2" @click="hotGo(item)" v-for="(item,index) in hot" :key="index">{{item}}</div>
-          
+          <div
+            class="s2"
+            @click="hotGo(item)"
+            v-for="(item, index) in hot"
+            :key="index"
+          >
+            {{ item }}
+          </div>
         </div>
       </div>
       <div class="tab flexcenter">
-        <div :class="[activeTabIndex==0?'tab2':'','tab1']" @click="changeTab(0)">最近更新</div>
-        <div :class="[activeTabIndex==1?'tab2':'','tab1']" @click="changeTab(1)">推荐</div>
-        <!-- <div class="tab1">
+        <div
+          :class="[activeTabIndex == 0 ? 'tab2' : '', 'tab1']"
+          @click="changeTab(0)"
+        >
+          最近更新
+        </div>
+        <div
+          :class="[activeTabIndex == 1 ? 'tab2' : '', 'tab1']"
+          @click="changeTab(1)"
+        >
+          推荐
+        </div>
+        <div class="tab1">
           <div class="knowicon" @click="activeTab = !activeTab">
-            知识推荐
+            知识分类
             <div class="tab1icon">
               <u-icon
                 v-if="!activeTab"
@@ -38,7 +54,7 @@
                 size="15"
                 name="arrow-down-fill"
               ></u-icon>
-                <u-icon
+              <u-icon
                 v-else
                 slot="right"
                 @click="showType = true"
@@ -47,54 +63,105 @@
                 name="arrow-up-fill"
               ></u-icon>
             </div>
-          </div>
-          <div class="select" v-if="activeTab">
-            <div
-              @click="chooseOne(item)"
-              class="selectchild"
-              v-for="(item, index) in select"
-              :key="index"
-            >
-              {{ item.name }}
+            <div class="select" v-if="activeTab">
+              <div
+                @click="chooseOne(item)"
+                class="selectchild"
+                v-for="(item, index) in select"
+                :key="index"
+              >
+                {{ item.categoryName }}
+              </div>
             </div>
           </div>
-        </div> -->
-        <div :class="[activeTabIndex==3?'tab2':'','tab1']" @click="changeTab(3)">我的收藏</div>
+        </div>
+        <div
+          :class="[activeTabIndex == 3 ? 'tab2' : '', 'tab1']"
+          @click="changeTab(3)"
+        >
+          我的收藏
+        </div>
       </div>
     </div>
     <div class="index1 index1clear">
       <div v-for="(item, index) in list" :key="index" class="img2">
         <div class="wzdiv">
-          <div class="header header7 flexcenter"  @click="goDetail(item)">
-            <image mode="widthFix" class="zzpic2" src="@/static/image/Frame.png" />
-            <div class="header2">{{item.title}}</div>
+          <div class="header header7 flexcenter" @click="goDetail(item)">
+            <image
+              mode="widthFix"
+              class="zzpic2"
+              src="@/static/image/Frame.png"
+            />
+            <div class="header2">{{ item.title }}</div>
           </div>
-          <div  @click="goDetail(item)" class="ns1 ns1flex" v-if="item.cover&&item.cover.length>0">
-            <image v-for="(item2,index2) in item.cover" :key="index2" mode="widthFix" class="zzpic" :src="baseUrl+item2" />
-           
+          <div
+            @click="goDetail(item)"
+            class="ns1 ns1flex"
+            v-if="item.cover && item.cover.length > 0"
+          >
+            <image
+              v-for="(item2, index2) in item.cover"
+              :key="index2"
+              mode="widthFix"
+              class="zzpic"
+              :src="baseUrl + item2"
+            />
           </div>
           <div class="text">
-            {{item.content}}
+            {{ item.content }}
           </div>
           <div class="zt">
             <div class="ztt1">
               <image mode="widthFix" class="tx" src="@/static/image/man.png" />
               <span class="name">
-                {{item.author}}
+                {{ item.author }}
               </span>
               <div class="ztt2 flexcenter">
-                <image mode="widthFix" @click="addCollect(item)" v-if="!item.isCollectionByMe" class="tx2" src="@/static/image/sc.png" />
-                <image mode="widthFix" @click="removeCollect(item)" v-else class="tx2" src="@/static/image/sca.png" />
-                <image mode="widthFix" class="tx1" src="@/static/image/zf.png" />
+                <image
+                  mode="widthFix"
+                  @click="addCollect(item)"
+                  v-if="!item.isCollectionByMe"
+                  class="tx2"
+                  src="@/static/image/sc.png"
+                />
+                <image
+                  mode="widthFix"
+                  @click="removeCollect(item)"
+                  v-else
+                  class="tx2"
+                  src="@/static/image/sca.png"
+                />
+                <image
+                  mode="widthFix"
+                  @click="shareHandle(item)"
+                  class="tx1"
+                  src="@/static/image/zf.png"
+                />
               </div>
             </div>
             <div class="ztt1">
-              {{item.createTime}}
+              {{ item.createTime }}
             </div>
           </div>
         </div>
       </div>
     </div>
+    <u-popup :show="pshow" mode="bottom" @close="close">
+      <div class="share">
+        <div class="share1" @click="appShare('WXSceneSession')">
+          <div>
+            <image mode="widthFix" class="tx22" src="@/static/image/wx.png" />
+          </div>
+          微信好友
+        </div>
+        <div class="share1" @click="appShare('WXSenceTimeline')">
+          <div>
+            <image mode="widthFix" class="tx22" src="@/static/image/pyq.png" />
+          </div>
+          微信朋友圈
+        </div>
+      </div>
+    </u-popup>
   </div>
 </template>
 <script>
@@ -107,173 +174,221 @@ export default {
   },
   data() {
     return {
-      hot:['普洱','台树茶','茶叶保存'],
-      keyword:'',
-      baseUrl:BASE_URL,
-      userInfo:null,
-      list:[],
-      listOver:false,
+      shareInfo: null,
+      pshow: false,
+      hot: ["普洱", "台树茶", "茶叶保存"],
+      keyword: "",
+      baseUrl: BASE_URL,
+      userInfo: null,
+      list: [],
+      listOver: false,
       activeTab: false,
       current: 1,
-      select: [
-        {
-          name: "全部",
-          value: 0,
-        },
-        {
-          name: "待回复",
-          value: 0,
-        },
-        {
-          name: "已回复",
-          value: 0,
-        },
-      ],
+      select: [],
       pageName: "农业知识库",
       numValue: "",
       nameValue: "",
       typeValue: "",
-      category:'',
-      recommend:false,
-      activeTabIndex:0,
-      collectionByMeFlag:false,
+      category: "",
+      recommend: false,
+      activeTabIndex: 0,
+      collectionByMeFlag: false,
     };
   },
-  onLoad(){
-    this.userInfo=uni.getStorageSync('userInfo')
-    this.farminformation()
+  onLoad() {
+    this.userInfo = uni.getStorageSync("userInfo");
+    this.farminformation();
+    this.getSort();
   },
   onReachBottom() {
     console.log("触底了");
-    if(!this.listOver){
+    if (!this.listOver) {
       this.current++;
       this.farminformation();
     }
   },
   methods: {
-    hotGo(item){
-      this.keyword=item
-      this.farminformation(true)
+    getSort() {
+      request({
+        url: "/data/informationcategory/getInformationCategoryOptions",
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        let one = [
+          {
+            categoryName: "全部",
+          },
+        ];
+        this.select = one.concat(res.data);
+      });
     },
-    goDetail(item){
-      uni.setStorageSync('articleContent',JSON.stringify(item))
+    shareHandle(item) {
+      this.pshow = true;
+      this.shareInfo = item;
+    },
+    appShare(scene) {
+      console.log(this.shareInfo);
+      //return
+      let that = this;
+      let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
+      let curRoute = routes[routes.length - 1].$page.fullPath; // 获取当前页面路由，也就是最后一个打开的页面路由
+      uni.share({
+        provider: "weixin", //分享服务提供商（即weixin|qq|sinaweibo）
+        scene: scene, //场景，可取值参考下面说明。
+        type: 0, //分享形式
+        href: `${BASE_URL}${curRoute}&spread=${that.uid}`, //跳转链接
+        title: that.shareInfo.title, //分享内容的标题
+        summary: that.shareInfo.content, //分享内容的摘要
+        imageUrl: that.baseUrl + that.shareInfo.cover[0], //图片地址
+        success: function (res) {
+          that.pshow = false; //成功后关闭底部弹框
+        },
+        fail: function (err) {
+          uni.showToast({
+            title: "分享失败",
+            icon: "none",
+            duration: 2000,
+          });
+          that.pshow = false;
+        },
+      });
+    },
+
+    hotGo(item) {
+      this.keyword = item;
+      this.farminformation(true);
+    },
+    goDetail(item) {
+      uni.setStorageSync("articleContent", JSON.stringify(item));
       uni.navigateTo({
-        url:'/pages/expert/article/index'
-      })
+        url: "/pages/expert/article/index",
+      });
     },
-    addCollect(item){
+    addCollect(item) {
       request({
         url: "/data/usercollection",
         method: "post",
         isAuth: false,
         data: {
-          informationId:item.id,
-          userId:this.userInfo.userId
+          informationId: item.id,
+          userId: this.userInfo.userId,
         },
-      })
-      .then((res) => { 
-        item.isCollectionByMe=true
+      }).then((res) => {
+        item.isCollectionByMe = true;
         uni.showToast({
           title: "收藏成功",
           icon: "none",
           duration: 850,
         });
-      })
+      });
     },
-    changeTab(val){
-      this.activeTabIndex=val
-      this.recommend=val==1?true:false
-      this.collectionByMeFlag=val==3?true:false
-      this.farminformation(true)
+    changeTab(val) {
+      this.activeTabIndex = val;
+      this.recommend = val == 1 ? true : false;
+      this.collectionByMeFlag = val == 3 ? true : false;
+      this.farminformation(true);
     },
-    removeCollect(item){
+    removeCollect(item) {
       request({
-        url: "/data/usercollection/removeByUserAndInformation?informationId="+item.id+"&userId="+this.userInfo.userId,
+        url:
+          "/data/usercollection/removeByUserAndInformation?informationId=" +
+          item.id +
+          "&userId=" +
+          this.userInfo.userId,
         method: "delete",
         isAuth: false,
-        data: {
-        
-        },
-      })
-      .then((res) => { 
-         uni.showToast({
+        data: {},
+      }).then((res) => {
+        uni.showToast({
           title: "取消收藏成功",
           icon: "none",
           duration: 850,
         });
-        item.isCollectionByMe=false
-      })
+        item.isCollectionByMe = false;
+      });
     },
-    farminformation(init){
-     
-      if(init){
-        
+    farminformation(init) {
+      if (init) {
         // if(this.keyword==''){
-        //   return 
+        //   return
         // }
-        this.current=1
-        this.list=[]
+        this.current = 1;
+        this.list = [];
       }
       request({
-        url:"/data/farminformation/pageFront",
+        url: "/data/farminformation/pageFront",
         method: "get",
         isAuth: false,
         data: {
           current: this.current,
-          userId:this.userInfo.userId,
-          category:this.category,
-          keyword:this.keyword,
-          recommend:this.recommend,
-          collectionByMe:this.collectionByMeFlag
+          userId: this.userInfo.userId,
+          category: this.category,
+          keyword: this.keyword,
+          recommend: this.recommend,
+          collectionByMe: this.collectionByMeFlag,
         },
-      })
-      .then((res) => { 
-        this.list=this.list.concat(res.data.records)
-        this.list.forEach((item,index)=>{
-          let get=item.coverImage.split(',')
-          this.$set(item,'cover',get)
-        })
-        console.log(this.list)
+      }).then((res) => {
+        this.list = this.list.concat(res.data.records);
+        this.list.forEach((item, index) => {
+          let get = item.coverImage.split(",");
+          this.$set(item, "cover", get);
+        });
+        console.log(this.list);
         if (res.data.records.length == 0) {
           uni.showToast({
             title: "暂无更多文章",
             icon: "none",
             duration: 850,
           });
-          this.listOver=true
+          this.listOver = true;
         }
-      })
+      });
     },
-    
+
     chooseOne(item) {
-      this.activeTab = !this.activeTab;
+      this.activeTab = false;
+      this.category = item.categoryName=='全部'?'':item.categoryName;
+      this.farminformation(true);
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.zt{
+.share1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.share {
+  display: flex;
+  justify-content: space-around;
+  padding: 25rpx;
+}
+.zt {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.name{
-  margin: 0 40rpx 0 15rpx;  
+.name {
+  margin: 0 40rpx 0 15rpx;
 }
-.ztt1{
+.ztt1 {
   display: flex;
   align-items: center;
-
 }
-.tx{
+.tx {
   width: 40rpx;
 }
-.tx1{
+.tx1 {
   width: 32rpx;
   margin-right: 10rpx;
 }
-.tx2{
-   width: 38rpx;
+.tx22 {
+  width: 80rpx;
+}
+.tx2 {
+  width: 38rpx;
   margin-right: 10rpx;
 }
 .img2 {
@@ -281,23 +396,22 @@ export default {
   .pic {
     width: 100%;
   }
- 
 }
 .wzdiv {
   background: #fff;
   padding: 32rpx;
   border-radius: 32rpx;
   font-size: 28rpx;
-  .zt{
-    color:#626466 ;
+  .zt {
+    color: #626466;
     margin-top: 20rpx;
-    .ztspan{
-      color:#3199F5;
+    .ztspan {
+      color: #3199f5;
       font-weight: bold;
       margin-left: 10rpx;
     }
   }
-  .text{
+  .text {
     font-size: 28rpx;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -333,14 +447,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 .select {
   position: absolute;
-  bottom: -180rpx;
+  top: 62rpx;
   background: #fff;
   padding: 0 10rpx 10rpx 10rpx;
   z-index: 11;
-  width: 75%;
+  width: 136rpx;
   border-radius: 10rpx;
   .topicon {
     position: absolute;

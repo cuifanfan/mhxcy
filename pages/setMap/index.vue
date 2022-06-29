@@ -18,7 +18,7 @@ export default {
       let userInfo = uni.getStorageSync("userInfo");
       request({
         url:
-          "/data/iotdevice/getEachDeviceLatLonByUser?userId=" + userInfo.userId,
+          "/data/iotdevice/getEachDeviceLatLonByBase?userId=" + userInfo.userId,
         method: "get",
         isAuth: false,
         data: {},

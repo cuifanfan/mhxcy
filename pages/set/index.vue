@@ -6,223 +6,333 @@
       class="topbar"
       :titleName="pageName"
     ></header-diy>
-    <div class="farmtab">
-      <div @click="active = !active" :class="[active ? 'c1active' : '', 'c1']">
-        设备列表
-      </div>
-      <div @click="active = !active" :class="[!active ? 'c1active' : '', 'c1']">
-        分析统计
-      </div>
+    <div class="nodatadiv" v-if="nodataFlag">
+      <image
+        mode="widthFix"
+        class="nodatapic"
+        src="@/static/image/nodata.png"
+      />
     </div>
-    <div class="content" v-if="active">
-      <div class="panlewrap flexcenter">
+    <div v-else>
+      <div class="farmtab">
         <div
-          class="panle flexcenter"
-          v-for="(item, index) in tablist"
-          :key="index"
+          @click="active = !active"
+          :class="[active ? 'c1active' : '', 'c1']"
         >
-          <div class="c1">
-            <div class="num flexcenter">
-              {{ item.num }}
-            </div>
-            <div class="text">{{ item.text }}</div>
-          </div>
+          设备列表
         </div>
-      </div>
-      <div class="index2">
-        <div class="title1">
-          <span>气象监测</span>
-          <div class="border"></div>
-        </div>
-        <!-- <div @click="goFarm" class="title2">全部设备</div> -->
-      </div>
-      <div class="scrolldiv">
         <div
-          class="scrollchild"
-          v-for="(item, index) in weatherList"
-          :key="index"
+          @click="active = !active"
+          :class="[!active ? 'c1active' : '', 'c1']"
         >
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
-                {{ item.name }}
+          分析统计
+        </div>
+      </div>
+      <div class="content" v-if="active">
+        <div class="panlewrap flexcenter">
+          <div
+            class="panle flexcenter"
+            v-for="(item, index) in tablist"
+            :key="index"
+          >
+            <div class="c1">
+              <div class="num flexcenter">
+                {{ item.num }}
               </div>
-              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
+              <div class="text">{{ item.text }}</div>
             </div>
+          </div>
+        </div>
+        <div class="index2">
+          <div class="title1">
+            <span>气象监测</span>
+            <div class="border"></div>
+          </div>
+          <!-- <div @click="goFarm" class="title2">全部设备</div> -->
+        </div>
+        <div class="scrolldiv">
+          <div
+            class="scrollchild"
+            v-for="(item, index) in weatherList"
+            :key="index"
+          >
+            <div class="detailwrap">
+              <div class="d1wrap">
+                <div class="d1 flexcenter">
+                  <div class="d2 flexcenter" v-if="item.status == 'online'">
+                    在线
+                  </div>
+                  {{ item.name }}
+                </div>
+                <div class="btnd flexcenter" @click="goDetail2(2, item)">
+                  查看详情
+                </div>
+              </div>
 
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                {{ item.address ? item.address : "-" }}
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                {{ item.create_time }}
-              </div>
-            </div>
-          </div>
-          <div class="index1 index90">
-            <div
-              class="index91"
-              :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
-              v-for="(item, index) in item.arr"
-              :key="index"
-            >
-              <image mode="widthFix" class="pic92" :src="item.pic" />
-              <div class="index92">
-                <div class="index93">
-                  <span>{{ item.num }}</span
-                  >{{ item.unit }}
+              <div class="d3">
+                <div class="d4" flexcenter>
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/adress2.png"
+                  />
+                  {{ item.address ? item.address : "-" }}
                 </div>
-                {{ item.name }}
+                <div class="d4 flexcenter">
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/time.png"
+                  />
+                  {{ item.create_time }}
+                </div>
+              </div>
+            </div>
+            <div class="index1 index90">
+              <div
+                class="index91"
+                :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
+                v-for="(item, index) in item.arr"
+                :key="index"
+              >
+                <image mode="widthFix" class="pic92" :src="item.pic" />
+                <div class="index92">
+                  <div class="index93">
+                    <span>{{ item.num }}</span
+                    >{{ item.unit }}
+                  </div>
+                  {{ item.name }}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="index2">
-        <div class="title1">
-          <span>墒情监测</span>
-          <div class="border"></div>
+        <div class="index2">
+          <div class="title1">
+            <span>墒情监测</span>
+            <div class="border"></div>
+          </div>
+          <!-- <div @click="goFarm" class="title2">全部设备</div> -->
         </div>
-        <!-- <div @click="goFarm" class="title2">全部设备</div> -->
-      </div>
-      <div class="scrolldiv">
-        <div class="scrollchild" v-for="(item, index) in soilList" :key="index">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
-                {{ item.name }}
+        <div class="scrolldiv">
+          <div
+            class="scrollchild"
+            v-for="(item, index) in soilList"
+            :key="index"
+          >
+            <div class="detailwrap">
+              <div class="d1wrap">
+                <div class="d1 flexcenter">
+                  <div class="d2 flexcenter" v-if="item.status == 'online'">
+                    在线
+                  </div>
+                  {{ item.name }}
+                </div>
+                <div class="btnd flexcenter" @click="goDetail2(2, item)">
+                  查看详情
+                </div>
               </div>
-              <div class="btnd flexcenter" @click="goDetail2(2)">查看详情</div>
-            </div>
 
-            <div class="d3">
-              <div class="d4" flexcenter>
+              <div class="d3">
+                <div class="d4" flexcenter>
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/adress2.png"
+                  />
+                  {{ item.address ? item.address : "-" }}
+                </div>
+                <div class="d4 flexcenter">
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/time.png"
+                  />
+                  {{ item.record_time }}
+                </div>
+              </div>
+            </div>
+            <div class="index1 index90">
+              <div class="index91">
                 <image
                   mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
+                  class="pic92"
+                  src="@/static/image/s7.png"
                 />
-                {{item.address?item.address:'-'}}
+                <div class="index92">
+                  <div class="index93">
+                    <span>{{ item.ec }}</span
+                    >us/cm
+                  </div>
+                  土壤EC值
+                </div>
               </div>
-              <div class="d4 flexcenter">
+              <div class="index91">
                 <image
                   mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
+                  class="pic92"
+                  src="@/static/image/s8.png"
                 />
-                {{ item.record_time }}
-              </div>
-            </div>
-          </div>
-          <div class="index1 index90">
-            <div
-              class="index91"
-              
-            >
-              <image mode="widthFix" class="pic92" src="@/static/image/s7.png" />
-              <div class="index92">
-                <div class="index93">
-                  <span>{{item.ec}}</span
-                  >us/cm
+                <div class="index92">
+                  <div class="index93">
+                    <span>{{ item.ph }}</span>
+                  </div>
+                  土壤PH值
                 </div>
-                土壤EC值
               </div>
-            </div>
-            <div
-              class="index91"
-              
-            >
-              <image mode="widthFix" class="pic92" src="@/static/image/s8.png" />
-              <div class="index92">
-                <div class="index93">
-                  <span>{{item.ph}}</span
-                  >
+              <div class="index91">
+                <image
+                  mode="widthFix"
+                  class="pic92"
+                  src="@/static/image/s5.png"
+                />
+                <div class="index92">
+                  <div class="index93">
+                    <span>{{ item.temperature }}</span
+                    >℃
+                  </div>
+                  土壤温度
                 </div>
-                土壤PH值
               </div>
-            </div>
-            <div
-              class="index91" 
-            >
-              <image mode="widthFix" class="pic92" src="@/static/image/s5.png" />
-              <div class="index92">
-                <div class="index93">
-                  <span>{{item.temperature}}</span
-                  >℃
+              <div class="index91">
+                <image
+                  mode="widthFix"
+                  class="pic92"
+                  src="@/static/image/s6.png"
+                />
+                <div class="index92">
+                  <div class="index93">
+                    <span>{{ item.humidity }}</span>
+                    %
+                  </div>
+                  土壤湿度
                 </div>
-                土壤温度
-              </div>
-            </div>
-            <div
-              class="index91"
-              
-            >
-              <image mode="widthFix" class="pic92" src="@/static/image/s6.png" />
-              <div class="index92">
-                <div class="index93">
-                  <span>{{item.humidity}}</span
-                  >
-                  %
-                </div>
-                土壤湿度
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="index2">
-        <div class="title1">
-          <span>虫情监测</span>
-          <div class="border"></div>
+        <div class="index2">
+          <div class="title1">
+            <span>虫情监测</span>
+            <div class="border"></div>
+          </div>
+          <!-- <div @click="goFarm" class="title2">全部设备</div> -->
         </div>
-        <!-- <div @click="goFarm" class="title2">全部设备</div> -->
-      </div>
-      <div class="scrolldiv">
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号虫情仪
+        <div class="scrolldiv">
+          <div class="scrollchild">
+            <div class="detailwrap">
+              <div class="d1wrap">
+                <div class="d1 flexcenter">
+                  <div class="d2 flexcenter">在线</div>
+                  1号虫情仪
+                </div>
+                <div @click="goDetail2(2, item)" class="btnd flexcenter">
+                  查看详情
+                </div>
               </div>
-              <div @click="goDetail2(4)" class="btnd flexcenter">查看详情</div>
-            </div>
 
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
+              <div class="d3">
+                <div class="d4" flexcenter>
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/adress2.png"
+                  />
+                  (鄂托克前旗三段村)
+                </div>
+                <div class="d4 flexcenter">
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/time.png"
+                  />
+                  2022.02.10 16:25
+                </div>
               </div>
             </div>
+            <div class="cirbox">
+              <qiun-data-charts
+                type="ring"
+                canvasId="four_a"
+                :resshow="false"
+                :opts="{
+                  legend: { position: 'bottom' },
+                  title: { name: '' },
+                  centerColor: 'red',
+                  title: { name: '总数' },
+                  subtitle: {
+                    name: '100',
+                    color: '#12A669',
+                    fontSize: 20,
+                  },
+                }"
+                :chartData="chartData"
+              />
+            </div>
+          </div>
+          <div class="scrollchild">
+            <div class="detailwrap">
+              <div class="d1wrap">
+                <div class="d1 flexcenter">
+                  <div class="d2 flexcenter">在线</div>
+                  1号虫情仪
+                </div>
+                <div @click="goDetail2(2, item)" class="btnd flexcenter">
+                  查看详情
+                </div>
+              </div>
+
+              <div class="d3">
+                <div class="d4" flexcenter>
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/adress2.png"
+                  />
+                  (鄂托克前旗三段村)
+                </div>
+                <div class="d4 flexcenter">
+                  <image
+                    mode="widthFix"
+                    class="set"
+                    src="@/static/image/time.png"
+                  />
+                  2022.02.10 16:25
+                </div>
+              </div>
+            </div>
+            <div class="cirbox">
+              <qiun-data-charts
+                type="ring"
+                canvasId="four_b"
+                :resshow="false"
+                :opts="{
+                  legend: { position: 'bottom' },
+                  title: { name: '' },
+                  centerColor: 'red',
+                  title: { name: '总数' },
+                  subtitle: {
+                    name: '100',
+                    color: '#12A669',
+                    fontSize: 20,
+                  },
+                }"
+                :chartData="chartData"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content" v-else>
+        <div class="index1">
+          <div class="header">
+            <div class="header2">设备统计</div>
+            <!-- <div class="header3">全部设备</div> -->
           </div>
           <div class="cirbox">
             <qiun-data-charts
               type="ring"
-              canvasId="four_a"
+              canvasId="four_c"
               :resshow="false"
               :opts="{
                 legend: { position: 'bottom' },
@@ -235,120 +345,43 @@
                   fontSize: 20,
                 },
               }"
-              :chartData="chartData"
+              :chartData="chartDataSet"
             />
           </div>
         </div>
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号虫情仪
-              </div>
-              <div @click="goDetail2(4)" class="btnd flexcenter">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
+        <div class="index1">
+          <div class="header">
+            <div class="header2">设备状态</div>
+            <!-- <div class="header3">全部设备</div> -->
           </div>
           <div class="cirbox">
             <qiun-data-charts
-              type="ring"
-              canvasId="four_b"
+              type="pie"
+              canvasId="four_d"
+              :chartData="chartDataPie"
               :resshow="false"
               :opts="{
-                legend: { position: 'bottom' },
-                title: { name: '' },
-                centerColor: 'red',
-                title: { name: '总数' },
-                subtitle: {
-                  name: '100',
-                  color: '#12A669',
-                  fontSize: 20,
-                },
+                // legend: { position: 'right' },
               }"
-              :chartData="chartData"
             />
           </div>
         </div>
-      </div>
-    </div>
-    <div class="content" v-else>
-      <div class="index1">
-        <div class="header">
-          <div class="header2">设备统计</div>
-          <!-- <div class="header3">全部设备</div> -->
+        <div class="index1">
+          <div class="header">
+            <div class="header2">设备工作时长占比</div>
+            <!-- <div class="header3">全部设备</div> -->
+          </div>
+          <div class="cirbox">
+            <qiun-data-charts
+              type="pie"
+              canvasId="four_e"
+              :chartData="chartDataPie2"
+              :resshow="false"
+              :opts="{}"
+            />
+          </div>
         </div>
-        <div class="cirbox">
-          <qiun-data-charts
-            type="ring"
-            canvasId="four_c"
-            :resshow="false"
-            :opts="{
-              legend: { position: 'bottom' },
-              title: { name: '' },
-              centerColor: 'red',
-              title: { name: '总数' },
-              subtitle: {
-                name: '100',
-                color: '#12A669',
-                fontSize: 20,
-              },
-            }"
-            :chartData="chartDataSet"
-          />
-        </div>
-      </div>
-      <div class="index1">
-        <div class="header">
-          <div class="header2">设备状态</div>
-          <!-- <div class="header3">全部设备</div> -->
-        </div>
-        <div class="cirbox">
-          <qiun-data-charts
-            type="pie"
-            canvasId="four_d"
-            :chartData="chartDataPie"
-            :resshow="false"
-            :opts="{
-              legend: { position: 'right' },
-            }"
-          />
-        </div>
-      </div>
-      <div class="index1">
-        <div class="header">
-          <div class="header2">设备工作时长占比</div>
-          <!-- <div class="header3">全部设备</div> -->
-        </div>
-        <div class="cirbox">
-          <qiun-data-charts
-            type="pie"
-            canvasId="four_e"
-            :chartData="chartDataPie2"
-            :resshow="false"
-            :opts="{}"
-          />
-        </div>
-      </div>
-      <!-- <div class="index1 index11">
+        <!-- <div class="index1 index11">
         <div class="title1">
           <span>设备异常统计</span>
           <div class="border"></div>
@@ -393,6 +426,7 @@
           />
         </div>
       </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -406,7 +440,7 @@ export default {
   },
   data() {
     return {
-      userInfo:null,
+      userInfo: null,
       soilList: [],
       weatherList: [],
       chartDataTemperature: {
@@ -430,46 +464,14 @@ export default {
       chartDataPie: {
         series: [
           {
-            data: [
-              // {
-              //   name: "在线",
-              //   value: 50,
-              //   color: "#29CC96",
-              // },
-              // {
-              //   name: "离线",
-              //   value: 60,
-              //   color: "#939599",
-              // },
-              // {
-              //   name: "异常",
-              //   value: 70,
-              //   color: "#F56262",
-              // },
-            ],
+            data: [],
           },
         ],
       },
       chartDataPie2: {
         series: [
           {
-            data: [
-              // {
-              //   name: "工作时长",
-              //   value: 50,
-              //   color: "#317FF5",
-              // },
-              // {
-              //   name: "离线时长",
-              //   value: 60,
-              //   color: "#F56262",
-              // },
-              // {
-              //   name: "异常时长",
-              //   value: 70,
-              //   color: "#3199F5",
-              // },
-            ],
+            data: [],
           },
         ],
       },
@@ -503,31 +505,9 @@ export default {
         ],
       },
       chartDataSet: {
-        series: [
-          // {
-          //   name: "气象监测站",
-          //   data: 50,
-          //   color: "#17E5CA",
-          // },
-          // {
-          //   name: "虫情监测站",
-          //   data: 23,
-          //   color: "#F5A631",
-          // },
-          // {
-          //   name: "土壤墒情仪",
-          //   data: 96,
-          //   color: "#8F30BF",
-          // },
-          // {
-          //   name: "摄像机",
-          //   data: 42,
-          //   color: "#17CAE5",
-          // },
-        ],
+        series: [],
       },
-      tablist: [
-      ],
+      tablist: [],
       active: true,
       active2: true,
       active1: true,
@@ -539,6 +519,7 @@ export default {
         five: 15,
       },
       pageName: "茶园种植",
+      nodataFlag: false,
       indexMenu: [
         {
           name: "农情监测",
@@ -564,91 +545,111 @@ export default {
     };
   },
   onLoad() {
-    this.userInfo=uni.getStorageSync('userInfo')
-    this.getEnvironment()
-    this.getCurrentMoisture()
-    this.getAllDeviceStatusNow()
-    this.getEachDeviceCountByUser()
-    this.getAllDeviceWorkTimes()
+    this.init()
+    uni.$on("changeTeaSure", (data)=>{
+      this.init()
+    })
   },
   methods: {
-    getAllDeviceStatusNow(){
-       
-       request({
+    init(){
+      this.userInfo = uni.getStorageSync("userInfo");
+      let deviceList = uni.getStorageSync("deviceList");
+      console.log('set页面的devielist',deviceList)
+      if (deviceList.length > 0) {
+        this.getEnvironment();
+        this.getCurrentMoisture();
+        this.getAllDeviceStatusNow();
+        this.getEachDeviceCountByUser();
+        this.getAllDeviceWorkTimes();
+        this.nodataFlag=false
+      } else {
+        this.nodataFlag = true;
+      }
+    },
+    getAllDeviceStatusNow() {
+      request({
         url: "/data/iotdevice/getAllDeviceStatusNow",
         method: "get",
         isAuth: false,
-        data: {userId:this.userInfo.userId},
-      })
-      .then((res) => { 
-          let online=parseInt(res.data.online)
-          let total=parseInt(res.data.total)
-          this.chartDataPie.series[0]['data'].push({
-                name: "在线",
-                value: online,
-                color: "#29CC96",
-          })
-           this.chartDataPie.series[0]['data'].push({
-                name: "离线",
-                value: total-online,
-                color: "#939599",
-          })
-           this.chartDataPie.series[0]['data'].push({
-                name: "异常",
-                value:0,
-                color: "yellow",
-          })
-       })
+        data: {
+          baseId: uni.getStorageSync("baseId"),
+        },
+      }).then((res) => {
+        let online = parseInt(res.data.online);
+        let total = parseInt(res.data.total);
+        this.chartDataPie.series[0]["data"].push({
+          name: "在线",
+          value: online,
+          color: "#29CC96",
+        });
+        this.chartDataPie.series[0]["data"].push({
+          name: "离线",
+          value: total - online,
+          color: "#ccc",
+        });
+        this.chartDataPie.series[0]["data"].push({
+          name: "异常",
+          value: 0,
+          color: "#F56262",
+        });
+      });
     },
-    getAllDeviceWorkTimes(){
+    getAllDeviceWorkTimes() {
       request({
         url: "/data/iotdevice/getAllDeviceWorkTimes",
         method: "get",
         isAuth: false,
-        data: {userId:this.userInfo.userId},
-      })
-      .then((res) => { 
-        let online=res.data.worktimes
-        let total=res.data.allimes
-        this.chartDataPie2.series[0]['data'].push({
-                name: "工作时长",
-                value: online,
-                color: "#317FF5",
-        })
-        this.chartDataPie2.series[0]['data'].push({
-                name: "离线时长",
-                value: total-online,
-                color: "#F56262",
-        })
-        this.chartDataPie2.series[0]['data'].push({
-                name: "异常时长",
-                value: 0,
-                color: "yellow",
-        })
-      })
+        data: {
+          baseId: uni.getStorageSync("baseId"),
+        },
+      }).then((res) => {
+        if (!res.data) {
+          return;
+        }
+        let online = res.data.worktimes;
+        let total = res.data.allimes;
+        this.chartDataPie2.series[0]["data"].push({
+          name: "工作时长",
+          value: online,
+          color: "#317FF5",
+        });
+        this.chartDataPie2.series[0]["data"].push({
+          name: "离线时长",
+          value: total - online,
+          color: "#ccc",
+        });
+        this.chartDataPie2.series[0]["data"].push({
+          name: "异常时长",
+          value: 0,
+          color: "#F56262",
+        });
+      });
     },
-    getEachDeviceCountByUser(){
+    getEachDeviceCountByUser() {
       request({
-        url: "/data/iotdevice/getEachDeviceCountByUser",
+        url: "/data/iotdevice/getEachDeviceCountByBase",
         method: "get",
         isAuth: false,
-        data: {userId:this.userInfo.userId},
-      })
-      .then((res) => { 
-        
-        let colorArr=['#17E5CA','#F5A631',"#8F30BF","#17CAE5"]
-        res.data.deviceList.forEach((item,index)=>{
-          this.chartDataSet.series.push({
-            name: item.name,
-            data: parseInt(item.value),
-            color: colorArr[index],
-          })
-          this.tablist.push({
-            num:parseInt(item.value),
-            text:item.name
-          })
-        })
-       })
+        data: {
+          baseId: uni.getStorageSync("baseId"),
+        },
+      }).then((res) => {
+        let colorArr = ["#17E5CA", "#F5A631", "#8F30BF", "#17CAE5"];
+        this.tablist=[]
+        if (res.data) {
+          res.data.deviceList.forEach((item, index) => {
+            this.chartDataSet.series.push({
+              name: item.name,
+              data: parseInt(item.value),
+              color: colorArr[index],
+            });
+            this.tablist.push({
+              num: parseInt(item.value),
+              text: item.name,
+            });
+          });
+        }
+      });
     },
     getEnvironment() {
       request({
@@ -656,7 +657,8 @@ export default {
         method: "get",
         isAuth: false,
         data: {
-          userId:this.userInfo.userId
+          
+          baseId: uni.getStorageSync("baseId"),
         },
       }).then((res) => {
         this.weatherList = res.data;
@@ -664,49 +666,49 @@ export default {
           let add = [];
           add[0] = {
             //num: item2.wind_speed!=null ? item2.wind_speed : "-",
-            num: item2.wind_grade!=null?item2.wind_grade:'-',
+            num: item2.wind_grade != null ? item2.wind_grade : "-",
             unit: "级",
             name: "风力",
             pic: require("@/static/image/new1.png"),
           };
           add[1] = {
-            num: item2.wind_speed!=null ? item2.wind_speed : "-",
+            num: item2.wind_speed != null ? item2.wind_speed : "-",
             unit: "m/s",
             name: "风速",
             pic: require("@/static/image/new2.png"),
           };
           add[2] = {
-            num: item2.wind_direct!=null ? item2.wind_direct : "-",
+            num: item2.wind_direct != null ? item2.wind_direct : "-",
             unit: "",
             name: "风向",
             pic: require("@/static/image/new3.png"),
           };
           add[3] = {
-            num: item2.air_tem!=null ? item2.air_tem : "-",
+            num: item2.air_tem != null ? item2.air_tem : "-",
             unit: "℃",
             name: "空气温度",
-            pic: require("@/static/image/new4.png"),
-          };
-          add[4] = {
-            num: item2.air_hum!=null ? item2.air_hum : "-",
-            unit: "%RH",
-            name: "空气湿度",
             pic: require("@/static/image/new5.png"),
           };
-          add[5] = {
-            num: item2.pm2point5!=null ? item2.pm2point5 : "-",
-            unit: "ug/m3",
-            name: "Pm2",
+          add[4] = {
+            num: item2.air_hum != null ? item2.air_hum : "-",
+            unit: "%RH",
+            name: "空气湿度",
             pic: require("@/static/image/new6.png"),
           };
+          add[5] = {
+            num: item2.pm2point5 != null ? item2.pm2point5 : "-",
+            unit: "ug/m3",
+            name: "Pm2",
+            pic: require("@/static/image/new4.png"),
+          };
           add[6] = {
-            num: item2.kpa!=null ? item2.kpa : "-",
+            num: item2.kpa != null ? item2.kpa : "-",
             unit: "kpa",
             name: "大气压",
             pic: require("@/static/image/new7.png"),
           };
           add[7] = {
-            num: item2.lux!=null ? item2.lux : "-",
+            num: item2.lux != null ? item2.lux : "-",
             unit: "lux",
             name: "光照",
             pic: require("@/static/image/new8.png"),
@@ -714,22 +716,23 @@ export default {
           this.$set(item2, "arr", add);
         });
       });
-    }, 
+    },
     getCurrentMoisture() {
       request({
         url: "/data/moisturerecords/getCurrentMoisture",
         method: "get",
         isAuth: false,
         data: {
-          userId:this.userInfo.userId
+          
+          baseId: uni.getStorageSync("baseId"),
         },
       }).then((res) => {
-        this.soilList=res.data
+        this.soilList = res.data;
       });
     },
-    goDetail2(val) {
+    goDetail2(val, item) {
       uni.navigateTo({
-        url: "/pages/four2/detail/index?type=" + val,
+        url: "/pages/four2/detail/index?type=" + val + "&id=" + item.name,
       });
     },
 
@@ -785,11 +788,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.index1:last-child {
+  margin-bottom: 0;
+}
 .index1 {
   background: #ffffff;
   padding: 20rpx 32rpx;
   border-radius: 16rpx 16rpx 16rpx 16rpx;
-  margin-bottom: 0!important;
+  margin-top: 0 !important;
 }
 .index90 {
   background: #fafafa !important;
@@ -959,9 +965,8 @@ export default {
 .panlewrap {
   background: #fff;
   border-radius: 24rpx;
-  margin-top: 30rpx;
   padding: 15rpx;
-  justify-content: flex-start;
+  justify-content: center;
   .text {
     color: #626466;
     font-size: 28rpx;
@@ -979,16 +984,16 @@ export default {
   .panle:nth-child(4) {
     color: #f5a631;
   }
-   .panle:nth-child(5) {
-    color: #8F30BF;
+  .panle:nth-child(5) {
+    color: #8f30bf;
   }
-  
+
   .panle {
     width: 25%;
     font-size: 64rpx;
     font-weight: bold;
-    .text{
-      font-weight: normal!important;
+    .text {
+      font-weight: normal !important;
     }
   }
   .c1 {

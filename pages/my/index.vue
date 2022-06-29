@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <header-diy class="topbar" :titleName="pageName"></header-diy>
-    <div class="content">
+    <div class="content contentmyadd">
       <div class="index">
         <div class="my index1" v-if="info">
           <image mode="widthFix" class="tx" src="@/static/image/tx.png" />
@@ -48,10 +48,22 @@
           </div>
         </div>
         <div class="row">
-          <div @click="goManger" class="child child3">
+          <div @click="goManger" class="child child11">
             <div class="c1">
               <image mode="widthFix" class="pic" src="@/static/image/u1.png" />
               人员管理
+            </div>
+            <u-icon
+             
+              color="#939599"
+              size="14"
+              name="arrow-right"
+            ></u-icon>
+          </div>
+          <div @click="goOutput" class="child child3 child12">
+            <div class="c1">
+              <image mode="widthFix" class="pic" src="@/static/image/u1.png" />
+              投入品管理
             </div>
             <u-icon
              
@@ -208,7 +220,11 @@ export default {
   },
   onLoad(){
     this.teabase()
-    this.baseInfo=JSON.parse(uni.getStorageSync('baseInfo'))
+    this.baseInfo=uni.getStorageSync('nowUserBaseInfo')
+    uni.$on("changeTeaSure", (data)=>{
+      this.teabase()
+      this.baseInfo=uni.getStorageSync('nowUserBaseInfo')
+    })    
   },
   onShow(){
     let newsList=uni.getStorageSync('newsList')
@@ -234,9 +250,13 @@ export default {
       })
     },
     goCollect(){
-      
       uni.navigateTo({
         url:"/pages/my/collect/index"
+      })
+    },
+    goOutput(){
+      uni.navigateTo({
+        url:"/pages/my/investment/index"
       })
     },
     loginOut(){
@@ -324,6 +344,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.contentmyadd{
+  z-index: 120;
+  padding-top: 40rpx;
+}
 .chilid8{
   background: #ee6666f0 !important;
   color: #fff!important;

@@ -197,15 +197,15 @@ export default {
           pic: require("@/static/image/k2.png"),
         },
         {
-          num: "西北风",
-          unit: "",
-          name: "风向",
+          num: "1.5",
+          unit: "m³/s",
+          name: "单位流量",
           pic: require("@/static/image/k3.png"),
         },
         {
           num: 3,
-          unit: "m/s",
-          name: "风速",
+          unit: "ms/cm",
+          name: "可溶性盐浓度",
           pic: require("@/static/image/k4.png"),
         },
         {
@@ -265,7 +265,7 @@ export default {
         return;
       }
       request({
-        url: "/data/teagarden/getGardenOptionsByUser?userId=" + userInfo.userId,
+        url: "/data/teagarden/getGardenOptionsByBase?"+'baseId='+uni.getStorageSync('baseId'),
         method: "get",
         isAuth: false,
         data: {},
@@ -305,6 +305,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .content {
+  padding-top: 0!important;
   .addtask1{
     margin-left: 20rpx;
   }

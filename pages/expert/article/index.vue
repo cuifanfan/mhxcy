@@ -5,10 +5,16 @@
       <div class="title">{{detail.title}}</div>
       <div class="fb fb5">
         <div class="fb1">发布人：<span>{{detail.author}}</span></div>
+       
         <div class="fb1">发布时间：{{detail.createTime}}</div>
       </div>
       <div class="fb">
         <div class="fb1">所属分类：<span>{{detail.summary}}</span></div>
+         <div class="fb1 fb1add">
+          收藏
+          <image mode="widthFix" @click="addCollect(detail)" v-if="!detail.isCollectionByMe" class="tx2" src="@/static/image/sc.png" />
+          <image mode="widthFix" @click="removeCollect(detail)" v-else class="tx2" src="@/static/image/sca.png" />
+        </div>
       </div>
       <div class="content3">
         <rich-text :nodes="detail.content"></rich-text>
@@ -18,6 +24,7 @@
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
+import request from "../../../common/utils/request";
 export default {
   components: {
     headerDiy,
@@ -29,9 +36,11 @@ export default {
       numValue: "",
       nameValue: "",
       typeValue: "",
+      userInfo:null,
     };
   },
   onLoad(){
+    this.userInfo=uni.getStorageSync('userInfo')
     if(uni.getStorageSync('articleContent')){
       this.detail=JSON.parse(uni.getStorageSync('articleContent'))
       console.log(this.detail)
@@ -43,10 +52,57 @@ export default {
         url: "/pages/expert/knowledgeDetail/index",
       });
     },
+    removeCollect(item){
+      request({
+        url: "/data/usercollection/removeByUserAndInformation?informationId="+item.id+"&userId="+this.userInfo.userId,
+        method: "delete",
+        isAuth: false,
+        data: {
+        
+        },
+      })
+      .then((res) => { 
+         uni.showToast({
+          title: "取消收藏成功",
+          icon: "none",
+          duration: 850,
+        });
+        item.isCollectionByMe=false
+      })
+    },
+    addCollect(item){
+      request({
+        url: "/data/usercollection",
+        method: "post",
+        isAuth: false,
+        data: {
+          informationId:item.id,
+          userId:this.userInfo.userId
+        },
+      })
+      .then((res) => { 
+        item.isCollectionByMe=true
+        uni.showToast({
+          title: "收藏成功",
+          icon: "none",
+          duration: 850,
+        });
+      })
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
+.fb1add{
+  display: flex;
+  align-items: center;
+
+}
+.tx2{
+   width: 35rpx;
+  margin-right: 10rpx;
+  margin-left: 10rpx;
+}
 .p{
     text-indent: 60rpx;
     margin-bottom: 20rpx;
@@ -73,6 +129,7 @@ export default {
     justify-content: space-between;
     font-size: 28rpx;
     color: #313233;
+     align-items: center;
     span {
       font-weight: bold;
     }

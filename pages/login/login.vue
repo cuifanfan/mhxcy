@@ -9,7 +9,7 @@
 	<view class="header">
 		<image class="loginbg" src="../../static/image/loginbg.png" mode="widthFix"></image>
 		<image class="flag" src="../../static/image/flag.png" mode=""></image>
-		<text class="title">茶园监测管理系统</text>
+		<text class="title">茶园种植管理系统</text>
 	</view>
 	<view class="content">
 		<view class="tab-title">
@@ -139,10 +139,6 @@ export default {
 				password:get.password
 			},	
 		}).then(res=>{
-			console.log('xxx',res)
-			uni.switchTab({
-				url:'/pages/index/index'
-			})
 			uni.setStorageSync('token',res.access_token)
 			let info={
 				userId:res.user_id,
@@ -152,11 +148,49 @@ export default {
 			uni.setStorageSync('userInfo',info)
 			uni.setStorageSync('relogin',true)
 			this.getUserInfo()
+			this.getBaseInfo(res.user_id)
 		}).catch(err=>{
 			console.log('err',err)
 		})
 	  },
-	 
+	  getBaseInfo(id){
+		request({
+			url: "/data/teabase/getBaseInfo?userId=" + id,
+			method:'get',
+			isAuth:false,
+    		data:{
+				
+			},	
+		}).then(res=>{
+			uni.setStorageSync('userBaseInfos',res.data)
+			//如果选过茶园 取上一次的茶园
+			let getAgoChoose=uni.getStorageSync('nowUserBaseInfo')
+			if(!getAgoChoose){
+				uni.setStorageSync('nowUserBaseInfo',res.data[0])
+				uni.setStorageSync('baseId',res.data[0]['baseId'])
+      			uni.setStorageSync("deviceList", res.data[0]['deviceList'])
+			}else{
+				let getNow=uni.getStorageSync('nowUserBaseInfo')
+				let flag=res.data.find(item=>{
+					return getNow.baseId==item.baseId
+				})
+				if(!flag){
+					uni.setStorageSync('nowUserBaseInfo',res.data[0])
+					uni.setStorageSync('baseId',res.data[0]['baseId'])
+      				uni.setStorageSync("deviceList", res.data[0]['deviceList'])
+				}else{
+					uni.setStorageSync('nowUserBaseInfo',flag)
+					uni.setStorageSync('baseId',flag['baseId'])
+					uni.setStorageSync("deviceList", flag['deviceList'])
+				}
+			}
+			
+
+			uni.switchTab({
+				url:'/pages/index/index'
+			})
+		})
+	  },
 	  getUserInfo(){
 		request({
 			url:'/admin/user/info',

@@ -155,6 +155,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.content{
+  padding-top: 0!important;
+}
+.wrapcommon:first-child{
+  margin-top: 0!important;
+}
 .wrapcommonfarm {
   margin: 45rpx 0;
 }
