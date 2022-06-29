@@ -54,14 +54,15 @@
         <div class="test5">
           <div
             class="test6"
-            @click="goDetail(videoListShow)"
+            v-for="(item,index) in videoListShow" :key="index"
+            @click="goDetail(item)"
           >
             <div>
               <div class="imgwraps">
                 <image
                   mode="widthFix"
                   class="videopic"
-                  :src="baseUrl+videoListShow.cover"
+                  :src="baseUrl+item.cover"
                 />
                 <image
                   mode="widthFix"
@@ -71,9 +72,9 @@
               </div>
               <div class="text textflex">
                 <div>
-                 {{videoListShow.deviceName}}
+                 {{item.deviceName}}
                 </div>
-                {{ videoListShow.url == "" ? "离线" : "在线" }}
+                {{ item.url == "" ? "离线" : "在线" }}
               </div>
             </div>
           </div>
@@ -104,7 +105,7 @@
             </div>
           </div>
         </div>
-        <div v-else class="index1 index90">暂未设置环境参数</div>
+        <div v-else class="index1 index90 nosetparam">暂未设置环境参数</div>
         <div>
           <div class="tabchange">
             <div
@@ -132,7 +133,7 @@
                 <span> {{ weatherCreateTime }} </span>
               </div>
             </div>
-            <div class="index1 index90">
+            <div class="index1 index90" style="margin-bottom:0;margin-top: 20rpx;padding-bottom: 0;">
               <div
                 class="index91"
                 :style="{ marginBottom: index == 7 || index == 8 ? '0' : '' }"
@@ -149,7 +150,7 @@
                 </div>
               </div>
             </div>
-            <div class="header header7">
+            <div class="header header7" style="margin-top:0;">
               <div class="header2">积温变化</div>
             </div>
             <div class="cirbox" v-if="chartDataTemperatureFlag">
@@ -354,6 +355,9 @@
               </div>
             </div>
             </div>
+            <div class="nodata" v-if="farmList.length==0">
+              暂无数据
+            </div>
           </div>
           <div class="changechild" v-if="activeTab == 3">
             <div class="header header3">
@@ -494,52 +498,25 @@
               <div class="header2">虫情监测</div>
               <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
             </div>
-            <div class="detailwrap">
-              <div class="d1wrap">
-                <div class="d1 flexcenter">
-                  <div class="d2 flexcenter">在线</div>
-                  1号虫情仪
-                </div>
-                <div class="btnd flexcenter">查看详情</div>
-              </div>
-
-              <div class="d3">
-                <div class="d4" flexcenter>
-                  <image
-                    mode="widthFix"
-                    class="set"
-                    src="@/static/image/adress2.png"
-                  />
-                  (鄂托克前旗三段村)
-                </div>
-                <div class="d4 flexcenter">
-                  <image
-                    mode="widthFix"
-                    class="set"
-                    src="@/static/image/time.png"
-                  />
-                  2022.02.10 16:25
+            <div class="test1" v-if="wormList.length>0">
+              <div class="test5" v-for="(item,index) in wormList" :key="index">
+                <div class="test6">
+                  <div class="imgwraps" @click="goDetailWorm(item)">
+                    <image
+                      mode="widthFix"
+                      class="videopic"
+                      :src="item['images_url']"
+                    />
+                  </div>
+                  <div class="text flextextadd">
+                    <div>{{item.device_addr}}</div>
+                    <div>查看详情</div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="cirbox">
-              <qiun-data-charts
-                type="ring"
-                canvasId="four_a"
-                :resshow="false"
-                :opts="{
-                  legend: { position: 'bottom' },
-                  title: { name: '' },
-                  centerColor: 'red',
-                  title: { name: '总数' },
-                  subtitle: {
-                    name: '100',
-                    color: '#12A669',
-                    fontSize: 20,
-                  },
-                }"
-                :chartData="chartDataInsect"
-              />
+            <div class="nodata" v-else>
+              暂无数据
             </div>
           </div>
           <div class="changechild" v-if="activeTab == 4">
@@ -616,7 +593,7 @@
             <div class="header header7">
               <div class="header2">施肥投入</div>
             </div>
-            <div>
+            <div v-if="fertilizer.series.length>0">
               <div class="cirbox" v-if="sfFlag">
                 <qiun-data-charts
                   type="mix"
@@ -659,10 +636,13 @@
                 />
               </div>
             </div>
+            <div class="nodata" v-else>
+              暂无数据
+            </div>
             <div class="header header7">
               <div class="header2">施药投入</div>
             </div>
-            <div>
+            <div v-if="fertilizerSy.series.length>0">
               <div class="cirbox" v-if="syFlag">
                 <qiun-data-charts
                   type="mix"
@@ -704,6 +684,9 @@
                   :chartData="fertilizerSy"
                 />
               </div>
+            </div>
+            <div class="nodata" v-else>
+              暂无数据
             </div>
             <div class="header header7">
               <div class="header2">鲜叶产出</div>
@@ -986,6 +969,7 @@ export default {
   },
   data() {
     return {
+      wormList:[],
       sfFlag: false,
       soilInfo: null,
       allOther: null,
@@ -1466,7 +1450,6 @@ export default {
       this.getDeviceList = getDeviceList
     }
     this.askWeather();
-    this.askWeatherStation();
     this.askInfo();
     this.gardenthresholdday();
     let now = moment().format("YYYY");
@@ -1477,6 +1460,7 @@ export default {
     this.getSumTemInYear(ago, 0);
     this.fluoritescreenshot();
     this.farmrecords();
+    this.getLatestDatasInGarden()
     this.getTotalAllThisAndLastYear();
     this.getEnvironment();
     this.getCurrentMoisture();
@@ -1492,6 +1476,17 @@ export default {
   methods: {
     typeSelect() {},
     handleMessage() {},
+    getLatestDatasInGarden(){
+       request({
+        url: "/data/wormdistinguishdata/getLatestDatasInGarden/"+this.teaId,
+        method: "get",
+        isAuth: false,
+        data: {
+        },
+      }).then((res) => {
+        this.wormList=res.data
+      })
+    },
     getAllHumanUseEachMonthByYear(year, type) {
       request({
         url: "/data/farmrecords/getAllHumanUseEachMonthByYear",
@@ -1652,7 +1647,6 @@ export default {
               index: 1,
             });
           });
-
           this.sfFlag = true;
         }
         if (val == "病虫防治" && type == 1) {
@@ -1825,6 +1819,11 @@ export default {
         });
       }
     },
+    goDetailWorm(item){
+      uni.navigateTo({
+        url: "/pages/four2/site/index?id=" + item.device_addr+'&type=1',
+      });
+    },
     goDetailGrowth() {
       let find = this.getDeviceList.find((item) => {
         return item.type == 2;
@@ -1837,26 +1836,19 @@ export default {
       });
     },
     askVideo() {
-      let find = this.getDeviceList.find((item) => {
-        return item.type == 2;
-      });
-      if(!find){
-        return 
-      }
-      if (find) {
         request({
-          url: "/data-thirdpart/fluorite/getVideoDevice/" + find.id,
+          url: "/data-thirdpart/fluorite/getVideoListFromGarden/"+this.teaId+"?type=2" ,
           method: "get",
           isAuth: false,
           data: {},
         })
           .then((res) => {
-            this.videoListShow = res.data.data;
+            this.videoListShow = res.data;
           })
           .catch((err) => {
             console.log("err", err);
-          });
-      }
+        });
+      
     },
     askWeather() {
       if (uni.getStorageSync("MJweather")) {
@@ -1991,8 +1983,6 @@ export default {
            baseId:uni.getStorageSync('baseId')
         },
       }).then((res) => {
-        //getEnInfo
-        console.log("???", res.data);
         this.getEnInfo = res.data[0];
         let item2 = res.data[0];
         let add = [];
@@ -2045,83 +2035,64 @@ export default {
           pic: require("@/static/image/new8.png"),
         };
         this.$set(this.getEnInfo, "arr", add);
-      });
-    },
-    askWeatherStation() {
-      let find = this.getDeviceList.find((item) => {
-        return item.type == 1;
-      });
-      if(!find){
-        return 
-      }
-      if (find) {
-        request({
-          url: "/data/meteorologicalrecords/getCurrentWeather/" + find.id,
-          method: "get",
-          isAuth: false,
-          data: {
-            baseId:uni.getStorageSync('baseId')
-          },
-        })
-          .then((res) => {
-            console.log("xxx", res);
-            let dataGet = res.data[0]["data"];
+
+
+
+        
+            let dataGet = res.data[0];
             console.log("xxxsss", dataGet);
             this.list2[0] = {
-              num: dataGet[0]["alarmMsg"],
+              num: dataGet["wind_grade"],
               unit: "级",
               name: "风力",
               pic: require("@/static/image/new1.png"),
             };
             this.list2[1] = {
-              num: dataGet[1]["alarmMsg"],
+              num: dataGet["wind_speed"],
               unit: "m/s",
               name: "风速",
               pic: require("@/static/image/new2.png"),
             };
             this.list2[2] = {
-              num: dataGet[2]["alarmMsg"],
+              num: dataGet["wind_direct"],
               unit: "",
               name: "风向",
               pic: require("@/static/image/new3.png"),
             };
             this.list2[3] = {
-              num: dataGet[7]["alarmMsg"],
+              num: dataGet["air_tem"],
               unit: "℃",
               name: "空气温度",
               pic: require("@/static/image/new5.png"),
             };
             this.list2[4] = {
-              num: dataGet[8]["alarmMsg"],
+              num: dataGet["air_hum"],
               unit: "%RH",
               name: "空气湿度",
               pic: require("@/static/image/new6.png"),
             };
             this.list2[5] = {
-              num: dataGet[10]["alarmMsg"],
+              num: dataGet["pm2point5"],
               unit: "ug/m3",
               name: "Pm2.5",
               pic: require("@/static/image/new4.png"),
             };
             this.list2[6] = {
-              num: dataGet[11]["alarmMsg"],
+              num: dataGet["kpa"],
               unit: "kpa",
               name: "大气压",
               pic: require("@/static/image/new7.png"),
             };
             this.list2[7] = {
-              num: dataGet[12]["alarmMsg"],
+              num: dataGet["lux"],
               unit: "lux",
               name: "光照",
               pic: require("@/static/image/new8.png"),
             };
-            this.weatherCreateTime = res.data[0]["datetime"];
+            this.weatherCreateTime = res.data[0]["create_time"];
             this.$forceUpdate();
-          })
-          .catch((err) => {});
-      }
+      });
     },
-
     goSet() {
       uni.navigateTo({
         url:
@@ -2160,6 +2131,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.nosetparam{
+  font-size: 22rpx;
+  color: #939599;
+  
+}
 .index1add {
   margin-top: 20rpx;
 }
@@ -2354,13 +2330,15 @@ export default {
     padding: 15rpx;
     font-size: 28rpx;
     color: #626466;
+    position: absolute;
+    bottom: 0;
   }
 }
 .text {
   background: rgba(49, 50, 51, 0.3);
   border-radius: 0px 0px 8px 8px;
   position: absolute;
-  bottom: 8rpx;
+  bottom: 0rpx;
   width: 100%;
   color: #fff !important;
   border-bottom-right-radius: 32rpx;
@@ -2382,6 +2360,7 @@ export default {
     .videopic {
       border-radius: 32rpx;
       overflow: hidden;
+      height: 100%!important;
     }
     .play {
       position: absolute;

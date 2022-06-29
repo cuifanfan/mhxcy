@@ -173,105 +173,31 @@
         </div>
         <!-- <div @click="goFarm" class="title2">全部设备</div> -->
       </div>
-      <div class="scrolldiv">
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号虫情仪
-              </div>
-              <div @click="goDetail2(4,item)" class="btnd flexcenter">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
+      <div class="scrolldiv" v-if="wormList.length>0">
+        <div class="scrollchild" v-for="(item,index) in wormList" :key="index">
+          <div class="test1" >
+              <div class="test5">
+                <div class="test6 cleartest6" style="border-radius:0;">
+                  <div class="imgwraps" @click="goDetailWorm(item)">
+                    <image
+                      mode="widthFix"
+                      class="videopic"
+                      :src="item['images_url']"
+                    />
+                  </div>
+                  <div class="text flextextadd" style="padding-bottom:0;padding-top: 32rpx;">
+                    <div>{{item.device_addr}}</div>
+                    <div>查看详情</div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="cirbox">
-            <qiun-data-charts
-              type="ring"
-              canvasId="four_a"
-              :resshow="false"
-              :opts="{
-                legend: { position: 'bottom' },
-                title: { name: '' },
-                centerColor: 'red',
-                title: { name: '总数' },
-                subtitle: {
-                  name: '100',
-                  color: '#12A669',
-                  fontSize: 20,
-                },
-              }"
-              :chartData="chartData"
-            />
-          </div>
+            
         </div>
-        <div class="scrollchild">
-          <div class="detailwrap">
-            <div class="d1wrap">
-              <div class="d1 flexcenter">
-                <div class="d2 flexcenter">在线</div>
-                1号虫情仪
-              </div>
-              <div @click="goDetail2(4,item)" class="btnd flexcenter">查看详情</div>
-            </div>
-
-            <div class="d3">
-              <div class="d4" flexcenter>
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/adress2.png"
-                />
-                (鄂托克前旗三段村)
-              </div>
-              <div class="d4 flexcenter">
-                <image
-                  mode="widthFix"
-                  class="set"
-                  src="@/static/image/time.png"
-                />
-                2022.02.10 16:25
-              </div>
-            </div>
-          </div>
-          <div class="cirbox">
-            <qiun-data-charts
-              type="ring"
-              canvasId="four_b"
-              :resshow="false"
-              :opts="{
-                legend: { position: 'bottom' },
-                title: { name: '' },
-                centerColor: 'red',
-                title: { name: '总数' },
-                subtitle: {
-                  name: '100',
-                  color: '#12A669',
-                  fontSize: 20,
-                },
-              }"
-              :chartData="chartData"
-            />
-          </div>
-        </div>
+       
+      </div>
+      <div class="nodata" v-else>
+          暂无数据
       </div>
     </div>
     <div v-if="active == 2 || active == 3" class="content">
@@ -432,6 +358,7 @@ export default {
       ],
       nameValue: "",
       typeValue: "",
+      wormList:[],
     };
   },
   onLoad() {
@@ -449,16 +376,19 @@ export default {
     }
   },
   methods: {
+    goDetailWorm(item){
+      uni.navigateTo({
+        url: "/pages/four2/site/index?id=" + item.device_addr+'&type=1',
+      });
+    },
     getIotdevice(){
       request({
-        url: "/data/iotdevice/page?type=6",
-        method: "get",
-        isAuth: false,
+        url: "/data/wormdistinguishdata/getLatestDatasInGarden/"+uni.getStorageSync('baseId'),
         data: {
-          baseId:uni.getStorageSync('baseId')
+          
         },
       }).then((res) => {
-
+        this.wormList=res.data
       })
     },
     getEnvironment() {
@@ -612,6 +542,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.cleartest6{
+  margin: 0!important;
+}
 .content{
    padding-top: 0!important;
 }
@@ -751,6 +684,7 @@ export default {
   .imgwraps {
     position: relative;
     height: 404rpx;
+    overflow: hidden;
     .play {
       position: absolute;
       transform: translate(-50%, -50%);

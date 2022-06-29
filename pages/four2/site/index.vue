@@ -1,7 +1,6 @@
 <template>
   <div class="wrap">
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
-
     <div class="content">
       <div class="test1">
         <div class="test3 flexcenter" @click="dateShow = true">
@@ -145,7 +144,7 @@ export default {
         data.endTime=this.endTime
       }
       request({
-        url:url +  '406220002', // this.getId,
+        url:url + this.getId,
         method: "get",
         isAuth: false,
         data: data,
@@ -202,11 +201,13 @@ export default {
       height: 210rpx!important;
     }
     .text {
-        font-size: 15px;
+        font-size: 28rpx;
         color: #626466;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        top: -8rpx;
     }
   }
   .test1 {

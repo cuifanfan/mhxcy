@@ -783,8 +783,8 @@ export default {
           lon: 116.41136,
         },
       }).then((res) => {
-        console.log("xxx", res);
         if (res.data) {
+          this.weatherData=[]
           res.data.daily.forEach((item, index) => {
             let date = item.predict_date.split("-");
             let date2 = date[1] + "/" + date[2];
