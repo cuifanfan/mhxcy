@@ -30,6 +30,7 @@
             <div class="d1wrap">
               <div class="d1 flexcenter">
                 <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
+                <div class="d2 d2offline flexcenter" v-if="item.status=='offline'">离线</div>
                 {{ item.name }}
               </div>
               <div class="btnd flexcenter" @click="goDetail2(2,item)">查看详情</div>
@@ -49,6 +50,7 @@
                   mode="widthFix"
                   class="set"
                   src="@/static/image/time.png"
+                  v-if="item.create_time"
                 />
                 {{ item.create_time }}
               </div>
@@ -86,6 +88,7 @@
             <div class="d1wrap">
               <div class="d1 flexcenter">
                 <div class="d2 flexcenter" v-if="item.status=='online'">在线</div>
+                <div class="d2 d2offline flexcenter" v-if="item.status=='offline'">离线</div>
                 {{ item.name }}
               </div>
               <div class="btnd flexcenter" @click="goDetail2(3,item)">查看详情</div>
@@ -102,6 +105,7 @@
               </div>
               <div class="d4 flexcenter">
                 <image
+                  v-if="item.record_time"
                   mode="widthFix"
                   class="set"
                   src="@/static/image/time.png"
@@ -118,7 +122,7 @@
               <image mode="widthFix" class="pic92" src="@/static/image/s7.png" />
               <div class="index92">
                 <div class="index93">
-                  <span>{{item.ec}}</span
+                  <span>{{item.ec?item.ec:'-'}}</span
                   >us/cm
                 </div>
                 土壤EC值
@@ -131,7 +135,7 @@
               <image mode="widthFix" class="pic92" src="@/static/image/s8.png" />
               <div class="index92">
                 <div class="index93">
-                  <span>{{item.ph}}</span
+                  <span>{{item.ph?item.ph:'-'}}</span
                   >
                 </div>
                 土壤PH值
@@ -143,7 +147,7 @@
               <image mode="widthFix" class="pic92" src="@/static/image/s5.png" />
               <div class="index92">
                 <div class="index93">
-                  <span>{{item.temperature}}</span
+                  <span>{{item.temperature?item.temperature:'-'}}</span
                   >℃
                 </div>
                 土壤温度
@@ -156,7 +160,7 @@
               <image mode="widthFix" class="pic92" src="@/static/image/s6.png" />
               <div class="index92">
                 <div class="index93">
-                  <span>{{item.humidity}}</span
+                  <span>{{item.humidity?item.humidity:'-'}}</span
                   >
                   %
                 </div>
@@ -192,19 +196,16 @@
                 </div>
               </div>
             </div>
-            
         </div>
-       
       </div>
-      <div class="nodata" v-else>
-          暂无数据
+      <div class="nosetparam"  v-else>
+        暂无虫情设备
       </div>
     </div>
     <div v-if="active == 2 || active == 3" class="content">
       <div class="test1">
-        <div class="test2" v-if="active == 2">当前共计3个长势监测站</div>
-        <div class="test2" v-if="active == 3 && videoListGetFlag">
-          当前共计{{ videoList.length }}个视频监控摄像头
+        <div class="test2" v-if="active> 1 && videoListGetFlag">
+          当前共计{{ videoList.length }}个{{active==2?'长势监测站':'视频监控摄像头'}}
         </div>
         <div class="test3 flexcenter">
           <u--input
@@ -227,24 +228,27 @@
       <div class="test5" v-if="active == 2">
         <div
           class="test6"
-          @click="goDetail"
-          v-for="(item, index) in 5"
+          @click="goDetailGrowth(item)"
+          v-for="(item, index) in videoListShowGrow"
           :key="index"
         >
           <div class="imgwraps">
             <image
-              mode="widthFix"
-              class="videopic"
-              src="@/static/image/videopic.png"
-            />
-            <image
-              mode="widthFix"
-              v-if="active == 3"
-              class="play"
-              src="@/static/image/play.png"
-            />
+                mode="widthFix"
+                class="videopic"
+                :src=" baseUrl+item.cover"
+                v-if="item.cover"
+              />
+            <div class="videoNot" v-else>
+              暂无信息图片
+            </div>
           </div>
-          <div class="text">{{ index + 1 }}号长势监测站</div>
+          <div class="text" >
+              <div>
+                {{ item.deviceName }}
+              </div>
+              查看详情
+          </div>
         </div>
       </div>
       <div class="test5" v-if="active == 3">
@@ -260,12 +264,17 @@
                 mode="widthFix"
                 class="videopic"
                 :src=" baseUrl+item.cover"
+                v-if="item.cover"
               />
+              <div class="videoNot" v-else>
+                摄像头暂未接入
+              </div>
               <image
                 mode="widthFix"
-                v-if="active == 3"
+                v-if="active == 3&&item.url!=''"
                 class="play"
                 src="@/static/image/play.png"
+
               />
             </div>
             <div class="text">
@@ -294,6 +303,7 @@ export default {
       baseUrl:BASE_URL,
       weatherList: [],
       videoListShow: [],
+      videoListShowGrow:[],
       videoValue: "",
       siteValue: "",
       videoListGetFlag: false,
@@ -477,6 +487,12 @@ export default {
         });
         this.videoListShow = arr;
       }
+      if (this.active == 2) {
+        let arr = this.videoList.filter((item) => {
+          return item.deviceName.indexOf(this.siteValue) > -1;
+        });
+        this.videoListShowGrow = arr;
+      }
     },
     onBackPress(e) {
       uni.setStorageSync("four2TabIndex", "");
@@ -485,7 +501,7 @@ export default {
     changeTab(index) {
       this.active = index;
       uni.setStorageSync("four2TabIndex", index);
-      if (!this.videoListGetFlag && index == 3) {
+      if (!this.videoListGetFlag && index > 1) {
         this.askVideo();
       }
     },
@@ -500,6 +516,7 @@ export default {
         .then((res) => {
           console.log("res", res);
           this.videoList = JSON.parse(JSON.stringify(res.data));
+          this.videoListShowGrow=res.data
           this.videoListShow = res.data;
           this.videoListGetFlag = true;
         })
@@ -510,6 +527,13 @@ export default {
     goDetail2(type,item) { 
       uni.navigateTo({
         url: "/pages/four2/detail/index?type=" + type+'&id='+item.name,
+      });
+    },
+    goDetailGrowth(item) {
+
+      console.log('ppp',item)
+      uni.navigateTo({
+        url: "/pages/four2/site/index?id=" + item.deviceSerial,
       });
     },
     goDetail(item) {

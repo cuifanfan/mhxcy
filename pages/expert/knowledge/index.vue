@@ -51,7 +51,7 @@
                 slot="right"
                 @click="showType = true"
                 color="#C4C7CC"
-                size="15"
+                size="12"
                 name="arrow-down-fill"
               ></u-icon>
               <u-icon
@@ -59,7 +59,7 @@
                 slot="right"
                 @click="showType = true"
                 color="#C4C7CC"
-                size="15"
+                size="12"
                 name="arrow-up-fill"
               ></u-icon>
             </div>

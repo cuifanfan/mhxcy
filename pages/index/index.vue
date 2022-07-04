@@ -316,12 +316,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <image
-                mode="widthFix"
-                v-if="!lookType"
-                style="width: 100%"
-                src="@/static/image/false26.png"
-              /> -->
               <div v-if="lookType && active1" class="grayinfo">
                 <div
                   class="grayinfo1"

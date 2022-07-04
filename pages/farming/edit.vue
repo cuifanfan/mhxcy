@@ -51,7 +51,7 @@
           <div class="formchild">
             <div class="name">人力:</div>
             <div class="input2">
-              <div class="disablewrap disablewrap3" >
+              <div class="disablewrap disablewrap3">
                 <u--input
                   v-model="humanUse"
                   disabledColor="#fafafa"
@@ -60,7 +60,6 @@
                   type="number"
                   @blur="inputHuman"
                 ></u--input>
-               
               </div>
             </div>
           </div>
@@ -86,42 +85,51 @@
               </div>
             </div>
             <div v-if="handleContent" class="tipedit wrapcommon wrapcommonbg">
-                <div class="addone"></div>
-                <div class="childedit">{{contentAddText}}</div>
-                 <image
-                  mode="widthFix"
-                  class="iconpic newhandleicon"
-                  src="@/static/image/edit.png"
+              <div class="addone"></div>
+              <div class="childedit">{{ contentAddText }}</div>
+              <div class="iconpic newhandleicon">
+                <u-icon
                   @click="addOne"
-                />
-            </div>
-            
-          </div>
-          <div class="editmore">
-              <div class="morechild" v-for="(item,index) in contentAdd" :key="index">
-                  <u--input
-                  v-model="item.name"
-                  placeholder="请输入操作项"
-                  :disabled="onlyLeafFlag"
-                  border="surround"
-                ></u--input>
-                <span class="one">-</span>
-                <u--input
-                  v-model="item.val"
-                  placeholder="请输入操作量"
-                  type="number"
-                  border="surround"
-                ></u--input>
-                <span class="two">KG</span>
-                 <u-icon
                   slot="right"
                   color="#C4C7CC"
-                  size="20"
-                  name="close-circle"
-                  @click="contentAdd.splice(index,1)"
+                  size="24"
+                  name="plus-circle"
                 ></u-icon>
               </div>
             </div>
+          </div>
+          <div class="editmore">
+            <div
+              class="morechild"
+              v-for="(item, index) in contentAdd"
+              :key="index"
+            >
+              <div @click="openChoose(index)" style="width: 250rpx">
+                <u--input
+                  v-model="item.name"
+                  placeholder="请选择投入品"
+                  :disabled="true"
+                  border="surround"
+                ></u--input>
+              </div>
+
+              <span class="one">-</span>
+              <u--input
+                v-model="item.val"
+                placeholder="请输入操作量"
+                type="number"
+                border="surround"
+              ></u--input>
+              <span class="two">KG</span>
+              <u-icon
+                slot="right"
+                color="#C4C7CC"
+                size="20"
+                name="close-circle"
+                @click="contentAdd.splice(index, 1)"
+              ></u-icon>
+            </div>
+          </div>
         </div>
         <div class="edit">
           <div class="formchild">
@@ -137,7 +145,7 @@
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
-              <div class="handle" v-if="resultPic.length<3">
+              <div class="handle" v-if="resultPic.length < 3">
                 <image
                   mode="widthFix"
                   class="iconpic"
@@ -157,6 +165,7 @@
                   border="none"
                   v-model="remark"
                   placeholder="请输入备注内容"
+                  confirmType="done"
                 ></u--textarea>
               </div>
             </div>
@@ -190,6 +199,26 @@
       @select="typeSelectTea"
     >
     </u-action-sheet>
+    <u-action-sheet
+      :show="openChooseFlag"
+      :actions="chooseList"
+      title="请选择投入品"
+      @close="openChooseFlag = false"
+      @select="typeSelectChoose"
+    >
+    </u-action-sheet>
+    <u-cell-group>
+      <u-picker
+        :show="show3"
+        :columns="columns3"
+        ref="uPicker3"
+        @cancel="cancelMore"
+        @confirm="confirmMore"
+        @close="show3=false"
+        :closeOnClickOverlay="true"
+        @change="changeHandler1"
+      ></u-picker>
+    </u-cell-group>
   </div>
 </template>
 <script>
@@ -204,11 +233,24 @@ export default {
   },
   data() {
     return {
-      minDate:moment().add(-1, 'y').format("YYYY-MM-DD"),
-      contentAddTextSend:'',
-      contentAdd:[],
+      show3:false,
+      columns3: [
+       
+      
+      ],
+      columnData: [
+        
+       
+      ],
+      
+      chooseActiveIndex: null,
+      chooseList: [],
+      openChooseFlag: false,
+      minDate: moment().add(-1, "y").format("YYYY-MM-DD"),
+      contentAddTextSend: "",
+      contentAdd: [],
       remark: "",
-      humanUse:'',
+      humanUse: "",
       teaName: "",
       teaId: "",
       handleContent: "",
@@ -223,7 +265,7 @@ export default {
       active: true,
       showType: false,
       showType2: false,
-      pageName: '',
+      pageName: "",
       numValue: "",
       typeList: [
         {
@@ -259,104 +301,189 @@ export default {
           name: "保密",
         },
       ],
-      teaType:'',
+      teaType: "",
       nameValue: "",
       typeValue: "",
-      onlyLeafFlag:false,
-      editFlag:false,
-      agoFarm:null,
+      onlyLeafFlag: false,
+      editFlag: false,
+      agoFarm: null,
+      chooseListGet: [],
     };
   },
   onLoad(option) {
-    this.editFlag=option.edit?true:false
-    if(this.editFlag){
-      this.agoFarm=JSON.parse(uni.getStorageSync('editFarm'))
-      console.log(this.agoFarm)
-      this.teaName=this.agoFarm.gardenName
-      this.date=this.agoFarm.time.split(' ')[0]
-      this.handleContent=this.agoFarm.content
-      this.humanUse=this.agoFarm.humanUse
-      if(this.agoFarm.fertilizerDose){
-        let get=this.agoFarm.fertilizerDose.split(',')
-        get.forEach(item=>{
+    this.editFlag = option.edit ? true : false;
+    if (this.editFlag) {
+      this.agoFarm = JSON.parse(uni.getStorageSync("editFarm"));
+      console.log(this.agoFarm);
+      this.teaName = this.agoFarm.gardenName;
+      this.date = this.agoFarm.time.split(" ")[0];
+      this.handleContent = this.agoFarm.content;
+      this.humanUse = this.agoFarm.humanUse;
+      if (this.agoFarm.fertilizerDose) {
+        let get = this.agoFarm.fertilizerDose.split(",");
+        get.forEach((item) => {
           this.contentAdd.push({
-            name:item.split(':')[0],
-            val:item.split(':')[1]
-          })
-        })
+            name: item.split(":")[0],
+            val: item.split(":")[1],
+          });
+        });
       }
-      if(this.agoFarm.imageUrls){
-        this.resultPic=this.agoFarm.imageUrls.split(',')
+      if (this.agoFarm.imageUrls) {
+        this.resultPic = this.agoFarm.imageUrls.split(",");
       }
-      this.remark=this.agoFarm.comment
-    }else{
+      this.remark = this.agoFarm.comment;
+    } else {
       let now = getNowDate();
       this.date = now.split(" ")[0];
     }
     this.askTea();
-    this.pageName=option.edit?'编辑农事':'记录农事'
-   
+    this.farminputs();
+    this.pageName = option.edit ? "编辑农事" : "记录农事";
   },
-  computed:{
-    contentAddText(){
-      let returnVal=''
-      this.contentAdd.forEach((item,index)=>{
-        if(item.name&&item.val){
-          returnVal+= item.name+':'+item.val+' KG'+'  '
+  computed: {
+    contentAddText() {
+      let returnVal = "";
+      this.contentAdd.forEach((item, index) => {
+        if (item.name && item.val) {
+          returnVal += item.name + ":" + item.val + " KG" + "  ";
         }
-      })
-      return returnVal
-    }
-  },
-  onShow(){
-    if(!this.editFlag){
-      this.teaName=''
-      this.contentAdd=[]
-      this.contentAddTextSend=''
-      this.teaId=''
-      this.remark=''
-      this.handleContent=''
-      this.teaType=''
-      this.resultPic=[]
-      this.humanUse=''
-    }
+      });
+      return returnVal;
+    },
   },
   methods: {
-    inputHuman(){
-      if(this.humanUse%0.5!=0){
-        uni.showToast({
-          title: '请输入0.5的倍数',
-          icon:'none',
-          duration: 850
-        })
-        this.humanUse=''
+    confirmMore(val){
+      this.show3=false
+      this.contentAdd[this.chooseActiveIndex]["name"] = val.value[1]
+    },
+    cancelMore(){
+      this.show3=false
+    },
+    changeHandler1(e) {
+      const {
+        columnIndex,
+        value,
+        values,
+        index,
+        indexs,
+        picker = this.$refs.uPicker3,
+      } = e;
+      if (columnIndex === 0) {
+        console.log(indexs[0]);
+        picker.setColumnValues(1, this.columnData[indexs[0]]);
       }
     },
-    addOne(){
-      console.log(this.handleContent)
-      let name=''
-      if(this.handleContent=='采摘'){
-        name='鲜叶'
-      }else if(this.handleContent=='灌溉'){
-        name='水'
+    typeSelectChoose(val) {
+      console.log(val);
+      this.contentAdd[this.chooseActiveIndex]["name"] = val.inputsType;
+    },
+    farminputs() {
+      request({
+        url: "/data/farminputs/page",
+        method: "get",
+        isAuth: false,
+        data: {},
+      }).then((res) => {
+        let only = [];
+        res.data.records.forEach((item) => {
+          let flag = only.find((item2) => {
+            return item2.name == item.inputsName;
+          });
+          if (!flag) {
+            only.push({
+              name: item.inputsName,
+              child: [item],
+            });
+          } else {
+            flag.child.push(item);
+          }
+        });
+        this.chooseListGet = only;
+      let add=[]
+      let add2=[]
+      only.forEach((item,index)=>{
+        add.push(item.name)
+        let add3=[]
+        item.child.forEach(item2=>{
+          add3.push(item2.inputsType)
+          if(index==0){
+            
+            add2.push(item2.inputsType)
+            
+          }
+        })
+        this.$set(this.columnData,index,add3)
+        
+      })
+      this.$set(this.columns3,1,add2)
+      this.$set(this.columns3,0,add)
+      console.log(this.columns3)
+      console.log(this.columnData)
+      console.log(only);
+      });
+    },
+    openChoose(index) {
+      this.chooseActiveIndex = index;
+      if (this.handleContent == "灌溉"||this.handleContent=='采摘') {
+        return;
+      }
+      if (this.handleContent == "施肥") {
+        let find = this.chooseListGet.find((item) => {
+          return item.name == "化肥";
+        });
+        if (find) {
+          find.child.forEach((item) => {
+            this.$set(item, "name", item.inputsType);
+          });
+          this.chooseList = find.child;
+        } else {
+          uni.showToast({
+            icon: "none",
+            title: "暂无化肥投入品 请先去新增",
+          });
+          return;
+        }
       }else{
-        name=''
+        this.show3=true
+        return 
+      }
+      this.openChooseFlag = true;
+    },
+    inputHuman() {
+      if (this.humanUse % 0.5 != 0) {
+        uni.showToast({
+          title: "请输入0.5的倍数",
+          icon: "none",
+          duration: 850,
+        });
+        this.humanUse = "";
+      }
+    },
+    addOne() {
+      console.log(this.handleContent);
+      let name = "";
+      if (this.handleContent == "采摘") {
+        name = "鲜叶";
+      } else if (this.handleContent == "灌溉") {
+        name = "水";
+      } else {
+        name = "";
       }
       this.contentAdd.push({
-        name:name,
-        val:''
-      })
+        name: name,
+        val: "",
+      });
     },
     submieSure() {
-      this.contentAdd.forEach((item,index)=>{
-        if(item.name&&item.val){
-          if(index==this.contentAdd.length-1){
-            this.contentAddTextSend+=item.name+':'+item.val
-          }else{
-            this.contentAddTextSend+=item.name+':'+item.val+','
+      this.contentAdd.forEach((item, index) => {
+        if (item.name && item.val) {
+          if (index == this.contentAdd.length - 1) {
+            this.contentAddTextSend += item.name + ":" + item.val;
+          } else {
+            this.contentAddTextSend += item.name + ":" + item.val + ",";
           }
         }
-      })
+      });
       if (this.teaName == "") {
         uni.showToast({
           title: "请选择茶园",
@@ -381,7 +508,7 @@ export default {
         });
         return;
       }
-      if (this.contentAddTextSend=='') {
+      if (this.contentAddTextSend == "") {
         uni.showToast({
           title: "请输入操作内容",
           icon: "none",
@@ -390,38 +517,38 @@ export default {
         return;
       }
       let picUrl = this.resultPic.join(",");
-      let requestType=this.editFlag?'put':'post'
-      let sendData={
-          comment: this.remark,
-          content: this.handleContent,
-          fertilizerDose: this.contentAddTextSend,
-          gardenId: this.teaId,
-          imageUrls: this.resultPic.join(","),
-          time: this.date + " 12:20:00",
-          gardenName: this.teaName,
-          species:this.teaType,
-          humanUse:this.humanUse
-      }
-      if(this.editFlag){
-        sendData.id=this.agoFarm.id
+      let requestType = this.editFlag ? "put" : "post";
+      let sendData = {
+        comment: this.remark,
+        content: this.handleContent,
+        fertilizerDose: this.contentAddTextSend,
+        gardenId: this.teaId,
+        imageUrls: this.resultPic.join(","),
+        time: this.date + " 12:20:00",
+        gardenName: this.teaName,
+        species: this.teaType,
+        humanUse: this.humanUse,
+      };
+      if (this.editFlag) {
+        sendData.id = this.agoFarm.id;
       }
       request({
         url: "/data/farmrecords",
         method: requestType,
         isAuth: false,
-        data:sendData,
+        data: sendData,
       }).then((res) => {
         if (res.code == 200) {
-          let tiptext=this.editFlag?'编辑':'新增'
+          let tiptext = this.editFlag ? "编辑" : "新增";
           uni.showToast({
-            title:tiptext+'农事成功',
-            icon:'none',
-            duration:850
-			    });
+            title: tiptext + "农事成功",
+            icon: "none",
+            duration: 850,
+          });
           setTimeout(() => {
             uni.navigateTo({
               url: "/pages/farming/index",
-            });  
+            });
           }, 1000);
           uni.setStorageSync("farmingTabindex", 1);
           this.remark = "";
@@ -429,7 +556,7 @@ export default {
           this.date = moment().format("YYYY-MM-DD");
           this.teaId = "";
           this.resultPic = [];
-          this.teaType=''
+          this.teaType = "";
           this.teaName = "";
         }
       });
@@ -440,7 +567,10 @@ export default {
         return;
       }
       request({
-        url: "/data/teagarden/getGardenOptionsByBase?"+'baseId='+uni.getStorageSync('baseId'),
+        url:
+          "/data/teagarden/getGardenOptionsByBase?" +
+          "baseId=" +
+          uni.getStorageSync("baseId"),
         method: "get",
         isAuth: false,
         data: {},
@@ -456,14 +586,17 @@ export default {
     },
     typeSelect(val) {
       console.log(val);
-      if(val.name=='采摘'||val.name=='灌溉'){
-        let nameSet=val.nam=='采摘'?'鲜叶':'水'
-        this.onlyLeafFlag=true
-        this.contentAdd.forEach(item=>{
-          item.name=nameSet
-        })
-      }else{
-        this.onlyLeafFlag=false
+      if (val.name == "采摘" || val.name == "灌溉") {
+        let nameSet = val.name == "采摘" ? "鲜叶" : "水";
+        this.onlyLeafFlag = true;
+        this.contentAdd.forEach((item) => {
+          item.name = nameSet;
+        });
+      } else {
+        this.onlyLeafFlag = false;
+        this.contentAdd.forEach((item) => {
+          item.name ='';
+        });
       }
       this.handleContent = val.name;
     },
@@ -471,7 +604,7 @@ export default {
       console.log(val);
       this.teaName = val.name;
       this.teaId = val.id;
-      this.teaType=val.species
+      this.teaType = val.species;
     },
     confirm(e) {
       this.show = false;
@@ -480,23 +613,23 @@ export default {
     deleteOne(index) {
       this.resultPic.splice(index, 1);
     },
-    toJSON(){
-      return this
+    toJSON() {
+      return this;
     },
     onGetImgClick: function () {
-      let that=this
+      let that = this;
       uni.chooseImage({
-        count:3,
+        count: 3,
         sizeType: ["compressed"], //original 原图，compressed 压缩图，默认二者都有
         sourceType: ["album", "camera"], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
         success: (res) => {
           //this.imageList = res.tempFilePaths[0];
           console.log("res", res);
-         // console.log(this);
+          // console.log(this);
           res.tempFilePaths.forEach((item, index) => {
-            console.log('itemfile',item)
+            console.log("itemfile", item);
             uni.uploadFile({
-              url: `http://121.36.247.77:9999/admin/sys-file/upload`, 
+              url: `http://121.36.247.77:9999/admin/sys-file/upload`,
               name: "file",
               header: {
                 Authorization: "Bearer " + uni.getStorageSync("token"),
@@ -506,9 +639,7 @@ export default {
                 let dataget = JSON.parse(res.data);
                 console.log("上传！！", dataget);
                 that.resultPic.push(dataget.data.url);
-                
               },
-              
             });
           });
         },
@@ -518,18 +649,18 @@ export default {
 };
 </script>
 <style lang="scss">
-.morechild{
+.morechild {
   display: flex;
   margin: 10rpx 0;
   align-items: center;
-  .one{
+  .one {
     margin: 0 20rpx;
   }
-  .two{
+  .two {
     margin-left: 20rpx;
     margin-right: 30rpx;
   }
-  .u-input{
+  .u-input {
     background: #fafafa !important;
   }
 }
@@ -539,30 +670,30 @@ export default {
   background: #fafafa !important;
 }
 
-.newhandleicon{
-  width:50rpx;
+.newhandleicon {
   position: absolute;
   top: 10rpx;
   right: 20rpx;
- 
+  display: flex;
+  align-items: center;
 }
-.tipedit{
+.tipedit {
   position: relative;
 }
 .handle {
-      background: #fafafa;
-      border-radius: 16rpx;
-      border-radius: 16rpx;
-      padding: 0 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 132rpx;
+  background: #fafafa;
+  border-radius: 16rpx;
+  border-radius: 16rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 132rpx;
 }
 .handlepic {
-      width: 160rpx;
-      height: 132rpx;
-      margin-right: 20rpx;
+  width: 160rpx;
+  height: 132rpx;
+  margin-right: 20rpx;
 }
 .content {
   margin: 32rpx;
@@ -575,7 +706,7 @@ export default {
   .editpic {
     display: flex;
     flex-wrap: wrap;
-   
+
     .iconpic {
       width: 48rpx;
     }
@@ -591,7 +722,6 @@ export default {
         padding: 5rpx;
       }
     }
-    
   }
   .wrapcommonbg {
     margin-top: 20rpx;

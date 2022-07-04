@@ -63,11 +63,16 @@
                   mode="widthFix"
                   class="videopic"
                   :src="baseUrl+item.cover"
+                  v-if="item.cover"
                 />
+                <div class="videoNot" v-else>
+                  摄像头暂未接入
+                </div>
                 <image
                   mode="widthFix"
                   class="play"
                   src="@/static/image/play.png"
+                  v-if="item.url!=''"
                 />
               </div>
               <div class="text textflex">
@@ -128,7 +133,7 @@
             <!-- <image mode="widthFix" class="pic" src="@/static/image/tqyb.png" /> -->
             <div class="header header7">
               <div class="header2">气象站信息</div>
-              <div class="cj">
+              <div class="cj" v-if="weatherCreateTime">
                 <span> 采集时间: </span>
                 <span> {{ weatherCreateTime }} </span>
               </div>
@@ -143,7 +148,7 @@
                 <image mode="widthFix" class="pic92" :src="item.pic" />
                 <div class="index92">
                   <div class="index93">
-                    <span>{{ item.num }}</span
+                    <span>{{ item.num?item.num:'-' }}</span
                     >{{ item.unit }}
                   </div>
                   {{ item.name }}
@@ -243,24 +248,28 @@
               <div class="header2">长势监测</div>
               <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
             </div>
-            <div class="test1" v-if="fluoritescreenshotData">
-              <div class="test5">
+            <div class="test1" v-if="videoListShow.length>0">
+              <div class="test5" v-for="(item,index) in videoListShow" :key="index">
                 <div class="test6">
-                  <div class="imgwraps" @click="goDetailGrowth">
+                  <div class="imgwraps" @click="goDetailGrowth(item)">
                     <image
                       mode="widthFix"
                       class="videopic"
-                      :src="baseUrl+fluoritescreenshotData['url']"
+                      :src="baseUrl+item['cover']"
+                      v-if="item.cover"
                     />
+                    <div class="videoNot" v-else>
+                      暂无信息图片
+                    </div>
                   </div>
                   <div class="text flextextadd">
-                    <div>{{fluoritescreenshotData.createTime}}</div>
+                    <div>{{item.deviceName}}</div>
                     <div>查看详情</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="nodata" v-else>
+            <div class="nodata nosetparam" v-else>
               暂无数据
             </div>
             <!-- <div class="header header3">
@@ -355,7 +364,7 @@
               </div>
             </div>
             </div>
-            <div class="nodata" v-if="farmList.length==0">
+            <div class="nodata nosetparam" v-if="farmList.length==0">
               暂无数据
             </div>
           </div>
@@ -368,6 +377,7 @@
                 <div class="d1wrap">
                   <div class="d1 flexcenter">
                     <div class="d2 flexcenter" v-if="getEnInfo.status=='online'">在线</div>
+                    <div class="d2 d2offline flexcenter" v-if="getEnInfo.status=='offline'">离线</div>
                     {{ getEnInfo.name }}
                   </div>
                   <div class="btnd flexcenter" @click="goDetail2(2,getEnInfo)">查看详情</div>
@@ -387,6 +397,7 @@
                       mode="widthFix"
                       class="set"
                       src="@/static/image/time.png"
+                      v-if="getEnInfo.create_time"
                     />
                     {{ getEnInfo.create_time }}
                   </div>
@@ -417,7 +428,8 @@
             <div class="detailwrap" v-if="soilInfo">
               <div class="d1wrap">
                 <div class="d1 flexcenter">
-                  <div class="d2 flexcenter">在线</div>
+                  <div class="d2 flexcenter" v-if="getEnInfo.status=='online'">在线</div>
+                  <div class="d2 d2offline flexcenter" v-if="getEnInfo.status=='offline'">离线</div>
                    {{soilInfo.name}}
                 </div>
                 <div class="btnd flexcenter" @click="goDetail2(3,soilInfo)">查看详情</div>
@@ -437,6 +449,7 @@
                     mode="widthFix"
                     class="set"
                     src="@/static/image/time.png"
+                    v-if="soilInfo.record_time"
                   />
                   {{soilInfo.record_time}}
                 </div>
@@ -451,7 +464,7 @@
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">{{soilInfo.ec}}uc/cm</div>
+                  <div class="oftenbold">{{soilInfo.ec?soilInfo.ec:'-'}}uc/cm</div>
                   土壤EC值
                 </div>
               </div>
@@ -463,7 +476,7 @@
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">{{soilInfo.ph}}</div>
+                  <div class="oftenbold">{{soilInfo.ph?soilInfo.ph:'-'}}</div>
                   土壤PH值
                 </div>
               </div>
@@ -475,7 +488,7 @@
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">{{soilInfo.temperature}}</div>
+                  <div class="oftenbold">{{soilInfo.temperature?soilInfo.temperature:'-'}}</div>
                   土壤温度
                 </div>
               </div>
@@ -487,7 +500,7 @@
                   alt=""
                 />
                 <div class="oftenright">
-                  <div class="oftenbold">{{soilInfo.humidity}}</div>
+                  <div class="oftenbold">{{soilInfo.humidity?soilInfo.humidity:'-'}}</div>
                   土壤湿度
                 </div>
               </div>
@@ -496,7 +509,7 @@
 
             <div class="header header3 header3Top">
               <div class="header2">虫情监测</div>
-              <image mode="widthFix" class="set" src="@/static/image/ss1.png" />
+              <!-- <image mode="widthFix" class="set" src="@/static/image/ss1.png" /> -->
             </div>
             <div class="test1" v-if="wormList.length>0">
               <div class="test5" v-for="(item,index) in wormList" :key="index">
@@ -515,8 +528,8 @@
                 </div>
               </div>
             </div>
-            <div class="nodata" v-else>
-              暂无数据
+            <div class="nodata nosetparam" v-else>
+              暂无虫情设备
             </div>
           </div>
           <div class="changechild" v-if="activeTab == 4">
@@ -636,7 +649,7 @@
                 />
               </div>
             </div>
-            <div class="nodata" v-else>
+            <div class="nodata nosetparam" v-else>
               暂无数据
             </div>
             <div class="header header7">
@@ -685,7 +698,7 @@
                 />
               </div>
             </div>
-            <div class="nodata" v-else>
+            <div class="nodata nosetparam" v-else>
               暂无数据
             </div>
             <div class="header header7">
@@ -1458,7 +1471,7 @@ export default {
     this.getSumRainInYear(ago, 0);
     this.getSumTemInYear(now, 1);
     this.getSumTemInYear(ago, 0);
-    this.fluoritescreenshot();
+    //this.fluoritescreenshot();
     this.farmrecords();
     this.getLatestDatasInGarden()
     this.getTotalAllThisAndLastYear();
@@ -1769,24 +1782,24 @@ export default {
         
       });
     },
-    fluoritescreenshot() {  
-      let find = this.getDeviceList.find((item) => {
-        return item.type == 2;
-      });
-      if(!find){
-        return 
-      }
-      request({
-        url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial=" + find.id,
-        method: "get",
-        isAuth: false,
-        data: {},
-      }).then((res) => {
-        console.log("aaaa", res);
-        this.fluoritescreenshotData =
-          res.data.records[res.data.records.length - 1];
-      });
-    },
+    // fluoritescreenshot() {  
+    //   let find = this.getDeviceList.find((item) => {
+    //     return item.type == 2;
+    //   });
+    //   if(!find){
+    //     return 
+    //   }
+    //   request({
+    //     url: "/data-thirdpart/fluoritescreenshot/page?deviceSerial=" + find.id,
+    //     method: "get",
+    //     isAuth: false,
+    //     data: {},
+    //   }).then((res) => {
+    //     console.log("aaaa", res);
+    //     this.fluoritescreenshotData =
+    //       res.data.records[res.data.records.length - 1];
+    //   });
+    // },
     askInfo() {
       request({
         url: "/data/teagarden/" + this.teaId,
@@ -1824,15 +1837,9 @@ export default {
         url: "/pages/four2/site/index?id=" + item.device_addr+'&type=1',
       });
     },
-    goDetailGrowth() {
-      let find = this.getDeviceList.find((item) => {
-        return item.type == 2;
-      });
-      if(!find){
-        return 
-      }
+    goDetailGrowth(item) {
       uni.navigateTo({
-        url: "/pages/four2/site/index?id=" + find.id,
+        url: "/pages/four2/site/index?id=" + item.deviceSerial,
       });
     },
     askVideo() {

@@ -207,7 +207,6 @@ export default {
         align-items: center;
         justify-content: center;
         position: relative;
-        top: -8rpx;
     }
   }
   .test1 {

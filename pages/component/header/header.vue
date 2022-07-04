@@ -122,15 +122,15 @@ export default {
       let currentRoutes = getCurrentPages();
       let currentRoute = currentRoutes[currentRoutes.length - 1].route;
       console.log("currentRoute", currentRoute);
-      // if(currentRoute=='pages/farming/index'||currentRoute=='pages/farming/edit'||currentRoute=='pages/four2/index'){
-      //   uni.switchTab({
-      //     url: "/pages/index/index",
-      //   });
-      // }else{
-      uni.navigateBack({
-        delta: 1,
-      });
-      //}
+      if(currentRoute=='pages/farming/index'){
+        uni.switchTab({
+          url: "/pages/index/index",
+        });
+      }else{
+        uni.navigateBack({
+          delta: 1,
+        });
+      }
     },
     getPhoneHeight() {
       //获取高度

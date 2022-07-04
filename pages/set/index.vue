@@ -62,6 +62,9 @@
                   <div class="d2 flexcenter" v-if="item.status == 'online'">
                     在线
                   </div>
+                  <div class="d2offline d2 flexcenter" v-if="item.status == 'offline'">
+                    离线
+                  </div>
                   {{ item.name }}
                 </div>
                 <div class="btnd flexcenter" @click="goDetail2(2, item)">
@@ -83,6 +86,7 @@
                     mode="widthFix"
                     class="set"
                     src="@/static/image/time.png"
+                    v-if="item.create_time"
                   />
                   {{ item.create_time }}
                 </div>
@@ -126,6 +130,9 @@
                   <div class="d2 flexcenter" v-if="item.status == 'online'">
                     在线
                   </div>
+                  <div class="d2offline d2 flexcenter" v-if="item.status == 'offline'">
+                    离线
+                  </div>
                   {{ item.name }}
                 </div>
                 <div class="btnd flexcenter" @click="goDetail2(2, item)">
@@ -147,6 +154,7 @@
                     mode="widthFix"
                     class="set"
                     src="@/static/image/time.png"
+                    v-if="item.record_time"
                   />
                   {{ item.record_time }}
                 </div>
@@ -161,7 +169,7 @@
                 />
                 <div class="index92">
                   <div class="index93">
-                    <span>{{ item.ec }}</span
+                    <span>{{ item.ec?item.ec:'-' }}</span
                     >us/cm
                   </div>
                   土壤EC值
@@ -175,7 +183,7 @@
                 />
                 <div class="index92">
                   <div class="index93">
-                    <span>{{ item.ph }}</span>
+                    <span>{{ item.ph?item.ph:'-' }}</span>
                   </div>
                   土壤PH值
                 </div>
@@ -188,7 +196,7 @@
                 />
                 <div class="index92">
                   <div class="index93">
-                    <span>{{ item.temperature }}</span
+                    <span>{{ item.temperature?item.temperature:'-' }}</span
                     >℃
                   </div>
                   土壤温度
@@ -202,7 +210,7 @@
                 />
                 <div class="index92">
                   <div class="index93">
-                    <span>{{ item.humidity }}</span>
+                    <span>{{ item.humidity?item.humidity:'-' }}</span>
                     %
                   </div>
                   土壤湿度
@@ -241,8 +249,8 @@
         </div>
        
       </div>
-      <div class="nodata" v-else>
-          暂无数据
+      <div class="nosetparam"  v-else>
+        暂无虫情设备
       </div>
       </div>
       <div class="content" v-else>

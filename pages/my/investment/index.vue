@@ -5,34 +5,29 @@
       <div class="index1">
         <div class="top">
           <div class="t1">
-            <div class="btn1" @click="addpopup=true">
+            <div class="btn1" @click="addOneHandle">
               <u-button iconColor="#626466" size="small" icon="plus"></u-button>
             </div>
-            <div>
-              <u-button color="#29CC96" size="small" text="编辑"></u-button>
+            <div @click="editFlag=!editFlag">
+              <u-button color="#29CC96" size="small" :text="editFlag?'取消':'编辑'"></u-button>
             </div>
           </div>
         </div>
         <div class="listwrap">
-          <div class="l1">
-            <span>化肥</span>
+          <div class="l1" v-for="(item,index) in list" :key="index">
+            <span>{{item.name}}</span>
             <div class="l3">
-              <div class="l">硫酸钾</div>
-              <div class="l">硫酸钾</div>
-              <div class="l">硫酸钾</div>
+              <div class="l" v-for="(item2,index2) in item.child" :key="index2">
+                {{item2.inputsType}} 
+                <u-icon v-if="editFlag" @click="deleteOne(item2)" name="close-circle" color="#F54E40" size="22"></u-icon>
+              </div>
+             
+            
             </div>
           </div>
-          <div class="l1">
-            <span>化肥</span>
-            <div class="l3">
-              <div class="l">硫酸钾</div>
-              <div class="l">硫酸钾</div>
-              <div class="l">硫酸钾</div>
-            </div>
-          </div>
+          
         </div>
       </div>
-      <div @click="submieSure" class="btnsumit btn3">确认提交</div>
     </div>
      <div>
       <div v-if="addpopup" class="popup_content">
@@ -72,8 +67,6 @@
               
             ></u--input>
           </div>
-          
-
           <div @click="submitFeedback()" class="buttons">
             <text class="popup_button">确定</text>
           </div>
@@ -101,6 +94,9 @@ export default {
   },
   data() {
     return {
+      allFarmInput:[],
+      editFlag:false,
+      list:[],
       addName:'',
       addType:'',
       showType:false,
@@ -136,7 +132,79 @@ export default {
       addpopup: false,
     };
   },
+  onLoad(){
+    this.farminputs()
+  },
   methods: {
+    deleteOne(item){
+      let that=this
+      uni.showModal({
+        title: '提示',
+        content: '确认删除此投入品吗？',
+        cancelText: "取消", // 取消按钮的文字  
+        confirmText: "确认", // 确认按钮文字 
+        confirmColor:'#F54E40',//确认字体的颜色
+        cancelColor:'#000',//取消字体的颜色
+        success: function (res) {
+          if (res.confirm) {
+            that.deleteSure(item)
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        }
+      });
+    },
+    addOneHandle(){
+      this.addpopup=true
+      this.editFlag=false
+    },
+    deleteSure(item){
+      request({
+        url: "/data/farminputs/"+item.id,
+        method: 'delete',
+        isAuth: false,
+        data:{
+          
+        },
+      }).then((res) => {
+        uni.showToast({
+          title: "删除成功",
+          icon: "none",
+          duration: 850,
+        });
+        this.farminputs()
+      })
+    },
+    farminputs(){
+      request({
+        url: "/data/farminputs/page",
+        method: 'get',
+        isAuth: false,
+        data:{
+          
+        },
+      }).then((res) => {
+        this.allFarmInput=res.data.records
+        let only=[]
+        res.data.records.forEach(item=>{
+          let flag=only.find(item2=>{
+            return item2.name==item.inputsName
+          })
+          if(!flag){
+            only.push({
+              name:item.inputsName,
+              child:[
+                item
+              ]
+            })
+          }else{
+            flag.child.push(item)
+          }
+        })
+        this.list=only
+        console.log(only)
+      })
+    },
     typeSelect(val){
       console.log(val)
       this.addType=val.name
@@ -162,6 +230,17 @@ export default {
         });
         return;
       }
+      let flag=this.allFarmInput.find(item=>{
+        return item.inputsType==this.addName||item.inputsName==this.addName
+      })
+      if(flag){
+        uni.showToast({
+          title: "已存在相同的投入品",
+          icon: "none",
+          duration: 850,
+        });
+        return;
+      }
       request({
         url: "/data/farminputs",
         method: 'post',
@@ -177,6 +256,9 @@ export default {
           duration:850
         })
         this.addpopup=false  
+        this.addType=''
+        this.addName=''
+        this.farminputs()
       })
     },
   },
@@ -261,7 +343,7 @@ export default {
   text-align: center;
   font-size: 32rpx;
   padding: 15rpx 0;
-  margin-top: 40rpx;
+  margin-top: 65rpx;
   background-color: #29cc96;
 }
 
@@ -292,13 +374,23 @@ export default {
 }
 .listwrap {
   margin-top: 40rpx;
+  .l3:last-child{
+    padding-bottom: 0rpx!important;
+  }
   .l3{
+    padding-top: 15rpx!important;
     padding: 30rpx;
+
     .l{
       border: 1px solid #e7e3e3;
       border-radius: 10rpx;
       padding: 30rpx;
       margin: 10rpx;
+      display: flex;
+      color: #939599;
+      font-size: 26rpx;
+      justify-content: space-between;
+
     }
     
   }

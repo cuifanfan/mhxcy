@@ -103,8 +103,8 @@
                 fontSize:7,
                 rotateLabel:true,
                 scrollShow:true,
-                itemCount:10,
-                labelCount:7,
+                itemCount:20,
+                labelCount:30,
                 scrollAlign:'left',
                 axisLineColor: 'rgba(147,149,153,0.1)',
                 disableGrid: false,
@@ -164,6 +164,7 @@ export default {
             type: "line",
             addPoint: true,
             color: "#3199F5",
+            textSize: 8,
           },
         ],
         yAxis: [
@@ -332,13 +333,9 @@ export default {
             this.chartAll[index3].push(item3)
           })
         })
-        
-        
         this.listAll =this.listAll.concat(add)
         this.chartDataTemperature.categories=this.chartAll[0]
         this.chartDataTemperature.series[0].data=this.chartAll[1]
-        console.log('515546',this.listAll)
-        console.log('chaadddd',this.chartAll)
         if (res.data.records.length == 0) {
           uni.showToast({
             title: "暂无更多数据",
@@ -364,11 +361,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.content{
+  padding-top: 0!important;
+}
 .cirbox{
   background: #fff;
 }
 .tabflexnowrap {
   overflow: scroll;
+  padding-top: 104rpx;
   
   .tabheader2{
     .c1{
@@ -540,6 +541,9 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: fixed;
+    width: 100%;
+    box-sizing: border-box;
   }
   .test3 {
     position: relative;

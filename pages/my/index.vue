@@ -7,7 +7,7 @@
           <image mode="widthFix" class="tx" src="@/static/image/tx.png" />
           <div class="name">
             {{info.name}}
-            <image mode="widthFix" class="pic" src="@/static/image/edit3.png" />
+            <!-- <image mode="widthFix" class="pic" src="@/static/image/edit3.png" /> -->
           </div>
           <div class="myinfo flexcenter">
             <div class="c1 c12">
@@ -62,7 +62,7 @@
           </div>
           <div @click="goOutput" class="child child3 child12">
             <div class="c1">
-              <image mode="widthFix" class="pic" src="@/static/image/u1.png" />
+              <image mode="widthFix" class="pic" src="@/static/image/trp.png" />
               投入品管理
             </div>
             <u-icon
@@ -237,7 +237,6 @@ export default {
     
   },
   methods: {
-
     teabase(){
        let userInfo=uni.getStorageSync('userInfo')
        request({
@@ -376,8 +375,12 @@ export default {
     justify-content: center;
     height: 32rpx;
     padding: 4rpx;
-    font-size: 20rpx;
+    font-size: 10px;
     margin-left: 20rpx;
+    width: 35rpx;
+    height: 35rpx;
+    position: relative;
+    top: 2rpx;
   }
   .child2{
     margin-top: 30rpx;

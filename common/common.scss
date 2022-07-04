@@ -7,6 +7,31 @@ body,html{
 .pic92{
 	width: 64rpx;
 }
+.nosetparam{
+    font-size: 26rpx!important;
+    color: #939599!important;
+}
+.d2offline{
+    background: rgba(147,149,153, 0.16) !important;
+    color: rgba(147,149,153, 1) !important;
+  }
+  .d2{
+	margin-right: 10rpx;
+  }
+.videoNot{
+	background: #484747;
+	color: #fff;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.imgwraps{
+	.videopic{
+		height: 100%!important;
+	}
+}
 .uni-mask{
 	z-index: 99998!important;
   }
