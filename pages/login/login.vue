@@ -48,9 +48,9 @@
 					<a href="http://" class="forgetPas">忘记密码</a>
 				</view>
 				<!-- 底部 -->
-				<view class="info">
+				<!-- <view class="info">
 					<span class="infoSpan">Copyright © 北京霖智科技有限公司  202111070626</span>
-				</view>
+				</view> -->
 			</view>
 			<!-- 注册界面 -->
 			<view class="registerRes form" v-show="currentIndex == 1">

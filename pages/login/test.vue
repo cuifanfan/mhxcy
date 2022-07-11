@@ -29,9 +29,9 @@
 			</view>
 			<view class="forgetPwd">
 			</view>
-			<view class="info">
+			<!-- <view class="info">
 				<text class="infoText">Copyright © 北京霖智科技有限公司  202111070626</text>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
