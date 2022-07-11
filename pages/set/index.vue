@@ -931,6 +931,11 @@ export default {
 }
 .content {
   margin: 0 32rpx;
+  .imgwraps {
+    position: relative;
+    height: 404rpx;
+    overflow: hidden;
+  }
 }
 .panlewrap {
   background: #fff;

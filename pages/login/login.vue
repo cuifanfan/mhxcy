@@ -247,6 +247,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+	.uni-label-pointer{
+		display: flex;
+		align-items: center;
+	}
 .inputStyleChange{
 	background-color: #F5FAF9;
 	border:2rpx solid #09CD95 ;
@@ -428,7 +432,7 @@ export default {
 .agreeLogic{
 	width: 686rpx;
 	margin: 0 auto;
-	// margin-bottom: 64rpx;
+	 margin-bottom: 34rpx;
 }
 
 .pasLogic{
