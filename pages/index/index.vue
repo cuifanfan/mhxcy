@@ -1288,7 +1288,7 @@ export default {
   }
   .indexinfor {
     font-size: 28rpx;
-    margin-top: 35rpx;
+    margin-top: 20rpx;
     padding: 10rpx 32rpx !important;
     .pic {
       width: 32rpx;

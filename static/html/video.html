@@ -17,6 +17,16 @@
         display: none!important;
         height: 0!important;
     }
+    .video-containe{
+        position: relative;
+    }
+    .qp{
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        width: 30px;
+        z-index: 100;
+    }
     #tuichu {
         position: fixed;
         right: 5px;
@@ -102,23 +112,24 @@
 
 <body>
     <div id="video-container">
+        <img onClick="fullScreen()" class="qp" id="qp" src="./qp.png" alt="">
     </div>
-    <div class="handlebtn flexcenter">
-        <div onClick="fullScreen()" class="one1 flexcenter">
+     <div class="handlebtn flexcenter">
+        <!-- <div onClick="fullScreen()" class="one1 flexcenter">
             <image mode="widthFix" class="one2" src="./h2.png" />
             全屏
         </div>
         <div class="one1 flexcenter" onClick="capturePicture()">
             <image mode="widthFix" class="one2" src="./h1.png" />
             截图
-        </div>
-    </div>
+        </div> -->
+    </div> 
     <div class="cirwrap2 flexcenter" style="position: relative;">
         <image mode="widthFix" class="handlecir" src="./handle.png" />
-        <div class="cz cz1"></div>
-        <div class="cz cz2"></div>
-        <div class="cz cz3"></div>
-        <div class="cz cz4"></div>
+        <div class="cz cz1" onclick="turn(0)"></div>
+        <div class="cz cz2" onclick="turn(1)"></div>
+        <div class="cz cz3" onclick="turn(2)"></div>
+        <div class="cz cz4" onclick="turn(3)"></div>
     </div>
     <div id="tuichu" onClick="exitFullScreen()">
         退出全屏
@@ -143,6 +154,14 @@
         // setTimeout(() => {
         //     playr.cancelFullScreen()
         // }, 10000);
+        function turn(val){
+            uni.postMessage({
+                data: {
+                msg: 'turn',
+                val:val
+                }
+            });
+        }
         function exitFullScreen() {
 
             playr.cancelFullScreen()
@@ -153,11 +172,16 @@
             // });
             let obj = document.getElementById("tuichu");
             obj.style.display = 'none';
+
+            let obj2=document.getElementById('qp')
+            obj2.style.display='block'
         }
         function fullScreenCallBackMethod() {
             console.log('全屏拉！！！！！')
             let obj = document.getElementById("tuichu");
             obj.style.display = 'block';
+            let obj2=document.getElementById('qp')
+            obj2.style.display='none'
         }
         function GetQueryString(name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -201,10 +225,12 @@
             })
         }
         function capturePicture() {
-            var capturePicturePromise = playr.capturePicture();
-            capturePicturePromise.then((data) => {
-                console.log("promise 获取 数据", data)
-            })
+            //console.log('截屏！！！！')
+             var capturePicturePromise = playr.capturePicture();
+            // capturePicturePromise.then((data) => {
+            //     console.log("promise 获取 数据", data)
+            //     console.log('xxxx',JSON.stringify(data.data.fileName))
+            // })
         }
         function openSound() {
             var openSoundPromise = playr.openSound();
@@ -267,7 +293,7 @@
             height: height
         });
         // });
-        console.log('ppppppp', playr)
+       // console.log('ppppppp', playr)
         //}
     </script>
 </body>

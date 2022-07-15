@@ -28,7 +28,7 @@
             />
           </div>
         </div>
-        <div @click="showType = !showType" class="change flexcenter">
+        <div @click="changeShowType" class="change flexcenter">
           <image
             mode="widthFix"
             class="change2"
@@ -59,7 +59,7 @@
           <div class="c1newwrap" v-if="index>0&&index<8"  v-for="(item, index) in tabAll[urlType-2]"
             :key="index">
             <div
-            @click="changeChild(index)"
+            @click="changeChild(index,item)"
             :class="[activeChild == index ? 'c1addactive' : '', 'c1add']"
            
           >
@@ -70,7 +70,8 @@
       </div>
       <div v-if="showType" class="tabnew">
         <div class="cirbox">
-          <qiun-data-charts
+          <view style="width: 100%; height:500rpx"><l-echart ref="chart"></l-echart></view>
+          <!-- <qiun-data-charts
             type="mix"
             canvasId="three_b"
             :resshow="false"
@@ -114,7 +115,7 @@
               },
             }"
             :chartData="chartDataTemperature"
-          />
+          /> -->
         </div>
       </div>
       <!-- <image mode="widthFix" v-else class="fullpic" src="@/static/image/false30.png" /> -->
@@ -140,12 +141,82 @@
 import headerDiy from "../../component/header/header.vue";
 import request from "../../../common/utils/request";
 import moment from "moment";
+
+import * as echarts from 'echarts/core';
+import {LineChart, BarChart} from 'echarts/charts';
+import {TitleComponent,TooltipComponent,GridComponent, DatasetComponent, TransformComponent, LegendComponent , DataZoomComponent} from 'echarts/components';
+// 标签自动布局，全局过渡动画等特性
+import {LabelLayout,UniversalTransition} from 'echarts/features';
+// 引入 Canvas 渲染器，注意引入 CanvasRenderer 是必须的一步
+import {CanvasRenderer} from 'echarts/renderers';
+
+// 注册必须的组件
+echarts.use([
+  LegendComponent,
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  DatasetComponent,
+  TransformComponent,
+  LineChart,
+  BarChart,
+  LabelLayout,
+  UniversalTransition,
+  CanvasRenderer,
+  DataZoomComponent
+]);
 export default {
   components: {
     headerDiy,
   },
   data() {
-    return {
+    return {   
+      option:  {
+					tooltip: {
+						trigger: 'axis'
+					},
+					legend: {
+						
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					xAxis: {
+						type: 'category',
+						boundaryGap: false,
+						data: [],
+            //  axisLabel: {
+            //   rotate: 40
+            //  }
+					},
+					yAxis: {
+						type: 'value'
+					},
+          legend: { show: false },
+          dataZoom: [
+            {
+              type: 'inside',
+              start: 0,
+              end: 20
+            },
+            {
+              start: 0,
+              end: 20
+            }
+        ],
+					series: [
+						{
+							name: '',
+							type: 'line',
+							stack: '总量',
+							data: [],
+              color:'#3199f5'
+						}
+					]
+		  },
       listOver:false,
       size:20,
       current:1,
@@ -273,9 +344,27 @@ export default {
     }
   },
   methods: {
-    changeChild(index){
+    changeShowType(){
+      this.showType=!this.showType
+      this.initChart()
+    },
+    initChart(){
+       this.$nextTick(()=>{
+        if(this.showType){
+          this.$refs.chart.init(echarts, chart => {
+           chart.setOption(this.option);
+          });    
+        }
+        
+      })
+    },
+    changeChild(index,item){
       this.activeChild = index
-      this.chartDataTemperature.series[0].data=this.chartAll[index]
+      //this.chartDataTemperature.series[0].data=this.chartAll[index]
+      this.option.series[0]['data']=this.chartAll[index]
+      this.option.series[0]['name']=item
+      this.initChart()
+     
     },
     meteorologicalrecords(init){
       let data={
@@ -334,8 +423,13 @@ export default {
           })
         })
         this.listAll =this.listAll.concat(add)
-        this.chartDataTemperature.categories=this.chartAll[0]
-        this.chartDataTemperature.series[0].data=this.chartAll[1]
+        //this.chartDataTemperature.categories=this.chartAll[0]
+        //this.chartDataTemperature.series[0].data=this.chartAll[1]
+
+        this.option.xAxis.data= this.chartAll[0]
+        this.option.series[0]['data']=this.chartAll[1]
+        this.option.series[0]['name']=(this.tabAll[this.urlType-2])[1]
+        this.initChart()
         if (res.data.records.length == 0) {
           uni.showToast({
             title: "暂无更多数据",

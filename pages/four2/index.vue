@@ -544,6 +544,7 @@ export default {
       } else {
         console.log(item);
         if (item.url) {
+          console.log(item)
           uni.navigateTo({
             url:
               "/pages/four2/camera/index?videourl=" +
@@ -551,7 +552,7 @@ export default {
               "&name=" +
               item.deviceName +
               "&token=" +
-              item.accessToken,
+              item.accessToken+"&deviceSerial="+item.deviceSerial,
           });
         } else {
           uni.showToast({

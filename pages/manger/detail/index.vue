@@ -65,14 +65,14 @@
                   :src="baseUrl+item.cover"
                   v-if="item.cover"
                 />
-                <div class="videoNot" v-else>
+                <div class="videoNot" v-if="!item.cover&&!item.url">
                   摄像头暂未接入
                 </div>
                 <image
                   mode="widthFix"
                   class="play"
                   src="@/static/image/play.png"
-                  v-if="item.url!=''"
+                  v-if="item.url!=''&&item.cover"
                 />
               </div>
               <div class="text textflex">
@@ -178,12 +178,8 @@
                         titleOffsetX: -15,
                         titleOffsetY: -10,
                         titleFontColor: '#939599',
-                        max: chartDataTemperature
-                          ? chartDataTemperature.yAxis[0].max
-                          : 0,
-                        min: chartDataTemperature
-                          ? chartDataTemperature.yAxis[0].min
-                          : 0,
+                        max:chartDataTemperature?chartDataTemperature.yAxis[0]['max']:0,
+                        min:chartDataTemperature?chartDataTemperature.yAxis[0]['min']:0,
                       },
                     ],
                   },
@@ -1822,7 +1818,7 @@ export default {
             "&name=" +
             item.deviceName +
             "&token=" +
-            item.accessToken,
+            item.accessToken+"&deviceSerial="+item.deviceSerial,
         });
       } else {
         uni.showToast({
@@ -1861,7 +1857,9 @@ export default {
       if (uni.getStorageSync("MJweather")) {
         this.weatherData = uni.getStorageSync("MJweather");
         this.$nextTick(() => {
-          this.$refs.weather.init();
+          setTimeout(() => {
+            this.$refs.weather.init();  
+          }, 3000);
         });
       }
     },
