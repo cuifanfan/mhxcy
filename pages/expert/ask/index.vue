@@ -4,7 +4,7 @@
     <div class="content">
       <div class="index1">
         <div class="edit">
-          <div class="formchild"  @click="showType = true">
+          <div class="formchild" @click="showType = true">
             <div class="name name2">选择专家:</div>
             <div class="input input2">
               <div class="disablewrap">
@@ -24,7 +24,6 @@
                 ></u-icon>
               </div>
             </div>
-           
           </div>
         </div>
         <div class="edit">
@@ -41,7 +40,7 @@
                   <u-icon color="#fff" size="14" name="close"></u-icon>
                 </div>
               </div>
-              <div class="handle" v-if="resultPic.length<3">
+              <div class="handle" v-if="resultPic.length < 3">
                 <image
                   mode="widthFix"
                   class="iconpic"
@@ -52,20 +51,50 @@
             </div>
           </div>
         </div>
-         <div class="edit">
+        <div class="edit">
+          <div class="formchild">
+            <div class="name">添加视频:(最多一个)</div>
+            <div class="editpic">
+              <div
+                class="picpic picvideo"
+                v-for="(item, index) in resultPicVideo"
+                :key="index"
+              >
+               
+                <video id="myVideo" :src="baseUrl+item"
+                 enable-danmu danmu-btn controls></video>
+           
+                <div class="icon" @click="deleteOneVideo(index)">
+                  <u-icon color="#fff" size="14" name="close"></u-icon>
+                </div>
+              </div>
+              <div class="handle" v-if="resultPicVideo.length < 1">
+                <image
+                  mode="widthFix"
+                  class="iconpic"
+                  src="@/static/image/edit.png"
+                  @click="onGetImgClickVideo"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="edit">
           <div class="formchild">
             <div class="name name2">问题描述:</div>
             <div class="input input2">
-               <textarea v-model="question" placeholder="请输入想咨询的相关问题" placeholder-class="palceholderclass" class="textarea"></textarea>
+              <textarea
+                v-model="question"
+                placeholder="请输入想咨询的相关问题"
+                placeholder-class="palceholderclass"
+                class="textarea"
+              ></textarea>
             </div>
-           
           </div>
         </div>
       </div>
     </div>
-    <div class="btnask" @click="submit">
-      确认提交
-    </div>
+    <div class="btnask" @click="submit">确认提交</div>
     <u-action-sheet
       :show="showType"
       :actions="typeList"
@@ -86,109 +115,148 @@ export default {
   },
   data() {
     return {
-      question:'',
+      question: "",
       resultPic: [],
-      baseUrl:BASE_URL,
+      resultPicVideo: [],
+      baseUrl: BASE_URL,
       pageName: "拍照问诊",
       numValue: "",
       nameValue: "",
       typeValue: "",
-      typeList: [
-       
-      ],
-      showType:false,
-      sendExport:'',
+      typeList: [],
+      showType: false,
+      sendExport: "",
     };
   },
-  onLoad(){
-    this.getUserOptions()
+  onLoad() {
+    this.getUserOptions();
   },
   methods: {
     typeSelect(e) {
-      console.log(e)
-      this.typeValue=e.name
-      this.sendExport=e.value
+      console.log(e);
+      this.typeValue = e.name;
+      this.sendExport = e.value;
     },
-    getUserOptions(){
+    getUserOptions() {
       request({
         url: "/admin/user/getUserOptions?deptId=2",
-        method: 'get',
+        method: "get",
         isAuth: false,
-        data:{}
+        data: {},
       }).then((res) => {
-        res.data.forEach(item=>{
+        res.data.forEach((item) => {
           this.typeList.push({
-            name:item.label,
-            value:item.value
-          })
-        })
-      })
+            name: item.label,
+            value: item.value,
+          });
+        });
+      });
     },
-    submit(){
-      if(this.typeValue==''){
+    submit() {
+      if (this.typeValue == "") {
         uni.showToast({
-            title: "请选择专家",
-            icon: "none",
-            duration: 850,
-          });
-          return;
+          title: "请选择专家",
+          icon: "none",
+          duration: 850,
+        });
+        return;
       }
-      if(this.question==''){
+      if (this.question == "") {
         uni.showToast({
-            title: "请输入问题描述",
-            icon: "none",
-            duration: 850,
-          });
-          return;
+          title: "请输入问题描述",
+          icon: "none",
+          duration: 850,
+        });
+        return;
       }
-      let userInfo=uni.getStorageSync('userInfo')
-      let data={
-        "content": this.question,
-        "userId":userInfo.userId,
-        "userName": userInfo.userName
+      let userInfo = uni.getStorageSync("userInfo");
+      let data = {
+        content: this.question,
+        userId: userInfo.userId,
+        userName: userInfo.userName,
+      };
+      if (this.resultPic.length > 0) {
+        data.imageUrls = this.resultPic.join(",");
       }
-      if(this.resultPic.length>0){
-        data.imageUrls=this.resultPic.join(',') 
+      if(this.resultPicVideo.length>0){
+        data.questionVideo=this.resultPicVideo.join(',')
       }
       request({
         url: "/data/expertservice",
-        method: 'post',
+        method: "post",
         isAuth: false,
-        data:data
+        data: data,
       }).then((res) => {
-          uni.showToast({
-            title:'提交成功',
-            icon:'none',
-            duration:850
-			    });
-          setTimeout(() => {
-            uni.navigateTo({
-              url: "/pages/expert/index",
-            });  
-          }, 1000);
-      })
-      
+        uni.showToast({
+          title: "提交成功",
+          icon: "none",
+          duration: 850,
+        });
+        setTimeout(() => {
+          uni.navigateTo({
+            url: "/pages/expert/index",
+          });
+        }, 1000);
+      });
     },
     deleteOne(index) {
       this.resultPic.splice(index, 1);
     },
-    toJSON(){
-      return this
+    deleteOneVideo(index) {
+      this.resultPicVideo.splice(index, 1);
+    },
+    toJSON() {
+      return this;
+    },
+    onGetImgClickVideo: function () {
+      let that = this;
+      uni.chooseVideo({
+        maxDuration: 60, // 最大为60秒
+        count: 1,
+        compressed: false,
+        //camera: that.cameraList[this.cameraIndex].value,
+        sourceType: ["album", "camera"],
+        success: (res) => {
+          let tempFilePath = res.tempFilePath;
+          let fileName = "";
+          fileName = tempFilePath.substr(tempFilePath.lastIndexOf("/") + 1);
+          uni.showLoading({
+            mask: true,
+            title: "上传中...",
+          });
+          uni.uploadFile({
+            url: "http://121.36.247.77:9999/admin/sys-file/upload",
+            filePath: tempFilePath,
+            name: "file",
+            fileType: "video",
+            header: {
+                 Authorization: "Bearer " + uni.getStorageSync("token"),
+            },
+            success(res) {
+              uni.hideLoading();
+              console.log('上传结果',res)
+              let dataget = JSON.parse(res.data);
+              console.log("上传！！", dataget);
+              that.resultPicVideo.push(dataget.data.url);
+            },
+          });
+        },
+      });
     },
     onGetImgClick: function () {
       let that=this
       uni.chooseImage({
-        count:3,
+        count: 3,
         sizeType: ["compressed"], //original 原图，compressed 压缩图，默认二者都有
         sourceType: ["album", "camera"], //album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
         success: (res) => {
           //this.imageList = res.tempFilePaths[0];
           console.log("res", res);
-         // console.log(this);
+          // console.log(this);
           res.tempFilePaths.forEach((item, index) => {
-            console.log('itemfile',item)
+            console.log("itemfile", item);
             uni.uploadFile({
-              url: `http://121.36.247.77:9999/admin/sys-file/upload`, 
+              url: `http://121.36.247.77:9999/admin/sys-file/upload`,
               name: "file",
               header: {
                 Authorization: "Bearer " + uni.getStorageSync("token"),
@@ -198,9 +266,7 @@ export default {
                 let dataget = JSON.parse(res.data);
                 console.log("上传！！", dataget);
                 that.resultPic.push(dataget.data.url);
-                
               },
-              
             });
           });
         },
@@ -210,29 +276,34 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
+  #myVideo{
+    max-width: 540rpx;
+  }
+
 .handle {
-      background: #fafafa;
-      border-radius: 16rpx;
-      border-radius: 16rpx;
-      padding: 0 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 132rpx;
+  background: #fafafa;
+  border-radius: 16rpx;
+  border-radius: 16rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 132rpx;
 }
 .handlepic {
-      width: 160rpx;
-      height: 132rpx;
-      margin-right: 20rpx;
+  width: 160rpx;
+  height: 132rpx;
+  margin-right: 20rpx;
 }
-.palceholderclass{
-  color: rgba(147,149,153,0.3)!important;
+.palceholderclass {
+  color: rgba(147, 149, 153, 0.3) !important;
   font-size: 28rpx;
 }
-.btnask{
+.btnask {
   position: fixed;
   color: #fff;
-  background: #29CC96;
+  background: #29cc96;
   border-radius: 100px;
   bottom: 30rpx;
   width: 90%;
@@ -242,26 +313,26 @@ export default {
   padding: 12rpx;
   box-sizing: border-box;
 }
-.name2{
-  color: #939599!important;
-  font-weight: normal!important;
+.name2 {
+  color: #939599 !important;
+  font-weight: normal !important;
 }
 .disablewrap {
-    display: flex;
-    padding: 12rpx 18rpx;
-    justify-content: space-between;
-    width: 100%;
-    border-radius: 12rpx;
-    background: #FAFAFA;
-  }
+  display: flex;
+  padding: 12rpx 18rpx;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 12rpx;
+  background: #fafafa;
+}
 .input2 {
-    display: flex;
-  }
+  display: flex;
+}
 .edit {
   font-size: 28rpx;
   color: #939599;
-  .textarea{
-    background: #fafafa!important;
+  .textarea {
+    background: #fafafa !important;
     border-radius: 16rpx;
     height: 200rpx;
     width: 100%;
@@ -269,7 +340,7 @@ export default {
     color: #000;
     padding: 16rpx;
   }
-  .name{
+  .name {
     color: #626466;
     font-size: 28rpx;
     font-weight: bold;
@@ -280,37 +351,37 @@ export default {
     justify-content: space-between;
   }
 }
- .editpic {
-    display: flex;
-    .handlepic {
-      width: 160rpx;
-      height: 120rpx;
-    }
-    .iconpic {
-      width: 48rpx;
-    }
-    .picpic {
-      position: relative;
-      .icon {
-        position: absolute;
-        top: 10rpx;
-        right: 10rpx;
-        background: #c4c4c4;
-        border-radius: 100rpx;
-        overflow: hidden;
-        padding: 5rpx;
-      }
-    }
-    .handle {
-      background: #fafafa;
-      border-radius: 16rpx;
-      border-radius: 16rpx;
-      padding: 0 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+.editpic {
+  display: flex;
+  .handlepic {
+    width: 160rpx;
+    height: 120rpx;
+  }
+  .iconpic {
+    width: 48rpx;
+  }
+  .picpic {
+    position: relative;
+    .icon {
+      position: absolute;
+      top: 10rpx;
+      right: 10rpx;
+      background: #c4c4c4;
+      border-radius: 100rpx;
+      overflow: hidden;
+      padding: 5rpx;
     }
   }
+  .handle {
+    background: #fafafa;
+    border-radius: 16rpx;
+    border-radius: 16rpx;
+    padding: 0 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 .clearindex1 {
   background: transparent !important;
 }

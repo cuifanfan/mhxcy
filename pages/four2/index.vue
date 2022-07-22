@@ -391,9 +391,9 @@ export default {
         url: "/pages/four2/site/index?id=" + item.device_addr+'&type=1',
       });
     },
-    getIotdevice(){
+    getIotdevice(){ 
       request({
-        url: "/data/wormdistinguishdata/getLatestDatasInGarden/"+uni.getStorageSync('baseId'),
+        url: "/data/wormdistinguishdata/getLatestDatasInBase/"+uni.getStorageSync('baseId'),
         data: {
           
         },
@@ -542,9 +542,7 @@ export default {
           url: "/pages/four2/site/index",
         });
       } else {
-        console.log(item);
         if (item.url) {
-          console.log(item)
           uni.navigateTo({
             url:
               "/pages/four2/camera/index?videourl=" +

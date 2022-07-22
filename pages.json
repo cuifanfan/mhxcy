@@ -228,6 +228,13 @@
 			}
 		},
 		{
+			"path": "pages/my/uploadKnowledge/index",
+			"style": {
+				"navigationBarTitleText": "上传农业知识",
+				"navigationStyle": "custom" 
+			}
+		},
+		{
 			"path": "pages/goods/goodsList/goodsList",
 			"style": {
 				"navigationBarTitleText": "商品批次列表",

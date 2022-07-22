@@ -3,28 +3,39 @@
     <header-diy class="topbar" :type="2" :titleName="pageName"></header-diy>
     <div class="article index1 index1clear" v-if="detail">
       <div  class="img2">
-        <div class="wzdiv" >
-          <div class="header header7 flexcenter">
-            <div class="header2">问诊内容</div>
-            <div class="date">{{detail.createTime}}</div>
+          <div class="wzdiv" >
+                  <div class="header header7 flexcenter">
+                    <div class="header2">问诊内容</div>
+                    <div class="date">{{detail.createTime}}</div>
+                  </div>
+                  <div class="ns1 ns1flex" v-if="detail.picArr.length > 0">
+                    <image
+                      mode="widthFix"
+                      v-for="(item2, index2) in detail.picArr"
+                      :key="index2"
+                      class="zzpic"
+                      :src="baseUrl + item2"
+                    />
+                  </div>
+                  <div class="" v-if="detail.videoArr.length > 0"></div>
+                      <div
+                        class="picvideo"
+                        v-for="(item, index) in detail.videoArr"
+                        :key="index"
+                      >
+                        <video id="myVideo" :src="baseUrl+item"
+                        enable-danmu danmu-btn controls></video>
+                      </div>
+                    <div class="text">
+                      {{detail.content}}
+                    </div>
+                    <div class="zt">
+                      状态: <span class="ztspan" v-if="detail.reply">专家已回复</span>
+                      <span class="ztspan ztspan2" v-if="!detail.reply">专家未回复</span>
+                    </div>
+                  </div>   
+                  
           </div>
-          <div class="ns1 ns1flex" v-if="detail.picArr.length > 0">
-            <image
-              mode="widthFix"
-              v-for="(item2, index2) in detail.picArr"
-              :key="index2"
-              class="zzpic"
-              :src="baseUrl + item2"
-            />
-          </div>
-          <div class="text">
-            {{detail.content}}
-          </div>
-          <div class="zt">
-            状态: <span class="ztspan" v-if="detail.reply">专家已回复</span>
-            <span class="ztspan ztspan2" v-if="!detail.reply">专家未回复</span>
-          </div>
-        </div>
         <div class="wzdiv wzdiv2" v-if="detail.reply">
           <div class="header header7 flexcenter">
             <div class="header2">专家回复</div>
@@ -38,14 +49,14 @@
               class="zzpic"
               :src="baseUrl + item2"
             />
-          </div>
+          </div> 
           <div class="text">
             {{detail.reply}}
           </div>
         </div>
       </div>
     </div>
-  </div>
+ 
 </template>
 <script>
 import headerDiy from "../../component/header/header.vue";
@@ -57,9 +68,9 @@ export default {
   },
   data() {
     return {
-      baseUrl:BASE_URL,
+      baseUrl: BASE_URL,
       detail: null,
-      pageName: "知识详情",
+      pageName: "问诊详情",
       numValue: "",
       nameValue: "",
       typeValue: "",
@@ -68,10 +79,19 @@ export default {
   onLoad() {
     if (uni.getStorageSync("articleContent")) {
       this.detail = JSON.parse(uni.getStorageSync("articleContent"));
-      if(this.detail.imageUrls){
-            this.$set(this.detail,'picArr',this.detail.imageUrls.split(','))
-          }else{
-            this.$set(this.detail,'picArr',[])
+      if (this.detail.imageUrls) {
+        this.$set(this.detail, "picArr", this.detail.imageUrls.split(","));
+      } else {
+        this.$set(this.detail, "picArr", []);
+      }
+      if (this.detail.questionVideo) {
+        this.$set(
+          this.detail,
+          "videoArr",
+          this.detail.questionVideo.split(",")
+        );
+      } else {
+        this.$set(this.detail, "videoArr", []);
       }
       console.log(this.detail);
     }
@@ -87,7 +107,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.wzdiv2{
+.wzdiv2 {
   margin-top: 20rpx;
 }
 .wzdiv {
@@ -95,19 +115,19 @@ export default {
   padding: 32rpx;
   border-radius: 32rpx;
   font-size: 28rpx;
-  .zt{
-    color:#626466 ;
+  .zt {
+    color: #626466;
     margin-top: 20rpx;
-    .ztspan{
-      color:#3199F5;
+    .ztspan {
+      color: #3199f5;
       font-weight: bold;
       margin-left: 10rpx;
     }
-    .ztspan2{
-      color: #626466!important;
+    .ztspan2 {
+      color: #626466 !important;
     }
   }
-  .text{
+  .text {
     color: #626466;
     margin-top: 20rpx;
     font-size: 28rpx;
@@ -134,7 +154,7 @@ export default {
     display: flex;
     margin-top: 20rpx;
     margin-bottom: 30rpx;
-    .zzpic{
+    .zzpic {
       margin-right: 20rpx;
     }
   }

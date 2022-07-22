@@ -73,7 +73,7 @@ export default {
       value: "",
       showType: false,
       showType2: false,
-      pageName: "农情监测",
+      pageName: "",
       numValue: "",
       typeList: [
         {
@@ -107,6 +107,7 @@ export default {
   onLoad(option) {
     this.getId=option.id
     this.type=option.type
+    this.pageName=this.type==1?this.getId:'农情监测'
     this.fluoritescreenshot();
   },
   onReachBottom() {

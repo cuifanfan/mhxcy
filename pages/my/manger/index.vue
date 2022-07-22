@@ -10,15 +10,23 @@
       <div>
         <div class="manger">
           <div class="child" v-if="item.deptId==1" v-for="(item,index) in list" :key="index">
-            <div class="childwrap flexcenter">
-              <div class="big">
+            <div class="childwrap flexcenter childwrap4">
+              
+              <div class="childwrap flexcenter">
+                <div class="big">
                 {{(item.name).substring(0,1)}}
+                </div>
+                
+                <div class="c1">
+                  <div class="c2">{{item.name}}</div>
+                  <div class="c3">电话：{{item.phone}}</div>
+                  <div class="c3">角色：{{item.roleList[0]['roleName']}}</div>
+                </div>
               </div>
               
-              <div class="c1">
-                <div class="c2">{{item.name}}</div>
-                <div class="c3">电话：{{item.phone}}</div>
-                <div class="c3">角色：{{item.roleList[0]['roleName']}}</div>
+
+              <div @click="deleteOne(index)">
+                <u-icon name="trash" color="#626466" size="18"></u-icon>
               </div>
             </div>
 
@@ -226,7 +234,40 @@ export default {
       })
       
     },
-
+    deleteOne(index){
+      let that=this
+      uni.showModal({
+        title: '提示',
+        content: '确认删除此人员吗？',
+        cancelText: "取消", // 取消按钮的文字  
+        confirmText: "确认", // 确认按钮文字 
+        confirmColor:'#F54E40',//确认字体的颜色
+        cancelColor:'#000',//取消字体的颜色
+        success: function (res) {
+          if (res.confirm) {
+            that.deleteSure(index)
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        }
+      });
+    },
+    deleteSure(index){
+      request({
+        url: "/admin/user/"+this.list[index]['userId'],
+        method: 'delete',
+        isAuth: false,
+        data:{
+          
+        },
+      }).then((res) => {
+        this.list.splice(index,1)
+        uni.showToast({
+          title:'删除成功',
+          icon:'none'
+        })
+      })
+    },
     setUserBind(userId){
        request({
         url: "/data/userbase",
@@ -244,6 +285,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.childwrap4{
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+}
 .big{
   font-size: 40rpx;
   font-weight: bold;

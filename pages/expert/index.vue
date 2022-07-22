@@ -30,7 +30,7 @@
       <div class="wzdiv" @click="goDetail(item)">
         <div class="header header7 flexcenter">
           <div class="header2">问诊内容</div>
-          <div class="date">{{item.updateTime}}</div>
+          <div class="date">{{item.createTime}}</div>
         </div>
         <div class="ns1 ns1flex" v-if="item.picArr.length>0">
           <image mode="widthFix" v-for="(item2,index2) in item.picArr" :key="index2" class="zzpic" :src="baseUrl+item2" />
@@ -99,6 +99,7 @@ export default {
           current:this.current
         },
       }).then((res) => {
+        res.data.records.reverse()
         res.data.records.forEach(item=>{
           if(item.imageUrls){
             this.$set(item,'picArr',item.imageUrls.split(','))
@@ -131,6 +132,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.wrap{
+ padding-top: 34rpx;
+}
 .wzdiv {
   background: #fff;
   padding: 32rpx;

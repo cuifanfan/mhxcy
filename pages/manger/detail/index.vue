@@ -51,7 +51,14 @@
         <div class="header">
           <div class="header2">视频监控</div>
         </div>
-        <div class="test5">
+        <div class="test5" v-if="videoListShow.length==0">
+          	<u-skeleton
+                rows="3"
+                title
+              loading
+	          ></u-skeleton>
+        </div>
+        <div class="test5" v-else>
           <div
             class="test6"
             v-for="(item,index) in videoListShow" :key="index"
@@ -93,7 +100,14 @@
             src="@/static/image/set.png"
           />
         </div>
-        <div class="index1 index90" v-if="!notSetFlag">
+        <div v-if="!hadAskSetFlag">
+          <u-skeleton
+                rows="3"
+                title
+              loading
+	        ></u-skeleton>
+        </div>
+        <div class="index1 index90" v-if="!notSetFlag&&hadAskSetFlag">
           <div
             class="index91"
             :style="{ marginBottom: index == 6 || index == 7 ? '0' : '' }"
@@ -110,7 +124,7 @@
             </div>
           </div>
         </div>
-        <div v-else class="index1 index90 nosetparam">暂未设置环境参数</div>
+        <div v-if="notSetFlag&&hadAskSetFlag" class="index1 index90 nosetparam">暂未设置环境参数</div>
         <div>
           <div class="tabchange">
             <div
@@ -1375,7 +1389,8 @@ export default {
       nameValue: "",
       typeValue: "",
       teaId: null,
-      notSetFlag: false,
+      notSetFlag: true,
+      hadAskSetFlag:false,
       getDeviceList: null,
       chartDatagg:{
         categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -1956,6 +1971,7 @@ export default {
         isAuth: false,
         data: {},
       }).then((res) => {
+        this.hadAskSetFlag=true
         if (!res.data) {
           this.notSetFlag = true;
           uni.setStorageSync("setParams", null);

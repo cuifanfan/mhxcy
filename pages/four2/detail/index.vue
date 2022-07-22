@@ -1,21 +1,27 @@
 <template>
   <div class="wrap">
     <header-diy  class="topbar" :type="2" :titleName="pageName"></header-diy>
-    <!-- <div class="top">
+    <div class="top">
       <div class="t1">
-        <image mode="widthFix" class="datepic" src="@/static/image/xh.png" />
+        <image v-if="deviceStatus&&deviceStatus.status=='online'" mode="widthFix" class="datepic" src="@/static/image/xh.png" />
+        <image v-if="deviceStatus&&deviceStatus.status!='online'" mode="widthFix" class="datepic" src="@/static/image/xh2.png" />
         <div class="text text3">信号强度</div>
       </div>
-      <div class="t1">
+      <!-- <div class="t1">
         <div class="t5">80%</div>
 
         <div class="text">设备电量</div>
-      </div>
+      </div> -->
       <div class="t1">
-        <div class="t2">50<span>小时</span></div>
-        <div class="text">工作强度</div>
+        <div class="t2"
+          v-if="deviceStatus&&deviceStatus.workTime"
+        >{{deviceStatus.workTime}}<span>小时</span></div>
+         <div class="t2"
+          v-else
+        >-</div>
+        <div class="text">工作时间</div>
       </div>
-    </div> -->
+    </div>
     <div class="content clearcontent">
       <div class="test1">
         <div class="test3 flexcenter">
@@ -71,61 +77,9 @@
       <div v-if="showType" class="tabnew">
         <div class="cirbox">
           <view style="width: 100%; height:500rpx"><l-echart ref="chart"></l-echart></view>
-          <!-- <qiun-data-charts
-            type="mix"
-            canvasId="three_b"
-            :resshow="false"
-            :ontouch="true"
-            :opts="{
-              legend: { show: false },
-              enableScroll:true,
-              yAxis: {
-                disableGrid: true,
-
-                data: [
-                  {
-                    axisLineColor: 'rgba(147,149,153,0.1)',
-                    fontColor: '#939599',
-                    position: 'left',
-                    title: unitSet,
-                    titleOffsetX: -20,
-                    titleOffsetY: -5,
-                    titleFontColor: '#939599',
-                    max: chartDataTemperature
-                      ? chartDataTemperature.yAxis[0].max
-                      : 0,
-                    min: chartDataTemperature
-                      ? chartDataTemperature.yAxis[0].min
-                      : 0,
-                  },
-                ],
-              },
-              xAxis: {
-                fontSize:7,
-                rotateLabel:true,
-                scrollShow:true,
-                itemCount:20,
-                labelCount:30,
-                scrollAlign:'left',
-                axisLineColor: 'rgba(147,149,153,0.1)',
-                disableGrid: false,
-                gridColor: 'rgba(147,149,153,0.1)',
-                gridType: 'solid',
-                fontColor: '#939599',
-              },
-            }"
-            :chartData="chartDataTemperature"
-          /> -->
         </div>
       </div>
-      <!-- <image mode="widthFix" v-else class="fullpic" src="@/static/image/false30.png" /> -->
     </div>
-    <!-- <div class="fixedbtn">
-      <div class="btn2 flexcenter">
-        <image mode="widthFix" class="close" src="@/static/image/close1.png" />
-        关闭设备
-      </div>
-    </div> -->
     <u-calendar
       :closeOnClickOverlay="true"
       @close="dateShow = false"
@@ -171,6 +125,7 @@ export default {
   },
   data() {
     return {   
+      deviceStatus:null,
       option:  {
 					tooltip: {
 						trigger: 'axis'
@@ -200,11 +155,11 @@ export default {
             {
               type: 'inside',
               start: 0,
-              end: 20
+              end: 999999999
             },
             {
               start: 0,
-              end: 20
+              end: 99999999
             }
         ],
 					series: [
@@ -218,7 +173,7 @@ export default {
 					]
 		  },
       listOver:false,
-      size:20,
+      size:80,
       current:1,
       moment,
       minDate:moment().add(-1, 'y').format("YYYY-MM-DD"),
@@ -330,6 +285,7 @@ export default {
        
     }
     this.pageName=this.deviceId
+    this.getStatus()
   },
   onReachBottom() {
     console.log("触底了");
@@ -361,20 +317,32 @@ export default {
     changeChild(index,item){
       this.activeChild = index
       //this.chartDataTemperature.series[0].data=this.chartAll[index]
-      this.option.series[0]['data']=this.chartAll[index]
+      let setReverse=JSON.parse(JSON.stringify(this.chartAll[index]))
+      setReverse.reverse()
+      this.option.series[0]['data']=setReverse
       this.option.series[0]['name']=item
       this.initChart()
-     
+    },
+    getStatus(){
+      request({
+        url: "/data/iotdevice/getDeviceStatusById/"+this.deviceId,
+        method: "get",
+        isAuth: false,
+        data:{},
+      }).then((res) => {
+        this.deviceStatus=res.data
+      })
     },
     meteorologicalrecords(init){
       let data={
           deviceId: this.deviceId,
           current: this.current,
-          size:this.size,
+          //size:this.size,
+          size:99999999999999
       }
       if(this.dateInput2){
-        data.startDate=this.dateInput
-        data.endDate=this.dateInput2
+        data.startTime=this.dateInput+' 00:00:00'
+        data.endTime=this.dateInput2+' 23:59:59'
       }
       let urlSet=this.urlType==2?'meteorologicalrecords':'moisturerecords'
       request({
@@ -394,6 +362,14 @@ export default {
         }
         let add=[]
         res.data.records.reverse()
+        //每4条数据取一个数据
+        let fourArr=[]
+        res.data.records.forEach((item,index)=>{
+          if(index%4==0){
+            fourArr.push(item)
+          }
+        })
+        res.data.records=fourArr
         res.data.records.forEach((item,index)=>{
           let addOne=[]
           if(this.urlType==2){
@@ -425,9 +401,14 @@ export default {
         this.listAll =this.listAll.concat(add)
         //this.chartDataTemperature.categories=this.chartAll[0]
         //this.chartDataTemperature.series[0].data=this.chartAll[1]
+        let setReverse2=JSON.parse(JSON.stringify(this.chartAll[0]))
+        setReverse2.reverse()
+        this.option.xAxis.data= setReverse2
 
-        this.option.xAxis.data= this.chartAll[0]
-        this.option.series[0]['data']=this.chartAll[1]
+        let setReverse=JSON.parse(JSON.stringify(this.chartAll[1]))
+        setReverse.reverse()
+       
+        this.option.series[0]['data']=setReverse
         this.option.series[0]['name']=(this.tabAll[this.urlType-2])[1]
         this.initChart()
         if (res.data.records.length == 0) {
@@ -456,7 +437,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .content{
-  padding-top: 0!important;
+  padding-top: 160rpx!important;
 }
 .cirbox{
   background: #fff;
@@ -512,6 +493,9 @@ export default {
   color: #939599;
   padding: 20rpx;
   font-size: 28rpx;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
   .text3 {
     position: relative;
     top: 10rpx;
@@ -532,13 +516,17 @@ export default {
     flex-direction: column;
   }
   .t2 {
-    font-size: 64rpx;
+    font-size: 45rpx;
     font-weight: bold;
     color: #f5a631;
+    height: 92rpx;
+    display: flex;
+    align-items: center;
     span {
       font-size: 28rpx !important;
       font-weight: normal;
       color: #c4c7cc !important;
+      margin-left: 10rpx;
     }
   }
 }

@@ -190,9 +190,7 @@ export default {
       this.$set(this.list[7],'val',[ get.soilPhMin, get.soilPhMax])
     },
     submit() {
-      let flag1=this.list.find(item=>{
-        return JSON.parse(item['val'][1])<=JSON.parse(item['val'][0])
-      })
+      
       let flag2=this.list.find(item=>{
         return item['val'][0]===''||item['val'][1]===''
       })
@@ -204,6 +202,10 @@ export default {
         });
         return
       }
+      let flag1=this.list.find(item=>{
+        return JSON.parse(item['val'][1])<=JSON.parse(item['val'][0])
+      })
+      
       if(flag1){
         uni.showToast({
           title: "最大值必须大于最小值",

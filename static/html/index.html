@@ -30,6 +30,7 @@
       display: flex;
       visibility: hidden;
       padding: 10px;
+      justify-content: space-around;
     }
     .imgicon{
       width: 25px;
@@ -47,8 +48,8 @@
     .b2{
       font-size: 12px;
     }
-    .bwrap .kk3{
-      color: #08CCA5;
+    .bwrap .kk1{
+      color: #08CCA5!important;
     }
     .bwrap .kk2{
       color: #3199F5!important;
@@ -82,11 +83,12 @@
       flex-direction: column;
       align-items: center;
       width: 20%;
+      justify-content: space-around;
     }
   </style>
   <script>
     var map;
-    var zoom = 15;
+    var zoom = 16;
     var lay;
     var onlyMapLay;
     var icon = new T.Icon({ iconUrl: '../html/icon.png', iconSize: T.Point(120, 120), iconAnchor: T.Point(100, 100) });
@@ -108,11 +110,24 @@
     window.onload = () => {
       mapInit(100.49145,22.136989)
 
-      function addPoint(coo,iconGet) {
-        let icon = new T.Icon({ iconUrl: '../html/'+iconGet+'.png', iconSize: T.Point(120, 120), iconAnchor: T.Point(100, 100) });
+      function addPoint(coo,iconGet,id,type,videoInfo) {
+        let icon = new T.Icon({ iconUrl: '../html/'+iconGet+'.png',  iconSize: new T.Point(30,30),
+          //iconAnchor: T.Point(30, 30) 
+        });
         let marker = new T.Marker(coo, {
           icon: icon
         });
+        marker.id=id
+        marker.addEventListener('click', function (e) {
+          uni.postMessage({
+                data: {
+                msg: 'clickIcon',
+                val:marker.id,
+                type:type,
+                videoInfo:videoInfo
+                }
+          });
+        })
         map.addOverLay(marker);
       }
       function addPolygon(points) {
@@ -127,24 +142,17 @@
         //向地图上添加面
         map.addOverLay(polygon);
       }
-      // addPoint({ lat: 39.89945, lng: 116.40969 })
       window.msgFromUniapp = function (arg) {
-        console.log('xxxx', arg);
-        console.log('00000', JSON.stringify(arg));
         // mapInit(arg.center[0],arg.center[1])
         map.centerAndZoom(new T.LngLat(arg.center[0], arg.center[1]), zoom);
         arg.pointArr.forEach(item => {
-          console.log('ccc', JSON.stringify(item))
-          console.log('giao!',item.iconNum)
-          addPoint({ lat: item.lat, lng: item.lng },item.icon)
+          addPoint({ lat: item.lat, lng: item.lng },item.icon,item.id,item.type,item.videoInfo) 
         })
-        
         if(arg.bottom){
           let htmlBottom=''
           arg.bottom.forEach(item=>{
             htmlBottom+='<div class="bwrap"><div class="b '+item.icon+'"><img class="imgicon" src="./'+item.icon+'.png" alt="">'+item.total+'</div><div class="b2">'+item.type+'</div></div>'
           })
-          console.log('dhtmladdd',htmlBottom)
           document.getElementById("infobox").innerHTML=htmlBottom;
         }
         //addPolygon(arg.polygon)

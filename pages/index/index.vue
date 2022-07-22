@@ -511,6 +511,13 @@ export default {
   },
   methods: {
     getBaseInfo() {
+      let token=uni.getStorageSync('token')
+      if(!token){
+         uni.navigateTo({
+            url: '/pages/login/login'
+        })
+        return 
+      }
       this.nowUserBaseInfo = uni.getStorageSync("nowUserBaseInfo");
       this.userBaseInfos = uni.getStorageSync("userBaseInfos");
       this.allTea = JSON.parse(JSON.stringify(this.userBaseInfos));

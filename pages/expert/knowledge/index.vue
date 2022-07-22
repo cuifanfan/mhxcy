@@ -108,7 +108,7 @@
             />
           </div>
           <div class="text">
-            {{ item.content }}
+            {{ item.summary }}
           </div>
           <div class="zt">
             <div class="ztt1">
@@ -146,7 +146,7 @@
         </div>
       </div>
     </div>
-    <u-popup :show="pshow" mode="bottom" @close="close">
+    <u-popup :show="pshow" mode="bottom" @close="pshow=false">
       <div class="share">
         <div class="share1" @click="appShare('WXSceneSession')">
           <div>
@@ -224,8 +224,18 @@ export default {
       });
     },
     shareHandle(item) {
-      this.pshow = true;
-      this.shareInfo = item;
+      console.log(item)
+      uni.setClipboardData({
+        data: 'http://121.36.247.77/article.html?id='+item.id+'&t='+uni.getStorageSync('token'), // e是你要保存的内容
+        success: function () {
+        uni.showToast({
+          title:'文章链接复制成功快去分享给小伙伴吧！',
+          icon:'none'
+        })
+        }
+      })
+      // this.pshow = true;
+      // this.shareInfo = item;
     },
     appShare(scene) {
       console.log(this.shareInfo);
@@ -431,6 +441,7 @@ export default {
   .zzpic {
     width: 186rpx;
     height: 104rpx !important;
+    margin-left: 24rpx;
   }
   .zzpic2 {
     width: 36rpx;
@@ -438,7 +449,7 @@ export default {
   }
   .ns1flex {
     display: flex;
-    justify-content: space-between;
+   
     margin-top: 20rpx;
     margin-bottom: 30rpx;
   }

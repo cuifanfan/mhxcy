@@ -484,7 +484,7 @@ export default {
   methods: {
     getIotdevice(){
       request({
-        url: "/data/wormdistinguishdata/getLatestDatasInGarden/"+uni.getStorageSync('baseId'),
+        url: "/data/wormdistinguishdata/getLatestDatasInBase/"+uni.getStorageSync('baseId'),
         data: {
           
         },
@@ -735,6 +735,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.flextextadd{
+  padding-top: 32rpx!important;
+}
 .cleartest6{
   margin: 0!important;
 }

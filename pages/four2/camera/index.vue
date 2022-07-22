@@ -143,7 +143,7 @@ export default {
     },
     turnD(val){
        request({
-        url: "/data-thirdpart/fluorite/deviceOperateStart/"+this.sendOptions.deviceSerial+"?direction="+val,
+        url: "/data-thirdpart/fluorite/deviceOperateStart/"+this.sendOptions.deviceSerial+"?direction="+val+'&speed=1',
         method: "get",
         isAuth: false,
         data: {

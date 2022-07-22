@@ -72,6 +72,7 @@
               name="arrow-right"
             ></u-icon>
           </div>
+          
           <div class="child child11" @click="goNews">
             <div class="c1">
               <image mode="widthFix" class="pic" src="@/static/image/u2.png" />
@@ -87,7 +88,7 @@
               name="arrow-right"
             ></u-icon>
           </div>
-          <div class="child child12" @click="goCollect">
+          <div class="child child3 child12" @click="goCollect">
             <div class="c1" >
               <image mode="widthFix" class="pic" src="@/static/image/u3.png" />
               我的收藏
@@ -98,19 +99,31 @@
               name="arrow-right"
             ></u-icon>
           </div>
-          <div @click="goFeedback" class="child child2">
+          <div class="child child11" @click="goUpload2">
             <div class="c1">
-              <image mode="widthFix" class="pic" src="@/static/image/u4.png" />
-              问题反馈
+              <image mode="widthFix" class="pic" src="@/static/image/addicon9.png" />
+              上传农业知识
             </div>
             <u-icon
-              
+            
               color="#939599"
               size="14"
               name="arrow-right"
             ></u-icon>
           </div>
-           <div @click="loginOut" class="child child2 chilid8">
+          <div class="child child12" @click="goFeedback">
+            <div class="c1" >
+              <image mode="widthFix" class="pic" src="@/static/image/u4.png" />
+              问题反馈
+            </div>
+            <u-icon
+              color="#939599"
+              size="14"
+              name="arrow-right"
+            ></u-icon>
+          </div>
+
+          <div @click="loginOut" class="child child2 chilid8">
             <div class="c1">
               退出登录
             </div>
@@ -237,6 +250,11 @@ export default {
     
   },
   methods: {
+    goUpload2(){
+      uni.navigateTo({
+        url:"/pages/my/uploadKnowledge/index"
+      })
+    },
     teabase(){
        let userInfo=uni.getStorageSync('userInfo')
        request({
@@ -352,6 +370,9 @@ export default {
   color: #fff!important;
   justify-content: center!important;
   margin-top: 60rpx!important;
+  padding-top: 15rpx!important;
+  padding-bottom: 15rpx!important;
+  font-size: 32rpx!important;
 }
 .child11{
   border-bottom-left-radius: 0!important;
