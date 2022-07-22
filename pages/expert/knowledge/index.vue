@@ -9,12 +9,21 @@
           border="none"
         ></u--input>
         <u-icon
+          v-if="keyword!=''"
+          slot="right"
+          @click="deleteSearch"
+          color="#C4C7CC"
+          size="18"
+          name="close-circle"
+        ></u-icon>
+        <u-icon
           slot="right"
           @click="farminformation(true)"
           color="#C4C7CC"
           size="26"
           name="search"
         ></u-icon>
+        
       </div>
       <div class="search">
         热门搜索:
@@ -208,6 +217,10 @@ export default {
     }
   },
   methods: {
+    deleteSearch(){
+      this.keyword=''
+      this.farminformation(true)
+    },
     getSort() {
       request({
         url: "/data/informationcategory/getInformationCategoryOptions",
@@ -320,11 +333,9 @@ export default {
     },
     farminformation(init) {
       if (init) {
-        // if(this.keyword==''){
-        //   return
-        // }
         this.current = 1;
         this.list = [];
+        this.listOver=false
       }
       request({
         url: "/data/farminformation/pageFront",
@@ -357,7 +368,7 @@ export default {
     },
 
     chooseOne(item) {
-      this.activeTab = false;
+      this.activeTab = true;
       this.category = item.categoryName=='全部'?'':item.categoryName;
       this.farminformation(true);
     },
@@ -441,7 +452,7 @@ export default {
   .zzpic {
     width: 186rpx;
     height: 104rpx !important;
-    margin-left: 24rpx;
+    margin-right: 24rpx;
   }
   .zzpic2 {
     width: 36rpx;

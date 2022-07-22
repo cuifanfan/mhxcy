@@ -216,13 +216,19 @@
           ></u--input>
           <u--input
             v-else
-            placeholder="请输入摄像头名称"
+            placeholder="请输入摄像头名称" 
             border="surround"
             v-model="videoValue"
           ></u--input>
-          <div class="search" @click="searchHandle">
-            <u-icon color="#939599" size="25" name="search"></u-icon>
+          <div class="search flexcenter">
+            <div class="searchchild" @click="deleteSearch" v-if="(active==2&&siteValue!='')||(active!=2&&videoValue!='')">
+              <u-icon color="#939599" size="18" name="close-circle"></u-icon>
+            </div>
+            <div class="searchchild" @click="searchHandle">
+              <u-icon color="#939599" size="25" name="search"></u-icon>
+            </div>
           </div>
+          
         </div>
       </div>
       <div class="test5" v-if="active == 2">
@@ -523,6 +529,14 @@ export default {
         .catch((err) => {
           console.log("err", err);
         });
+    },
+    deleteSearch(){
+      if(this.active==2){
+        this.siteValue=''
+      }else{
+        this.videoValue=''
+      }
+      this.searchHandle()
     },
     goDetail2(type,item) { 
       uni.navigateTo({

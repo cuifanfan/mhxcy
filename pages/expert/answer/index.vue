@@ -51,7 +51,7 @@
       <div class="wzdiv" @click="goDetail(item)">
         <div class="header header7 flexcenter">
           <div class="header2">问诊内容</div>
-          <div class="date">{{ item.updateTime }}</div>
+          <div class="date">{{ item.createTime }}</div>
         </div>
         <div class="ns1 ns1flex" v-if="item.picArr.length > 0">
           <image
@@ -141,6 +141,11 @@ export default {
       });
     },
     askList(init) {
+      if(init){
+          this.list=[]
+          this.current=1
+          this.listOver=false
+      }
       request({
         url: "/data/expertservice/page",
         method: "get",
@@ -150,9 +155,7 @@ export default {
           status:this.status
         },
       }).then((res) => {
-        if(init){
-          this.list=[]
-        }
+        res.data.records.reverse()
         res.data.records.forEach((item) => {
           if (item.imageUrls) {
             this.$set(item, "picArr", item.imageUrls.split(","));
